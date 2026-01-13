@@ -228,11 +228,13 @@
         </div>
       </header>
 
-      <div class="flex-1 overflow-auto bg-gray-50 p-6 relative">
-        <div id="loader" class="absolute inset-0 flex flex-col justify-center items-center bg-white/95 z-50">
-          <div class="animate-spin h-12 w-12 border-4 border-virginia-600 rounded-full border-t-transparent mb-4"></div>
-          <p class="text-virginia-700 font-bold">جاري تحميل البيانات...</p>
-        </div>
+      <div id="loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm transition-opacity">
+          <div class="relative flex h-16 w-16">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-virginia-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-16 w-16 bg-virginia-600 justify-center items-center text-white text-2xl font-bold">V</span>
+          </div>
+          <p class="mt-4 text-virginia-800 font-medium animate-pulse">جاري تحميل البيانات...</p>
+    </div>
 
         <div id="view-dashboard" class="hidden">
           <?!= include('Dashboard'); ?>
