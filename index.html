@@ -43,18 +43,18 @@
     <div class="absolute inset-0 bg-virginia-900/80 backdrop-blur-sm z-0"></div>
 
     <div
-      class="bg-white rounded-2xl shadow-2xl w-full max-w-lg z-10 overflow-hidden border border-gray-200 transform transition-all hover:scale-[1.01]">
+      class="glass-panel rounded-2xl shadow-2xl w-full max-w-lg z-10 overflow-hidden border border-gray-200 transform transition-all hover:scale-[1.01]">
 
       <div class="bg-gradient-to-r from-virginia-900 to-virginia-700 p-8 text-center text-white relative">
         <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🌍</div>
-        <img src="https://cdn-icons-png.flaticon.com/512/9187/9187604.png" alt="Logo" class="h-16 w-auto mx-auto mb-3 drop-shadow-lg bg-white rounded-full p-1">
+        <img src="https://cdn-icons-png.flaticon.com/512/9187/9187604.png" alt="Logo" class="h-16 w-auto mx-auto mb-3 drop-shadow-lg glass-panel rounded-full p-1">
         <h2 class="text-2xl font-bold tracking-wide">Smart HR System</h2>
         <p class="text-virginia-100 text-sm mt-1">نظام إدارة الموارد البشرية المتكامل</p>
       </div>
 
       <div class="p-8">
         <div class="flex bg-gray-100 p-1 rounded-xl mb-6 shadow-inner">
-          <button type="button" onclick="toggleLoginMode('admin')" id="tab-admin" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md bg-white text-virginia-700">
+          <button type="button" onclick="toggleLoginMode('admin')" id="tab-admin" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md glass-panel text-virginia-700">
                 👨‍💼 إدارة (Admin)
             </button>
           <button type="button" onclick="toggleLoginMode('employee')" id="tab-employee" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition-all text-gray-500 hover:text-gray-700">
@@ -109,7 +109,7 @@
 
       <div class="p-6 text-center border-b border-[#2d3a24]">
         <div
-          class="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3 border border-white/20">
+          class="w-16 h-16 glass-panel/10 rounded-full flex items-center justify-center mx-auto mb-3 border border-white/20">
           <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo" class="h-10 w-auto">
         </div>
         <h1 class="text-sm font-bold tracking-wide text-white app-title-display">Smart HR System</h1>
@@ -118,49 +118,49 @@
       <nav class="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
 
         <div id="nav-dashboard-container">
-          <button onclick="switchView('dashboard'); closeSidebarOnMobile()" id="btn-dashboard" class="w-full flex items-center px-4 py-3 text-gray-300 hover:bg-white/10 hover:text-white transition-all rounded-lg group">
+          <button onclick="switchView('dashboard'); closeSidebarOnMobile()" id="btn-dashboard" class="w-full flex items-center px-4 py-3 text-gray-300 hover:glass-panel/10 hover:text-white transition-all rounded-lg group">
         <span class="text-lg ml-3 group-hover:scale-110 transition-transform">📊</span>
         <span class="font-medium text-sm">لوحة القيادة</span>
       </button>
         </div>
 
         <div id="nav-employees-container">
-          <button onclick="switchView('employees'); closeSidebarOnMobile()" id="btn-employees" class="w-full flex items-center px-4 py-3 text-gray-300 hover:bg-white/10 hover:text-white transition-all rounded-lg group">
+          <button onclick="switchView('employees'); closeSidebarOnMobile()" id="btn-employees" class="w-full flex items-center px-4 py-3 text-gray-300 hover:glass-panel/10 hover:text-white transition-all rounded-lg group">
         <span class="text-lg ml-3 group-hover:scale-110 transition-transform">👥</span>
         <span class="font-medium text-sm">بيانات الموظفين</span>
       </button>
         </div>
 
         <div id="nav-penalties-container">
-          <button onclick="switchView('penalties'); closeSidebarOnMobile()" id="btn-penalties" class="w-full flex items-center px-4 py-3 text-gray-300 hover:bg-white/10 hover:text-white transition-all rounded-lg group">
+          <button onclick="switchView('penalties'); closeSidebarOnMobile()" id="btn-penalties" class="w-full flex items-center px-4 py-3 text-gray-300 hover:glass-panel/10 hover:text-white transition-all rounded-lg group">
         <span class="text-lg ml-3 group-hover:scale-110 transition-transform">⚖️</span>
         <span class="font-medium text-sm">الجزاءات والمخالفات</span>
       </button>
         </div>
 
         <div id="nav-interview-container">
-          <button onclick="switchView('interview'); closeSidebarOnMobile()" id="btn-interview" class="w-full flex items-center px-4 py-3 text-gray-300 hover:bg-white/10 hover:text-white transition-all rounded-lg group">
+          <button onclick="switchView('interview'); closeSidebarOnMobile()" id="btn-interview" class="w-full flex items-center px-4 py-3 text-gray-300 hover:glass-panel/10 hover:text-white transition-all rounded-lg group">
         <span class="text-lg ml-3 group-hover:scale-110 transition-transform">🤝</span>
         <span class="font-medium text-sm">منصة التوظيف (S.T.A.R)</span>
       </button>
         </div>
 
         <div id="nav-leaves-container">
-          <button onclick="switchView('leaves'); closeSidebarOnMobile()" id="btn-leaves" class="w-full flex items-center px-4 py-3 text-gray-300 hover:bg-white/10 hover:text-white transition-all rounded-lg group">
+          <button onclick="switchView('leaves'); closeSidebarOnMobile()" id="btn-leaves" class="w-full flex items-center px-4 py-3 text-gray-300 hover:glass-panel/10 hover:text-white transition-all rounded-lg group">
         <span class="text-lg ml-3 group-hover:scale-110 transition-transform">🏖️</span>
         <span class="font-medium text-sm">إدارة الإجازات</span>
       </button>
         </div>
 
         <div id="nav-docs-container">
-          <button onclick="switchView('docs'); closeSidebarOnMobile()" id="btn-docs" class="w-full flex items-center px-4 py-3 text-gray-300 hover:bg-white/10 hover:text-white transition-all rounded-lg group">
+          <button onclick="switchView('docs'); closeSidebarOnMobile()" id="btn-docs" class="w-full flex items-center px-4 py-3 text-gray-300 hover:glass-panel/10 hover:text-white transition-all rounded-lg group">
         <span class="text-lg ml-3 group-hover:scale-110 transition-transform">📂</span>
         <span class="font-medium text-sm">مركز النماذج</span>
       </button>
         </div>
 
         <div id="nav-settings-container" style="display:none;">
-          <button onclick="switchView('settings'); closeSidebarOnMobile()" id="btn-settings" class="w-full flex items-center px-4 py-3 text-gray-300 hover:bg-white/10 hover:text-white transition-all rounded-lg group">
+          <button onclick="switchView('settings'); closeSidebarOnMobile()" id="btn-settings" class="w-full flex items-center px-4 py-3 text-gray-300 hover:glass-panel/10 hover:text-white transition-all rounded-lg group">
         <span class="text-lg ml-3 group-hover:scale-110 transition-transform">⚙️</span>
         <span class="font-medium text-sm">إعدادات النظام</span>
       </button>
@@ -172,7 +172,7 @@
         <p class="text-[10px] text-gray-400 mb-2 uppercase tracking-widest">Hr Admin Panel V 1.0</p>
         <p class="text-[9px] text-gray-500 mb-2">Developed by</p>
         <div
-          class="bg-white/5 rounded-full py-1.5 px-4 inline-flex items-center gap-2 border border-white/10 hover:bg-white/10 transition-colors cursor-default">
+          class="glass-panel/5 rounded-full py-1.5 px-4 inline-flex items-center gap-2 border border-white/10 hover:glass-panel/10 transition-colors cursor-default">
           <span class="text-[11px] font-bold text-gray-200">Karim Elmalhy</span>
           <span class="text-xs">👨‍💻</span>
         </div>
@@ -181,7 +181,7 @@
     </aside>
 
     <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
-      <header class="h-16 bg-white shadow flex items-center justify-between px-6 z-10">
+      <header class="h-16 glass-panel shadow flex items-center justify-between px-6 z-10">
         <button onclick="toggleSidebar()" class="md:hidden text-gray-600 hover:text-virginia-700 focus:outline-none ml-4 p-2 rounded-md hover:bg-gray-100 transition">
           <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -204,7 +204,7 @@
               <span id="alert-badge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
             </div>
             <div id="alert-dropdown"
-              class="absolute left-0 mt-3 w-80 bg-white border border-gray-200 shadow-xl rounded-lg hidden z-50 max-h-96 overflow-y-auto">
+              class="absolute left-0 mt-3 w-80 glass-panel border border-gray-200 shadow-xl rounded-lg hidden z-50 max-h-96 overflow-y-auto">
               <div class="p-3 border-b bg-gray-50 font-bold text-sm text-gray-700">التنبيهات الهامة</div>
               <div id="alert-list" class="divide-y divide-gray-100"></div>
             </div>
@@ -228,7 +228,7 @@
         </div>
       </header>
 
-      <div id="loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm transition-opacity">
+      <div id="loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center glass-panel/80 backdrop-blur-sm transition-opacity">
           <div class="relative flex h-16 w-16">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-virginia-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-16 w-16 bg-virginia-600 justify-center items-center text-white text-2xl font-bold">V</span>
@@ -269,7 +269,7 @@
 
               <div class="relative w-full md:w-72 group">
                 <input type="text" id="docs-search" onkeyup="filterDocs()" 
-                      class="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-virginia-500 focus:border-transparent outline-none transition-all shadow-sm text-right" 
+                      class="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:glass-panel focus:ring-2 focus:ring-virginia-500 focus:border-transparent outline-none transition-all shadow-sm text-right" 
                       placeholder="بحث باسم النموذج...">
                 <span class="absolute right-3 top-3 text-gray-400 group-focus-within:text-virginia-500 transition-colors">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -299,13 +299,13 @@
     <header class="bg-virginia-800 text-white shadow-lg">
       <div class="container mx-auto px-4 py-4 flex justify-between items-center">
         <div class="flex items-center gap-3">
-          <div class="h-10 w-10 bg-white/20 rounded-full flex items-center justify-center text-xl">👷</div>
+          <div class="h-10 w-10 glass-panel/20 rounded-full flex items-center justify-center text-xl">👷</div>
           <div>
             <h1 class="font-bold text-lg" id="emp-portal-name">اسم الموظف</h1>
             <p class="text-xs text-virginia-200" id="emp-portal-code">Code: 000</p>
           </div>
         </div>
-        <button onclick="logout()" class="text-sm bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded transition">تسجيل خروج</button>
+        <button onclick="logout()" class="text-sm glass-panel/10 hover:glass-panel/20 px-3 py-1.5 rounded transition">تسجيل خروج</button>
       </div>
     </header>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -326,7 +326,7 @@
       </div>
     </div>
     <div class="container mx-auto px-4 py-8 max-w-4xl">
-      <div class="bg-white rounded-xl shadow-md p-6 mb-8 border-t-4 border-virginia-500">
+      <div class="glass-panel rounded-xl shadow-md p-6 mb-8 border-t-4 border-virginia-500">
         <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"><span>📝</span> تقديم طلب إجازة</h2>
         <form onsubmit="handleLeaveSubmit(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="col-span-2 md:col-span-1">
@@ -357,7 +357,7 @@
         </form>
       </div>
 
-      <div class="bg-white rounded-xl shadow-md p-6">
+      <div class="glass-panel rounded-xl shadow-md p-6">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2"><span>📋</span> سجل طلباتي</h2>
           <button onclick="loadEmployeeRequests()" class="text-sm text-virginia-600 hover:underline">تحديث 🔄</button>
@@ -386,13 +386,13 @@
 
   <div id="ai-window"
     class="fixed top-20 left-10 w-[400px] h-[600px] max-h-[80vh] flex flex-col z-50 hidden transition-all duration-300 transform scale-95 opacity-0     origin-top-left font-cairo shadow-2xl">
-    <div class="absolute inset-0 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50"></div>
+    <div class="absolute inset-0 glass-panel/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50"></div>
     <div class="relative z-10 flex flex-col h-full rounded-3xl overflow-hidden">
       <div class="bg-gradient-to-r from-virginia-800 to-virginia-600 p-4 flex flex-col gap-3 text-white shadow-md">
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md border border-white/30 shadow-inner">
+              class="w-10 h-10 glass-panel/20 rounded-full flex items-center justify-center backdrop-blur-md border border-white/30 shadow-inner">
               <span class="text-xl">🧠</span>
             </div>
             <div>
@@ -404,11 +404,11 @@
             </div>
           </div>
           <div class="flex items-center gap-1">
-            <button onclick="clearChat()" class="p-2 hover:bg-white/10 rounded-full transition text-white/80 hover:text-white" title="مسح المحادثة">🧹</button>
-            <button onclick="toggleAIChat()" class="p-2 hover:bg-white/10 rounded-full transition text-white" title="إغلاق">✕</button>
+            <button onclick="clearChat()" class="p-2 hover:glass-panel/10 rounded-full transition text-white/80 hover:text-white" title="مسح المحادثة">🧹</button>
+            <button onclick="toggleAIChat()" class="p-2 hover:glass-panel/10 rounded-full transition text-white" title="إغلاق">✕</button>
           </div>
         </div>
-        <select id="ai-model-select" class="w-full bg-white/10 border border-white/20 text-white text-xs rounded-lg p-2 focus:bg-white/20 focus:outline-none transition cursor-pointer">
+        <select id="ai-model-select" class="w-full glass-panel/10 border border-white/20 text-white text-xs rounded-lg p-2 focus:glass-panel/20 focus:outline-none transition cursor-pointer">
                 <option value="google/gemini-2.0-flash-exp:free" class="text-gray-900">🚀 Gemini 2.0 Flash (ذكي جداً)</option>
                 <option value="meta-llama/llama-3.3-70b-instruct:free" class="text-gray-900">🦙 Llama 3.3 (ممتاز في العربي)</option>
                 <option value="deepseek/deepseek-r1:free" class="text-gray-900">🐳 DeepSeek R1 (تحليل عميق)</option>
@@ -425,7 +425,7 @@
             class="w-9 h-9 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center text-lg shadow-sm border border-white">
             🤖</div>
           <div
-            class="bg-white/80 p-4 rounded-2xl rounded-tr-none shadow-sm text-gray-700 text-sm border border-gray-100 backdrop-blur-sm">
+            class="glass-panel/80 p-4 rounded-2xl rounded-tr-none shadow-sm text-gray-700 text-sm border border-gray-100 backdrop-blur-sm">
             <p class="font-bold text-virginia-800 mb-1">أهلاً بك يا مدير 👋</p>
             <p class="leading-relaxed">معك المساعد الذكي. اختر الموديل المناسب واسألني عن الموظفين أو الرواتب.</p>
           </div>
@@ -438,9 +438,9 @@
         </div>
       </div>
 
-      <div class="p-4 bg-white/80 backdrop-blur-md border-t border-gray-200/60">
+      <div class="p-4 glass-panel/80 backdrop-blur-md border-t border-gray-200/60">
         <div class="relative flex items-center gap-2">
-          <input type="text" id="ai-input" placeholder="اكتب سؤالك هنا..." class="w-full bg-gray-100/50 border border-gray-200 text-gray-800 text-sm rounded-xl pl-4 pr-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-virginia-500/50 focus:bg-white transition shadow-inner placeholder-gray-400" onkeypress="if(event.key === 'Enter') sendAIMessage()">
+          <input type="text" id="ai-input" placeholder="اكتب سؤالك هنا..." class="w-full bg-gray-100/50 border border-gray-200 text-gray-800 text-sm rounded-xl pl-4 pr-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-virginia-500/50 focus:glass-panel transition shadow-inner placeholder-gray-400" onkeypress="if(event.key === 'Enter') sendAIMessage()">
           <button onclick="sendAIMessage()" id="btn-send-ai" class="absolute left-2 bg-gradient-to-r from-virginia-700 to-virginia-600 hover:from-virginia-800 hover:to-virginia-700 text-white p-2 rounded-lg shadow-lg hover:shadow-xl transition transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group">
                     <svg class="w-5 h-5 transform group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l6 6m-6-6l6-6"></path></svg>
                 </button>
@@ -507,7 +507,7 @@
     }
 
     /* تحويل الكروت والقوائم للون غامق */
-    html.dark .bg-white,
+    html.dark .glass-panel,
     html.dark .bg-gray-50 {
       background-color: #1f2937 !important;
       /* رمادي غامق */
@@ -585,7 +585,7 @@ function closeSidebarOnMobile() {
         if (mode === 'employee') {
             // === وضع الموظف ===
             // تغيير ألوان الأزرار
-            btnEmp.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md bg-white text-virginia-700";
+            btnEmp.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md glass-panel text-virginia-700";
             btnAdmin.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition-all text-gray-500 hover:text-gray-700";
             
             // تغيير النصوص
@@ -602,7 +602,7 @@ function closeSidebarOnMobile() {
         } else {
             // === وضع الأدمن ===
             // تغيير ألوان الأزرار
-            btnAdmin.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md bg-white text-virginia-700";
+            btnAdmin.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md glass-panel text-virginia-700";
             btnEmp.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition-all text-gray-500 hover:text-gray-700";
             
             // تغيير النصوص
@@ -827,7 +827,7 @@ function handleLogin(e) {
         document.getElementById('ai-messages').innerHTML = `
             <div class="flex items-start gap-3 animate-fade-in-up">
                 <div class="w-9 h-9 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center text-lg shadow-sm border border-white">🤖</div>
-                <div class="bg-white/80 p-4 rounded-2xl rounded-tr-none shadow-sm text-gray-700 text-sm border border-gray-100 backdrop-blur-sm">
+                <div class="glass-panel/80 p-4 rounded-2xl rounded-tr-none shadow-sm text-gray-700 text-sm border border-gray-100 backdrop-blur-sm">
                     <p class="font-bold text-virginia-800 mb-1">تم مسح الذاكرة 🧹</p>
                     <p>أنا جاهز لموضوع جديد.</p>
                 </div>
@@ -841,7 +841,7 @@ function handleLogin(e) {
         if (sender === 'user') {
             div.innerHTML = `<div class="bg-gradient-to-br from-virginia-700 to-virginia-600 text-white p-4 rounded-2xl rounded-tl-none shadow-md text-sm leading-relaxed">${text}</div>`;
         } else {
-            div.innerHTML = `<div class="bg-white/90 p-4 rounded-2xl rounded-tr-none shadow-sm text-gray-700 text-sm border border-gray-100 backdrop-blur-sm leading-relaxed ai-response-content">${text}</div>`;
+            div.innerHTML = `<div class="glass-panel/90 p-4 rounded-2xl rounded-tr-none shadow-sm text-gray-700 text-sm border border-gray-100 backdrop-blur-sm leading-relaxed ai-response-content">${text}</div>`;
         }
         container.appendChild(div);
         container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
@@ -853,7 +853,7 @@ function handleLogin(e) {
         const div = document.createElement('div');
         div.id = id;
         div.className = "flex justify-start gap-3 animate-fade-in-up";
-        div.innerHTML = `<div class="bg-white/90 p-4 rounded-2xl rounded-tr-none shadow-sm border border-gray-100"><div class="flex gap-1.5"><div class="w-2 h-2 bg-virginia-400 rounded-full animate-bounce"></div><div class="w-2 h-2 bg-virginia-400 rounded-full animate-bounce delay-75"></div><div class="w-2 h-2 bg-virginia-400 rounded-full animate-bounce delay-150"></div></div></div>`;
+        div.innerHTML = `<div class="glass-panel/90 p-4 rounded-2xl rounded-tr-none shadow-sm border border-gray-100"><div class="flex gap-1.5"><div class="w-2 h-2 bg-virginia-400 rounded-full animate-bounce"></div><div class="w-2 h-2 bg-virginia-400 rounded-full animate-bounce delay-75"></div><div class="w-2 h-2 bg-virginia-400 rounded-full animate-bounce delay-150"></div></div></div>`;
         container.appendChild(div);
         container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
         return id;
@@ -1214,7 +1214,7 @@ function renderDocs(files) {
     grid.innerHTML = "";
 
     if (files.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-xl border border-dashed border-gray-300"><p class="text-gray-500 text-lg">📂 المجلد فارغ حالياً</p><p class="text-xs text-gray-400">تواصل مع الـ HR لرفع الملفات</p></div>`;
+        grid.innerHTML = `<div class="col-span-full text-center py-10 glass-panel rounded-xl border border-dashed border-gray-300"><p class="text-gray-500 text-lg">📂 المجلد فارغ حالياً</p><p class="text-xs text-gray-400">تواصل مع الـ HR لرفع الملفات</p></div>`;
         return;
     }
 
@@ -1228,7 +1228,7 @@ function renderDocs(files) {
         else if (file.type.includes("image")) { icon = "🖼️"; color = "text-purple-600 bg-purple-50"; }
 
         grid.innerHTML += `
-        <div class="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition border border-gray-100 flex flex-col group relative overflow-hidden">
+        <div class="glass-panel p-5 rounded-xl shadow-sm hover:shadow-md transition border border-gray-100 flex flex-col group relative overflow-hidden">
             <div class="flex items-start justify-between mb-3">
                 <div class="w-12 h-12 rounded-lg ${color} flex items-center justify-center text-2xl shadow-inner">
                     ${icon}
