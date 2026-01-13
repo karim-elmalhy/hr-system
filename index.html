@@ -105,7 +105,7 @@
     <div id="sidebar-overlay" onclick="toggleSidebar()"
       class="fixed inset-0 bg-black/50 z-30 hidden transition-opacity md:hidden"></div>
 
-    <aside id="main-sidebar" class="glass-panel fixed z-30 inset-y-0 right-0 w-64 transition-transform duration-300 transform translate-x-full md:translate-x-0 md:static md:inset-0 text-gray-800 flex flex-col overflow-hidden">
+    <aside id="main-sidebar" class="fixed z-30 inset-y-0 right-0 w-64 transition-transform duration-300 transform translate-x-full md:translate-x-0 md:static md:inset-0 bg-gray-900 text-white flex flex-col shadow-2xl overflow-hidden">
 
       <div class="p-6 text-center border-b border-[#2d3a24]">
         <div
@@ -228,13 +228,11 @@
         </div>
       </header>
 
-      <div id="loader" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm transition-opacity">
-          <div class="relative flex h-16 w-16">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-virginia-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-16 w-16 bg-virginia-600 justify-center items-center text-white text-2xl font-bold">V</span>
-          </div>
-          <p class="mt-4 text-virginia-800 font-medium animate-pulse">جاري تحميل البيانات...</p>
-    </div>
+      <div class="flex-1 overflow-auto bg-gray-50 p-6 relative">
+        <div id="loader" class="absolute inset-0 flex flex-col justify-center items-center bg-white/95 z-50">
+          <div class="animate-spin h-12 w-12 border-4 border-virginia-600 rounded-full border-t-transparent mb-4"></div>
+          <p class="text-virginia-700 font-bold">جاري تحميل البيانات...</p>
+        </div>
 
         <div id="view-dashboard" class="hidden">
           <?!= include('Dashboard'); ?>
@@ -1085,8 +1083,8 @@ function applySystemSettings() {
 
         // 2. تطبيق اللون (الـ Theme)
         const savedColor = settings.themeColor || '#4f46e5'; 
-        if (typeof generatePalette === 'function') {
-            generatePalette(savedColor);
+        if (typeof  === 'function') {
+            (savedColor);
         }
 
         // 3. تحديث حقول الإعدادات (فقط لو كانت الصفحة مفتوحة)
