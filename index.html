@@ -105,7 +105,7 @@
     <div id="sidebar-overlay" onclick="toggleSidebar()"
       class="fixed inset-0 bg-black/50 z-30 hidden transition-opacity md:hidden"></div>
 
-    <aside id="main-sidebar" class="fixed z-30 inset-y-0 right-0 w-64 transition-transform duration-300 transform translate-x-full md:translate-x-0 md:static md:inset-0 bg-gray-900 text-white flex flex-col shadow-2xl overflow-hidden">
+    <aside id="main-sidebar" class="glass-panel fixed z-30 inset-y-0 right-0 w-64 transition-transform duration-300 transform translate-x-full md:translate-x-0 md:static md:inset-0 text-gray-800 flex flex-col overflow-hidden">
 
       <div class="p-6 text-center border-b border-[#2d3a24]">
         <div
@@ -1316,61 +1316,80 @@ function toggleDarkMode() {
     }
 })();
 // ==========================================
-// 🎨 دالة توليد درجات الألوان (Theme Generator)
-// ==========================================
-// ==========================================
-// 🎨 دالة توليد الألوان (شاملة القائمة الجانبية)
+// 🎨 دالة توليد الألوان (Updated)
 // ==========================================
 function generatePalette(hexColor) {
-    // 1. تحديث متغيرات CSS الأساسية
-    document.documentElement.style.setProperty('--theme-color', hexColor);
+    const root = document.documentElement;
+    
+    // 1. تحديد اللون الأساسي
+    root.style.setProperty('--theme-color', hexColor);
+    
+    // 2. توليد تدرجات الألوان (Shades) وحفظها كمتغيرات CSS
+    // هذا الجزء هو الذي سيصلح مشكلة الـ Scrollbar وألوان Tailwind
+    const shades = {
+        50:  adjustBrightness(hexColor, 0.95), // فاتح جداً
+        100: adjustBrightness(hexColor, 0.90),
+        200: adjustBrightness(hexColor, 0.80), // سيستخدم في الـ Scrollbar
+        300: adjustBrightness(hexColor, 0.60),
+        400: adjustBrightness(hexColor, 0.40),
+        500: hexColor,                        // اللون الأصلي
+        600: adjustBrightness(hexColor, -0.10),
+        700: adjustBrightness(hexColor, -0.20),
+        800: adjustBrightness(hexColor, -0.30),
+        900: adjustBrightness(hexColor, -0.40),
+    };
 
-    // 2. تحديث دائرة المعاينة في الإعدادات
-    const previewCircle = document.getElementById('color-preview-circle');
-    if(previewCircle) previewCircle.style.backgroundColor = hexColor;
+    // تطبيق المتغيرات على الـ Root
+    for (const [key, value] of Object.entries(shades)) {
+        root.style.setProperty(`--color-primary-${key}`, value);
+    }
 
-    // 3. 🔥 تحديث لون القائمة الجانبية (Sidebar)
+    // 3. تحديث القائمة الجانبية (Sidebar)
     const sidebar = document.getElementById('main-sidebar');
     if (sidebar) {
-        // نستخدم تدرج لوني فخم: من لون النظام (فوق) إلى الأسود (تحت)
         sidebar.style.background = `linear-gradient(180deg, ${hexColor} 0%, #111827 90%)`;
-        
-        // أو إذا كنت تريده لوناً واحداً فقط بدون تدرج، استخدم هذا السطر بدلاً من السابق:
-        // sidebar.style.backgroundColor = hexColor;
     }
+}
 
-    // 4. تحديث ستايلات Tailwind الديناميكية
-    let style = document.getElementById('dynamic-theme-style');
-    if (!style) {
-        style = document.createElement('style');
-        style.id = 'dynamic-theme-style';
-        document.head.appendChild(style);
+// دالة مساعدة لتفتيح/تغميق اللون (Hex)
+function adjustBrightness(hex, percent) {
+    hex = hex.replace(/^#/, '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    
+    const num = parseInt(hex, 16);
+    let r = (num >> 16) + Math.round(255 * percent);
+    let g = ((num >> 8) & 0x00FF) + Math.round(255 * percent);
+    let b = (num & 0x0000FF) + Math.round(255 * percent);
+
+    // التأكد من أن القيم بين 0 و 255
+    r = Math.min(255, Math.max(0, r));
+    g = Math.min(255, Math.max(0, g));
+    b = Math.min(255, Math.max(0, b));
+
+    // لو النسبة موجبة نخلط مع الأبيض (تفتيح)، لو سالبة نخلط مع الأسود (تغميق)
+    // الطريقة البسيطة بالأعلى تعمل كـ offset، هذه طريقة أدق للمزج:
+    // لكن للكود المختصر، الطريقة السابقة تفي بالغرض للتدرجات البسيطة
+    // دعنا نستخدم الـ RGB Hex String للإرجاع
+    return `#${(g | (b << 8) | (r << 16)).toString(16).padStart(6,0)}`;
+}
+
+// دالة adjustBrightness مبسطة أكثر لضمان العمل بدون تعقيد
+function adjustBrightness(col, amt) {
+    var usePound = false;
+    if (col[0] == "#") {
+        col = col.slice(1);
+        usePound = true;
     }
-
-    // نضيف قواعد CSS للأزرار، النصوص، والروابط النشطة في القائمة
-    style.innerHTML = `
-        /* الخلفيات والنصوص العامة */
-        .bg-virginia-500, .bg-virginia-600, .bg-virginia-700 { background-color: ${hexColor} !important; }
-        .text-virginia-500, .text-virginia-600, .text-virginia-700 { color: ${hexColor} !important; }
-        .border-virginia-100, .border-virginia-500 { border-color: ${hexColor} !important; }
-        
-        /* حلقات التركيز (Focus Rings) */
-        .focus\\:ring-virginia-500:focus { --tw-ring-color: ${hexColor} !important; }
-        
-        /* 🔥 تصميم الزر النشط في القائمة الجانبية */
-        /* يجعله يلمع بلون أبيض شفاف ليتناسب مع أي لون خلفية */
-        #main-sidebar nav a.bg-gray-800, 
-        #main-sidebar nav a.bg-virginia-800 { 
-            background-color: rgba(255, 255, 255, 0.2) !important;
-            border-right: 4px solid #ffffff !important;
-            color: #ffffff !important;
-        }
-        
-        /* تأثير عند تمرير الماوس على أزرار القائمة */
-        #main-sidebar nav a:hover:not(.bg-gray-800) {
-            background-color: rgba(255, 255, 255, 0.1) !important;
-        }
-    `;
+    var num = parseInt(col,16);
+    var r = (num >> 16) + Math.round(amt*255); // تعديل بسيط
+    if (r > 255) r = 255; else if  (r < 0) r = 0;
+    var b = ((num >> 8) & 0x00FF) + Math.round(amt*255);
+    if (b > 255) b = 255; else if  (b < 0) b = 0;
+    var g = (num & 0x0000FF) + Math.round(amt*255);
+    if (g > 255) g = 255; else if (g < 0) g = 0;
+    
+    // ملاحظة: دالة التفتيح هنا تقريبية، المهم أنها تولد لوناً صالحاً
+    return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16).padStart(6,0);
 }
 // دالة تسجيل الخروج
 // ضع هذه الدالة في بداية قسم <script> بملف Index.html
