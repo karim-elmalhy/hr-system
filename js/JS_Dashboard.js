@@ -26,11 +26,19 @@ function onLoadError(error) {
   alert("❌ خطأ في الاتصال: " + error.message);
 }
 
+
 // ============================================================
-// 2️⃣ معالجة البيانات (Data Processing) - (تم الإصلاح هنا ✅)
+// 2️⃣ معالجة البيانات (Data Processing) - (النسخة الآمنة ✅)
 // ============================================================
 function processData(response) {
-  console.log("📥 البيانات الخام الواصلة:", response); // للفحص في الكونسول
+  console.log("📥 البيانات الخام الواصلة:", response);
+
+  // --- 🛡️ شبكة الأمان: تجاهل بيانات الإعدادات إذا وصلت بالخطأ ---
+  if (response && (response.appName || response.themeColor)) {
+      console.warn("⚠️ تم استلام بيانات الإعدادات في معالج الموظفين. تم التجاهل بنجاح.");
+      return; // توقف هنا ولا تكمل حتى لا يحدث Crash
+  }
+  // -----------------------------------------------------------
 
   // 1. استخراج المصفوفة (Array) بذكاء
   let actualArray = [];
@@ -44,28 +52,23 @@ function processData(response) {
           actualArray = response.result;
       } else if (Array.isArray(response.data)) {
           actualArray = response.data;
-      } else {
-          console.error("⚠️ البيانات ليست مصفوفة وليست كائناً معروفاً:", response);
       }
   }
 
   // 2. التحقق من أن لدينا مصفوفة قبل البدء
-  if (!Array.isArray(actualArray)) {
-    document.getElementById('loader').classList.add('hidden');
-    console.error("❌ الخطأ: لم يتم العثور على مصفوفة بيانات صالحة.");
-    return;
-  }
-
-  if (actualArray.length === 0) {
-    document.getElementById('loader').classList.add('hidden');
-    console.warn("⚠️ المصفوفة فارغة (لا توجد بيانات موظفين).");
+  const loader = document.getElementById('loader');
+  
+  if (!Array.isArray(actualArray) || actualArray.length === 0) {
+    if (loader) loader.classList.add('hidden');
+    console.warn("⚠️ المصفوفة فارغة أو غير صالحة (لا توجد بيانات موظفين).");
     return;
   }
 
   try {
-    // 3. استخدام المصفوفة الصحيحة (actualArray) بدلاً من (data)
+    // 3. معالجة البيانات (إضافة الحقول المحسوبة)
     allData = actualArray.map(emp => {
       const statusTxt = (emp.Status || "").toString().toLowerCase().trim();
+      // الموظف نشط إذا كانت حالته "بالعمل" أو "active"
       const isActive = statusTxt.includes("بالعمل") || statusTxt.includes("active");
       
       const seasonalRaw = (emp.Is_Seasonal || "").toString().toLowerCase().trim();
@@ -80,27 +83,30 @@ function processData(response) {
       };
     });
 
-    // 4. تشغيل لوحة التحكم
-    populateFilters();
-    renderDashboard();
+    // 4. تشغيل واجهة الداشبورد
+    populateFilters();     // ملء الفلاتر
+    renderDashboard();     // رسم الشارتات والبطاقات
     
-    // 5. تشغيل حاسبة معدل الدوران
-    initTurnoverDates();
-    populateTurnoverFilters();
-    setTimeout(() => { if(typeof calcTurnover === 'function') calcTurnover(); }, 300);
+    // 5. تشغيل حاسبة معدل الدوران (Turnover)
+    if (typeof initTurnoverDates === 'function') initTurnoverDates();
+    if (typeof populateTurnoverFilters === 'function') populateTurnoverFilters();
+    setTimeout(() => { 
+        if(typeof calcTurnover === 'function') calcTurnover(); 
+    }, 300);
     
     // 6. تشغيل التنبيهات والجدول
-    checkAlerts();
+    if (typeof checkAlerts === 'function') checkAlerts();
     if (typeof renderTable === 'function') {
-        renderTable(allData);
+        renderTable(allData); // رسم الجدول إذا كنا في صفحة الموظفين
     }
     
-    document.getElementById('loader').classList.add('hidden');
+    // إخفاء مؤشر التحميل أخيراً
+    if (loader) loader.classList.add('hidden');
 
   } catch (e) {
-    console.error("خطأ أثناء معالجة البيانات:", e);
-    document.getElementById('loader').classList.add('hidden');
-    alert("حدث خطأ غير متوقع: " + e.message);
+    console.error("❌ خطأ أثناء معالجة البيانات:", e);
+    if (loader) loader.classList.add('hidden');
+    // alert("حدث خطأ غير متوقع أثناء المعالجة: " + e.message); // اختياري
   }
 }
 
