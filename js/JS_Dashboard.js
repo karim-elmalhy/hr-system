@@ -477,24 +477,3 @@ function toggleSidebarGradient() {
     // 2. إعادة تطبيق الثيم بالإعداد الجديد
     applyTheme(currentColor, isGradient);
 }
-// دالة لتوليد وتطبيق ألوان الثيم (CSS Variables)
-function generatePalette(primaryHex) {
-    // 1. تحديث المتغير الرئيسي في CSS
-    document.documentElement.style.setProperty('--primary-color', primaryHex);
-    document.documentElement.style.setProperty('--virginia-600', primaryHex);
-
-    // 2. تحديث لون الخلفيات الخفيفة (اختياري - لتناسق الألوان)
-    // نقوم بعمل تخفيف للون ليكون خلفية (Shade 50 / 100)
-    const hexToRgb = hex => 
-        hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
-             ,(_, r, g, b) => '#' + r + r + g + g + b + b)
-        .substring(1).match(/.{2}/g)
-        .map(x => parseInt(x, 16));
-
-    const [r, g, b] = hexToRgb(primaryHex);
-    
-    // لون خفيف جداً (Shade 50)
-    document.documentElement.style.setProperty('--primary-50', `rgba(${r}, ${g}, ${b}, 0.1)`);
-    // لون خفيف (Shade 100)
-    document.documentElement.style.setProperty('--primary-100', `rgba(${r}, ${g}, ${b}, 0.2)`);
-}
