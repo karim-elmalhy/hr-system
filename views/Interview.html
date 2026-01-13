@@ -1,0 +1,228 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+
+  <div class="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+    <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-2">
+      <span>🤝</span> منصة التوظيف (S.T.A.R)
+    </h1>
+    <div class="flex gap-2">
+      <button onclick="showSection('registrationSection')" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 shadow transition">تسجيل متقدم جديد</button>
+      <button onclick="loadInterviewerDashboard()" class="px-4 py-2 bg-virginia-600 text-white rounded hover:bg-virginia-700 shadow transition">لوحة المقابلات (HR)</button>
+    </div>
+  </div>
+
+  <div id="registrationSection" class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-blue-500">
+    <h2 class="text-xl font-semibold mb-6 text-gray-700 border-b pb-2">📝 نموذج تسجيل بيانات متقدم</h2>
+    
+    <form id="applicantForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700">الاسم الكامل</label>
+        <input type="text" name="name" required class="w-full mt-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700">رقم الهاتف</label>
+        <input type="text" name="phone" required class="w-full mt-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700">البريد الإلكتروني</label>
+        <input type="email" name="email" required class="w-full mt-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700">الوظيفة المتقدم لها</label>
+        <input type="text" name="position" required class="w-full mt-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-gray-700">ملخص الخبرات</label>
+        <textarea name="experience" rows="3" class="w-full mt-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-gray-700">رفع السيرة الذاتية (PDF)</label>
+        <input type="file" id="cvFile" accept=".pdf,.doc,.docx" class="w-full mt-1 p-2 border border-dashed border-gray-400 rounded bg-gray-50">
+      </div>
+
+      <div class="md:col-span-2 text-center mt-4">
+        <div class="md:col-span-2 text-center mt-4">
+      <button type="button" onclick="handleApplicantSubmit()" id="submitBtn" class="w-full md:w-1/3 bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700 shadow-md transition transform active:scale-95">
+         إرسال البيانات
+      </button>
+</div>
+      </div>
+    </form>
+  </div>
+
+  <div id="interviewerSection" class="hidden space-y-6">
+    
+    <div id="applicantsListCard" class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-virginia-500">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-gray-700">قائمة الانتظار للمقابلات</h2>
+        <button onclick="loadInterviewerDashboard()" class="text-sm text-blue-500 hover:underline">🔄 تحديث</button>
+      </div>
+      
+      <input type="text" id="searchApp" onkeyup="filterApplicants()" placeholder="🔍 بحث بالاسم أو الوظيفة..." class="mb-4 w-full p-2 border rounded focus:ring-2 focus:ring-virginia-500 outline-none">
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-left text-gray-500">
+          <<thead class="text-xs text-gray-700 uppercase bg-gray-100 border-b-2 border-gray-200">
+            <tr>
+              <th class="px-4 py-3 text-right">الاسم والوظيفة</th>
+              <th class="px-4 py-3 text-center">حالة الطلب</th>
+              <th class="px-4 py-3 text-center">التقييم %</th>
+              <th class="px-4 py-3 text-center">التوصية</th>
+              <th class="px-4 py-3 text-center">اتخاذ القرار</th>
+            </tr>
+          </thead>
+          <tbody id="applicantsTableBody">
+            </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="evaluationFormCard" class="hidden bg-white p-6 rounded-lg shadow-lg border-t-4 border-green-500">
+      <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <h2 class="text-2xl font-bold text-gray-800">تقييم المقابلة: <span id="evalApplicantName" class="text-green-600"></span></h2>
+        <button type="button" onclick="closeEvaluation()" class="text-red-500 hover:text-red-700 font-bold px-3 py-1 border border-red-200 rounded hover:bg-red-50">إلغاء ✕</button>
+      </div>
+      
+<form id="starEvalForm" onsubmit="submitEvaluation(event)">
+  <input type="hidden" id="evalApplicantId">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+    <div class="bg-blue-50 p-4 rounded border-l-4 border-blue-500">
+      <h3 class="font-bold text-blue-800 mb-1">Situation (الموقف)</h3>
+      <textarea id="s_notes" class="w-full p-2 border rounded text-sm focus:ring-2 focus:ring-blue-300 outline-none" rows="3" placeholder="وصف السياق أو التحدي..."></textarea>
+    </div>
+    <div class="bg-yellow-50 p-4 rounded border-l-4 border-yellow-500">
+      <h3 class="font-bold text-yellow-800 mb-1">Task (المهمة)</h3>
+      <textarea id="t_notes" class="w-full p-2 border rounded text-sm focus:ring-2 focus:ring-yellow-300 outline-none" rows="3" placeholder="ما هي المسؤوليات المطلوبة؟"></textarea>
+    </div>
+    <div class="bg-green-50 p-4 rounded border-l-4 border-green-500">
+      <h3 class="font-bold text-green-800 mb-1">Action (الإجراء)</h3>
+      <textarea id="a_notes" class="w-full p-2 border rounded text-sm focus:ring-2 focus:ring-green-300 outline-none" rows="3" placeholder="الخطوات الفعلية التي اتخذها المتقدم..."></textarea>
+    </div>
+    <div class="bg-purple-50 p-4 rounded border-l-4 border-purple-500">
+      <h3 class="font-bold text-purple-800 mb-1">Result (النتيجة)</h3>
+      <textarea id="r_notes" class="w-full p-2 border rounded text-sm focus:ring-2 focus:ring-purple-300 outline-none" rows="3" placeholder="أثر الإجراء والنتائج المحققة..."></textarea>
+    </div>
+  </div>
+
+  <div class="mb-4 border-b pb-2">
+    <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+      <span>📊</span> تقييم الكفاءات (KSAOs Framework)
+    </h3>
+    <p class="text-sm text-gray-500 mt-1">يتم احتساب النتيجة النهائية بناءً على الأوزان النسبية لكل معيار.</p>
+  </div>
+  
+  <div class="space-y-4 mb-8">
+    
+    <div class="flex items-center justify-between bg-white border border-gray-200 p-4 rounded shadow-sm hover:shadow-md transition">
+      <div class="w-1/2">
+        <div class="flex items-center gap-2 mb-1">
+            <span class="bg-gray-200 text-gray-700 text-xs font-bold px-2 py-0.5 rounded">Other</span>
+            <label class="font-bold text-gray-800">السمات الشخصية والمظهر العام</label>
+        </div>
+        <p class="text-xs text-gray-500">الانطباع الأول، الحماس، الثقة بالنفس، والاحترافية.</p>
+        <span class="text-xs font-bold text-blue-600 mt-1 block">الوزن النسبي: 10%</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="number" id="crit_1" min="1" max="5" class="w-20 p-2 border rounded text-center font-bold text-lg" placeholder="0" onchange="calcWeightedTotal()">
+        <span class="text-gray-400 font-bold">/ 5</span>
+      </div>
+      <div class="w-24 text-center font-bold text-xl text-gray-700" id="res_1">0%</div>
+    </div>
+
+   <div class="flex items-center justify-between bg-white border border-gray-200 p-4 rounded shadow-sm hover:shadow-md transition">
+      <div class="w-1/2">
+        <div class="flex items-center gap-2 mb-1">
+            <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded">Soft Skills</span>
+            <label class="font-bold text-gray-800">المهارات الشخصية والسلوكية</label>
+        </div>
+        <p class="text-xs text-gray-500">التواصل، العمل الجماعي، المرونة، لغة الجسد، الإقناع.</p>
+        <span class="text-xs font-bold text-blue-600 mt-1 block">الوزن النسبي: 20%</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="number" id="crit_2" min="1" max="5" class="w-20 p-2 border rounded text-center font-bold text-lg" placeholder="0" onchange="calcWeightedTotal()">
+        <span class="text-gray-400 font-bold">/ 5</span>
+      </div>
+      <div class="w-24 text-center font-bold text-xl text-gray-700" id="res_2">0%</div>
+    </div>
+
+    <div class="flex items-center justify-between bg-white border border-gray-200 p-4 rounded shadow-sm hover:shadow-md transition">
+      <div class="w-1/2">
+        <div class="flex items-center gap-2 mb-1">
+            <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-0.5 rounded">Computer Skills</span>
+            <label class="font-bold text-gray-800">مهارات الحاسب والأنظمة</label>
+        </div>
+        <p class="text-xs text-gray-500">Excel, Word, PowerPoint, التعامل مع الإيميل، وأنظمة ERP.</p>
+        <span class="text-xs font-bold text-blue-600 mt-1 block">الوزن النسبي: 15%</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="number" id="crit_3" min="1" max="5" class="w-20 p-2 border rounded text-center font-bold text-lg" placeholder="0" onchange="calcWeightedTotal()">
+        <span class="text-gray-400 font-bold">/ 5</span>
+      </div>
+      <div class="w-24 text-center font-bold text-xl text-gray-700" id="res_3">0%</div>
+    </div>
+
+    <div class="flex items-center justify-between bg-blue-50 border border-blue-300 p-4 rounded shadow-md ring-1 ring-blue-200">
+      <div class="w-1/2">
+        <div class="flex items-center gap-2 mb-1">
+            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-0.5 rounded">Knowledge</span>
+            <label class="font-bold text-blue-900">المعرفة الفنية وتطبيق S.T.A.R</label>
+        </div>
+        <p class="text-xs text-blue-800">عمق الخبرة التقنية، وجودة الإجابة باستخدام منهجية ستار (موقف، مهمة، إجراء، نتيجة).</p>
+        <span class="text-xs font-bold text-blue-700 mt-1 block badge">الوزن الأكبر: 35%</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="number" id="crit_4" min="1" max="5" class="w-20 p-2 border-2 border-blue-400 rounded text-center font-bold text-lg bg-white" placeholder="0" onchange="calcWeightedTotal()">
+        <span class="text-blue-400 font-bold">/ 5</span>
+      </div>
+      <div class="w-24 text-center font-bold text-2xl text-blue-800" id="res_4">0%</div>
+    </div>
+
+    <div class="flex items-center justify-between bg-white border border-gray-200 p-4 rounded shadow-sm hover:shadow-md transition">
+      <div class="w-1/2">
+        <div class="flex items-center gap-2 mb-1">
+            <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded">Abilities</span>
+            <label class="font-bold text-gray-800">القدرات الذهنية (Decision Making)</label>
+        </div>
+        <p class="text-xs text-gray-500">حل المشكلات، التفكير التحليلي، القيادة، اتخاذ القرار.</p>
+        <span class="text-xs font-bold text-blue-600 mt-1 block">الوزن النسبي: 20%</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="number" id="crit_5" min="1" max="5" class="w-20 p-2 border rounded text-center font-bold text-lg" placeholder="0" onchange="calcWeightedTotal()">
+        <span class="text-gray-400 font-bold">/ 5</span>
+      </div>
+      <div class="w-24 text-center font-bold text-xl text-gray-700" id="res_5">0%</div>
+    </div>
+
+  </div>
+
+  <div class="bg-gray-900 text-white p-6 rounded-lg mb-6 flex flex-col md:flex-row justify-between items-center gap-6 shadow-xl border-t-4 border-yellow-400">
+    <div class="text-center md:text-right">
+      <div class="text-sm text-gray-400 mb-1">مجموع نقاط KSAOs</div>
+      <div class="text-4xl font-bold text-yellow-400 tracking-wider" id="displayTotal">0.0%</div>
+    </div>
+    
+    <div class="w-full md:w-1/3">
+      <label class="text-gray-300 text-xs block mb-2 font-bold">التوصية النهائية (Recommendation)</label>
+      <select id="recommendation" class="w-full bg-gray-800 text-white p-3 rounded border border-gray-600 focus:border-yellow-400 outline-none text-lg">
+        <option value="Hire">✅ مقبول للتعيين (Hire)</option>
+        <option value="Hold">⏳ قائمة الانتظار (Hold)</option>
+        <option value="Reject">❌ مرفوض (Reject)</option>
+      </select>
+    </div>
+  </div>
+
+  <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-4 rounded-lg shadow-lg transition transform active:scale-95 text-lg flex justify-center items-center gap-2">
+    <span>💾</span> حفظ التقييم وإنهاء المقابلة
+  </button>
+
+</form>
+    </div>
+
+  </div>
+</div>

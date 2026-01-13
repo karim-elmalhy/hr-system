@@ -1,0 +1,93 @@
+<div class="space-y-6 animate-fade-in-up">
+    
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-yellow-400 flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">طلبات معلقة</p>
+                <h3 class="text-2xl font-bold text-gray-800 mt-1" id="stat-pending">0</h3>
+            </div>
+            <div class="bg-yellow-50 p-2 rounded-full text-yellow-500 text-xl">⏳</div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-green-500 flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">مقبول (شهري)</p>
+                <h3 class="text-2xl font-bold text-gray-800 mt-1" id="stat-approved">0</h3>
+            </div>
+            <div class="bg-green-50 p-2 rounded-full text-green-500 text-xl">✅</div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-red-500 flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">مرفوض (شهري)</p>
+                <h3 class="text-2xl font-bold text-gray-800 mt-1" id="stat-rejected">0</h3>
+            </div>
+            <div class="bg-red-50 p-2 rounded-full text-red-500 text-xl">❌</div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-blue-500 flex items-center justify-between">
+            <div>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">إجازات اليوم</p>
+                <h3 class="text-2xl font-bold text-gray-800 mt-1" id="stat-today">0</h3>
+            </div>
+            <div class="bg-blue-50 p-2 rounded-full text-blue-500 text-xl">📅</div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+        <div class="p-5 border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-gray-50/50">
+            <h3 class="font-bold text-gray-700 flex items-center gap-2">
+                <span class="text-xl">📋</span> سجل طلبات الإجازات
+            </h3>
+            
+            <div class="flex gap-2">
+                <input type="text" id="leave-search" onkeyup="filterLeavesTable()" placeholder="بحث باسم الموظف..." class="px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-virginia-200 outline-none w-64">
+                <button onclick="loadLeaveRequests()" class="bg-white border border-gray-300 text-gray-600 hover:text-virginia-600 hover:border-virginia-300 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
+                    🔄 تحديث
+                </button>
+            </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-right text-sm">
+                <thead class="bg-gray-100 text-gray-600 font-bold uppercase text-xs tracking-wider">
+                    <tr>
+                        <th class="p-4 rounded-tr-lg">الموظف</th>
+                        <th class="p-4">نوع الإجازة</th>
+                        <th class="p-4">التاريخ (من - إلى)</th>
+                        <th class="p-4">المدة</th>
+                        <th class="p-4">السبب</th>
+                        <th class="p-4">الحالة</th>
+                        <th class="p-4 rounded-tl-lg text-center">إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="leaves-table-body" class="divide-y divide-gray-100 bg-white">
+                    <tr><td colspan="7" class="p-8 text-center text-gray-400">جاري تحميل البيانات...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="leave-action-modal" class="fixed inset-0 bg-gray-900/60 hidden z-50 flex items-center justify-center backdrop-blur-sm transition-opacity duration-300">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 transform scale-100 transition-transform duration-300 border border-gray-200">
+        <div class="text-center mb-6">
+            <div id="modal-icon" class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">⚠️</div>
+            <h3 class="text-xl font-bold text-gray-800 mb-1" id="modal-title">تأكيد القرار</h3>
+            <p class="text-gray-500 text-sm" id="modal-desc">هل أنت متأكد؟</p>
+        </div>
+        
+        <input type="hidden" id="modal-req-id">
+        <input type="hidden" id="modal-action">
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 text-xs font-bold mb-2 text-right">ملاحظات إدارية (اختياري)</label>
+            <textarea id="modal-note" class="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-virginia-200 outline-none resize-none" rows="2" placeholder="اكتب سبب الرفض أو القبول..."></textarea>
+        </div>
+
+        <div class="flex gap-3">
+            <button onclick="confirmLeaveAction()" id="btn-modal-confirm" class="flex-1 bg-virginia-600 text-white py-2.5 rounded-xl hover:bg-virginia-700 font-bold transition shadow-lg shadow-virginia-200">نعم، تنفيذ</button>
+            <button onclick="closeLeaveModal()" class="flex-1 bg-gray-100 text-gray-600 py-2.5 rounded-xl hover:bg-gray-200 font-bold transition">إلغاء</button>
+        </div>
+    </div>
+</div>

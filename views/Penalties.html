@@ -1,0 +1,106 @@
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+  
+  <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-lg border-t-4 border-red-600 h-fit">
+    <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+      <span>⚖️</span> تسجيل مخالفة جديدة
+    </h3>
+
+    <form id="penaltyForm" onsubmit="handlePenaltySubmit(event)" class="space-y-4">
+      
+      <div>
+        <label class="block text-sm font-bold text-gray-700 mb-1">رقم البصمة</label>
+        <div class="flex gap-2">
+          <input type="text" id="p_fingerprint" name="p_fingerprint" 
+                 onblur="checkEmpAndViolation()" 
+                 class="w-full border p-2 rounded focus:ring-red-500 focus:border-red-500" 
+                 placeholder="أدخل رقم البصمة..." required>
+        </div>
+        <p id="p_emp_info" class="text-xs text-gray-500 mt-1 h-4"></p>
+        <input type="hidden" id="p_empName" name="p_empName">
+        <input type="hidden" id="p_email" name="p_email">
+      </div>
+
+     <div>
+        <label class="block text-sm font-bold text-gray-700 mb-1">نوع المخالفة</label>
+        <div class="relative">
+            <input list="violation_list" id="p_violation" name="p_violation" 
+                   onchange="checkEmpAndViolation()" 
+                   class="w-full border border-gray-300 p-2 pl-10 rounded text-sm focus:ring-2 focus:ring-red-500 outline-none transition shadow-sm h-10" 
+                   placeholder="اكتب للبحث..." required>
+            
+            <span class="absolute left-3 top-2.5 text-gray-400 text-xs pointer-events-none">▼</span>
+            
+            <datalist id="violation_list">
+               </datalist>
+        </div>
+        <p class="text-[10px] text-gray-400 mt-1 mr-1">💡 اكتب "غياب" مثلاً لتصفية القائمة</p>
+      </div>
+
+      <div id="calculation-result" class="hidden bg-red-50 p-4 rounded border border-red-200 text-sm">
+        <div class="flex justify-between mb-2">
+          <span class="text-gray-600">التكرار:</span>
+          <span id="disp_recurrence" class="font-bold text-red-800">-</span>
+        </div>
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-gray-600">الجزاء المستحق:</span>
+        </div>
+        <input type="text" name="p_penalty" id="p_penalty" 
+               class="w-full font-bold text-red-700 bg-white border border-red-300 p-2 rounded text-center" 
+               readonly>
+        <input type="hidden" name="p_recurrence" id="p_recurrence">
+      </div>
+
+      <div>
+        <label class="block text-sm font-bold text-gray-700 mb-1">ملاحظات إضافية</label>
+        <textarea name="p_notes" rows="2" class="w-full border p-2 rounded"></textarea>
+      </div>
+
+      <button type="submit" id="btn-save-penalty" disabled 
+              class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 rounded shadow transition disabled:opacity-50 disabled:cursor-not-allowed">
+        تسجيل وإرسال الإيميل 📤
+      </button>
+    </form>
+  </div>
+
+  <div class="lg:col-span-2 flex flex-col gap-6">
+    
+    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+      <h4 class="font-bold text-gray-700 mb-3 text-sm">📊 تقارير الجزاءات</h4>
+      <div class="flex flex-wrap gap-3 items-end">
+        <div>
+          <label class="text-xs text-gray-500 block mb-1">من تاريخ</label>
+          <input type="date" id="rep_from" class="border p-1.5 rounded text-sm">
+        </div>
+        <div>
+          <label class="text-xs text-gray-500 block mb-1">إلى تاريخ</label>
+          <input type="date" id="rep_to" class="border p-1.5 rounded text-sm">
+        </div>
+        <div class="flex-1 min-w-[150px]">
+          <label class="text-xs text-gray-500 block mb-1">موظف محدد (بصمة) - اختياري</label>
+          <input type="text" id="rep_fingerprint" placeholder="الكل" class="border p-1.5 rounded text-sm w-full">
+        </div>
+        <button onclick="loadPenaltyReport()" class="bg-gray-800 text-white px-4 py-1.5 rounded text-sm hover:bg-gray-700">عرض التقرير</button>
+      </div>
+    </div>
+
+    <div class="bg-white shadow rounded-lg flex-1 overflow-hidden border border-gray-200 relative">
+      <div class="overflow-auto max-h-[500px]">
+        <table class="w-full text-right text-sm">
+          <thead class="bg-gray-50 sticky top-0">
+            <tr>
+              <th class="p-3 border-b">التاريخ</th>
+              <th class="p-3 border-b">الاسم</th>
+              <th class="p-3 border-b">المخالفة</th>
+              <th class="p-3 border-b text-center">التكرار</th>
+              <th class="p-3 border-b">الجزاء</th>
+            </tr>
+          </thead>
+          <tbody id="reportTableBody" class="divide-y divide-gray-100">
+            <tr><td colspan="5" class="p-4 text-center text-gray-400">حدد التاريخ واضغط عرض التقرير</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
