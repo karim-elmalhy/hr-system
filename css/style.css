@@ -25,16 +25,34 @@ body {
 }
 
 /* تخصيص شريط التمرير */
+/* =========================================
+   تخصيص شريط التمرير (Custom Scrollbar)
+   ========================================= */
+
+/* تطبيق السكرول بار المخصص على أي عنصر يحمل هذا الكلاس */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 9px;
+    width: 8px;              /* عرض الشريط */
+    height: 8px;             /* ارتفاع الشريط (للسكرول الأفقي) */
 }
+
+/* لون الخلفية (المسار) */
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.02); 
+    border-radius: 10px;
+}
+
+/* لون المقبض (Thumb) */
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    var(--color-primary-200),
-    var(--color-primary-500)
-  );
-  border-radius: 10px;
+    background: linear-gradient(180deg, #a5b4fc, #6366f1); /* تدرج لوني */
+    /* أو استخدم متغيراتك: var(--color-primary-200), var(--color-primary-500) */
+    border-radius: 10px;
+    border: 2px solid transparent; /* مسافة حول المقبض */
+    background-clip: content-box;
+}
+
+/* شكل المقبض عند الوقوف عليه */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #818cf8, #4f46e5);
 }
 /* تأثير الزجاج الشفاف */
 .glass-panel {
