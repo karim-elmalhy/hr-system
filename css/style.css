@@ -36,3 +36,11 @@ body {
   );
   border-radius: 10px;
 }
+/* تأثير الزجاج الشفاف */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.7) !important; /* لون أبيض شفاف */
+    backdrop-filter: blur(12px);          /* تمويه الخلفية */
+    -webkit-backdrop-filter: blur(12px);  /* لدعم متصفح سفاري */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* حدود بيضاء خفيفة */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); /* ظل ناعم جداً */
+}
