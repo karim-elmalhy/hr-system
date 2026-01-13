@@ -44,8 +44,10 @@ function renderTable(data) {
   if (thActions) thActions.style.display = canEdit ? '' : 'none';
 
   // ملء القوائم المنسدلة (الفلاتر) لأول مرة فقط
-  if (data && data.length > 0 && document.getElementById('sel-branch').options.length <= 1) {
-       populateEmployeesFilters(data); // نمرر البيانات الأصلية كاملة هنا
+  // التحقق من وجود العنصر أولاً لتجنب الخطأ
+  const branchSelect = document.getElementById('sel-branch');
+  if (data && data.length > 0 && branchSelect && branchSelect.options.length <= 1) {
+       populateEmployeesFilters(data); 
   }
 
   if (!tbody) return;
