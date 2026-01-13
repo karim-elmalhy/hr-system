@@ -32,6 +32,7 @@
       }
     }
   </script>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/9187/9187604.png" type="image/png">
   <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -538,41 +539,108 @@
     }
   </style>
 
-  <script>
-    // دالة لفتح وإغلاق القائمة في الموبايل
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-    
-    // في الـ RTL (العربي) نستخدم translate-x-full للإخفاء جهة اليمين
-    // لإظهارها نزيل هذا الكلاس
-    if (sidebar.classList.contains('translate-x-full')) {
-        sidebar.classList.remove('translate-x-full'); // إظهار
-        overlay.classList.remove('hidden'); // إظهار التعتيم
-    } else {
-        sidebar.classList.add('translate-x-full'); // إخفاء
-        overlay.classList.add('hidden'); // إخفاء التعتيم
-    }
-}
-
-// دالة مساعدة لإغلاق القائمة تلقائياً عند الضغط على أي رابط (تجربة مستخدم أفضل)
-function closeSidebarOnMobile() {
-    // التحقق هل نحن في وضع الموبايل؟ (عرض الشاشة أقل من 768)
-    if (window.innerWidth < 768) {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
-        sidebar.classList.add('translate-x-full');
-        overlay.classList.add('hidden');
-    }
-}
+<script>
     // ==========================================
-    // 1. تبديل وضع الدخول (إداري / موظف)
+    // 🎨 إدارة الثيم والألوان (Fixed Logic)
+    // ==========================================
+    function generatePalette(hexColor) {
+        const root = document.documentElement;
+        
+        // 1. تحديد اللون الأساسي
+        root.style.setProperty('--theme-color', hexColor);
+        
+        // 2. توليد تدرجات الألوان
+        const shades = {
+            50:  adjustBrightness(hexColor, 0.95),
+            100: adjustBrightness(hexColor, 0.90),
+            200: adjustBrightness(hexColor, 0.80), // للسكرول بار
+            300: adjustBrightness(hexColor, 0.60),
+            400: adjustBrightness(hexColor, 0.40),
+            500: hexColor,
+            600: adjustBrightness(hexColor, -0.10),
+            700: adjustBrightness(hexColor, -0.20),
+            800: adjustBrightness(hexColor, -0.30),
+            900: adjustBrightness(hexColor, -0.40),
+        };
+
+        for (const [key, value] of Object.entries(shades)) {
+            root.style.setProperty(`--color-primary-${key}`, value);
+        }
+
+        // 3. تحديث القائمة الجانبية
+        const sidebar = document.getElementById('main-sidebar');
+        if (sidebar) {
+            sidebar.style.background = `linear-gradient(180deg, ${hexColor} 0%, #111827 90%)`;
+        }
+        
+        // 4. تحديث عناصر الإعدادات
+        const previewCircle = document.getElementById('color-preview-circle');
+        if(previewCircle) previewCircle.style.backgroundColor = hexColor;
+        
+        const codeDisp = document.getElementById('color-code-display');
+        if(codeDisp) codeDisp.innerText = hexColor;
+        
+        const themeField = document.getElementById('setting-theme-color');
+        if(themeField) themeField.value = hexColor;
+    }
+
+    // دالة تفتيح وتغميق اللون (مصححة لترتيب الألوان RGB)
+    function adjustBrightness(col, amt) {
+        var usePound = false;
+        if (col[0] == "#") {
+            col = col.slice(1);
+            usePound = true;
+        }
+        var num = parseInt(col, 16);
+        var r = (num >> 16) + Math.round(amt * 255);
+        var b = ((num >> 8) & 0x00FF) + Math.round(amt * 255);
+        var g = (num & 0x0000FF) + Math.round(amt * 255);
+
+        if (r > 255) r = 255; else if (r < 0) r = 0;
+        if (b > 255) b = 255; else if (b < 0) b = 0;
+        if (g > 255) g = 255; else if (g < 0) g = 0;
+
+        // الترتيب الصحيح: R G B
+        return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16).padStart(6, '0');
+    }
+    
+    // دوال مساعدة للألوان
+    function previewCustomColor(color) { generatePalette(color); }
+    function selectTheme(color) { generatePalette(color); }
+
+    // ==========================================
+    // 📱 إدارة القائمة الجانبية
+    // ==========================================
+    function toggleSidebar() {
+        const sidebar = document.getElementById('main-sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        if (!sidebar) return;
+        
+        if (sidebar.classList.contains('translate-x-full')) {
+            sidebar.classList.remove('translate-x-full');
+            if(overlay) overlay.classList.remove('hidden');
+        } else {
+            sidebar.classList.add('translate-x-full');
+            if(overlay) overlay.classList.add('hidden');
+        }
+    }
+
+    function closeSidebarOnMobile() {
+        if (window.innerWidth < 768) {
+            const sidebar = document.getElementById('main-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if(sidebar) sidebar.classList.add('translate-x-full');
+            if(overlay) overlay.classList.add('hidden');
+        }
+    }
+
+    // ==========================================
+    // 🔐 إدارة تسجيل الدخول (Login)
     // ==========================================
     function toggleLoginMode(mode) {
-        // تحديث القيمة المخفية
-        document.getElementById('login-mode').value = mode;
-        
-        // تعريف العناصر
+        const modeEl = document.getElementById('login-mode');
+        if(modeEl) modeEl.value = mode;
+
         const btnAdmin = document.getElementById('tab-admin');
         const btnEmp = document.getElementById('tab-employee');
         const passContainer = document.getElementById('pass-container');
@@ -581,841 +649,412 @@ function closeSidebarOnMobile() {
         const labelUser = document.getElementById('lbl-user');
 
         if (mode === 'employee') {
-            // === وضع الموظف ===
-            // تغيير ألوان الأزرار
             btnEmp.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md bg-white text-virginia-700";
             btnAdmin.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition-all text-gray-500 hover:text-gray-700";
-            
-            // تغيير النصوص
             labelUser.innerText = "رقم الملف (الكود الوظيفي)";
             userInput.placeholder = "مثال: 1020";
-            userInput.value = ""; // تفريغ الحقل
-            
-            // إخفاء كلمة المرور
-            passContainer.style.height = '0px'; 
-            passContainer.style.opacity = '0';
-            passContainer.style.overflow = 'hidden'; // مهم للإخفاء
-            passInput.removeAttribute('required'); // إلغاء الإجبار
-            
+            userInput.value = "";
+            if(passContainer) {
+                passContainer.style.height = '0px'; 
+                passContainer.style.opacity = '0';
+                passContainer.style.overflow = 'hidden';
+            }
+            if(passInput) passInput.removeAttribute('required');
         } else {
-            // === وضع الأدمن ===
-            // تغيير ألوان الأزرار
             btnAdmin.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition-all shadow-md bg-white text-virginia-700";
             btnEmp.className = "flex-1 py-2.5 rounded-lg text-sm font-bold transition-all text-gray-500 hover:text-gray-700";
-            
-            // تغيير النصوص
             labelUser.innerText = "اسم المستخدم";
             userInput.placeholder = "Username";
             userInput.value = "";
-            
-            // إظهار كلمة المرور
-            passContainer.style.height = 'auto'; 
-            passContainer.style.opacity = '1';
-            passInput.setAttribute('required', 'true');
+            if(passContainer) {
+                passContainer.style.height = 'auto'; 
+                passContainer.style.opacity = '1';
+            }
+            if(passInput) passInput.setAttribute('required', 'true');
         }
     }
 
-// ==========================================
-// 🔐 دالة تسجيل الدخول (ضعه داخل Script في Index.html)
-// ==========================================
-function handleLogin(e) {
-    if (e) e.preventDefault(); // منع إعادة تحميل الصفحة
+    function handleLogin(e) {
+        if (e) e.preventDefault();
+        
+        const userEl = document.getElementById('login-user'); 
+        const passEl = document.getElementById('login-pass'); 
+        const btn = document.getElementById('btnLogin');      
+        const errorDiv = document.getElementById('login-error');
+        const errorText = document.getElementById('error-text');
+        const modeEl = document.getElementById('login-mode');
+        const mode = modeEl ? modeEl.value : 'admin';
 
-    // 1. تحديد العناصر (IDs مطابقة للـ HTML الجديد)
-    const userEl = document.getElementById('login-user'); 
-    const passEl = document.getElementById('login-pass'); 
-    const btn = document.getElementById('btnLogin');      
-    const errorDiv = document.getElementById('login-error');
-    const errorText = document.getElementById('error-text');
+        const username = userEl ? userEl.value.trim() : "";
+        const password = passEl ? passEl.value.trim() : "";
 
-    const username = userEl ? userEl.value.trim() : "";
-    const password = passEl ? passEl.value.trim() : "";
+        if (!username || (mode === 'admin' && !password)) {
+            if(errorText) errorText.innerText = "يرجى إدخال البيانات المطلوبة";
+            if(errorDiv) errorDiv.classList.remove('hidden');
+            return;
+        }
 
-    // 2. التحقق المبدئي
-    if (!username || !password) {
-        if(errorText) errorText.innerText = "يرجى إدخال اسم المستخدم وكلمة المرور";
-        if(errorDiv) errorDiv.classList.remove('hidden');
-        return;
+        if(errorDiv) errorDiv.classList.add('hidden');
+        const originalContent = btn.innerHTML; 
+        btn.innerHTML = `<span>⏳ جاري التحقق...</span>`;
+        btn.disabled = true;
+
+        google.script.run
+            .withSuccessHandler((res) => {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+
+                if (res.success) {
+                    localStorage.setItem('currentUser', res.username);
+                    localStorage.setItem('currentUserName', res.name || res.username);
+                    localStorage.setItem('currentUserRole', res.role);
+                    localStorage.setItem('currentUserDept', res.department || ""); 
+                    localStorage.setItem('userPermissions', JSON.stringify(res.permissions));
+                    localStorage.setItem('empCode', res.empCode || ""); 
+                    localStorage.setItem('empName', res.name || res.username);
+
+                    if(typeof restoreSession === 'function') restoreSession();
+                    else location.reload();
+                } else {
+                    if(errorText) errorText.innerText = res.message || "بيانات الدخول غير صحيحة";
+                    if(errorDiv) errorDiv.classList.remove('hidden');
+                    if(passEl) { passEl.value = ''; passEl.focus(); }
+                }
+            })
+            .withFailureHandler((err) => {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                if(errorText) errorText.innerText = "خطأ في الاتصال بالسيرفر";
+                if(errorDiv) errorDiv.classList.remove('hidden');
+                console.error(err);
+            })
+            .checkLogin(username, password);
     }
 
-    // إخفاء رسالة الخطأ السابقة
-    if(errorDiv) errorDiv.classList.add('hidden');
-
-    // 3. تأثير التحميل
-    const originalContent = btn.innerHTML; 
-    btn.innerHTML = `<span>⏳ جاري التحقق...</span>`;
-    btn.disabled = true;
-    btn.classList.add('opacity-75', 'cursor-not-allowed');
-
-    // 4. الاتصال بالسيرفر
-    google.script.run
-        .withSuccessHandler((res) => {
-            btn.innerHTML = originalContent;
-            btn.disabled = false;
-            btn.classList.remove('opacity-75', 'cursor-not-allowed');
-
-            if (res.success) {
-                // ✅ نجاح الدخول
-                localStorage.setItem('currentUser', res.username);
-                localStorage.setItem('currentUserName', res.username);
-                localStorage.setItem('currentUserRole', res.role);
-                localStorage.setItem('currentUserDept', res.department || ""); 
-                localStorage.setItem('userPermissions', JSON.stringify(res.permissions));
-                localStorage.setItem('empCode', res.empCode || ""); // 👈 أضف هذا السطر
-                localStorage.setItem('empName', res.name || res.username); // 👈 وهذا للاسم
-
-                // الدخول للنظام
-                if(typeof restoreSession === 'function') {
-                    restoreSession();
-                } else {
-                    // في حال لم تكن دالة restoreSession موجودة بعد
-                    location.reload();
-                }
-
-            } else {
-                // ❌ فشل الدخول
-                if(errorText) errorText.innerText = res.message || "بيانات الدخول غير صحيحة";
-                if(errorDiv) errorDiv.classList.remove('hidden');
-                if(passEl) { passEl.value = ''; passEl.focus(); }
-            }
-        })
-        .withFailureHandler((err) => {
-            btn.innerHTML = originalContent;
-            btn.disabled = false;
-            btn.classList.remove('opacity-75', 'cursor-not-allowed');
-            if(errorText) errorText.innerText = "خطأ في الاتصال بالسيرفر";
-            if(errorDiv) errorDiv.classList.remove('hidden');
-            console.error(err);
-        })
-        .checkLogin(username, password);
-}
-
+    function logout() {
+        localStorage.clear();
+        sessionStorage.clear();
+        const mainApp = document.getElementById('main-app');
+        const loginScreen = document.getElementById('login-screen');
+        if (mainApp) mainApp.classList.add('hidden');
+        if (loginScreen) {
+            loginScreen.classList.remove('hidden');
+            loginScreen.style.opacity = "1";
+        }
+        google.script.run.withSuccessHandler(function(url) {
+            window.open(url, '_top');
+        }).getScriptURL();
+    }
 
     // ==========================================
-    // 4. وظائف بوابة الموظف (تقديم الطلب)
+    // 🔄 استعادة الجلسة والتنقل
+    // ==========================================
+    function restoreSession() {
+        const role = localStorage.getItem('currentUserRole');
+        const permsStr = localStorage.getItem('userPermissions');
+        const empCode = localStorage.getItem('empCode'); 
+
+        // 1. حالة الأدمن/المدير
+        if (role && permsStr) {
+            let perms = {};
+            try { perms = JSON.parse(permsStr); } catch (e) { logout(); return; }
+
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('employee-portal').classList.add('hidden');
+            const mainApp = document.getElementById('main-app');
+            mainApp.classList.remove('hidden');
+            setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
+
+            const name = localStorage.getItem('currentUserName');
+            if (document.getElementById('userNameDisplay')) document.getElementById('userNameDisplay').innerText = name;
+            
+            const aiBtn = document.getElementById('ai-header-btn');
+            if(aiBtn) aiBtn.classList.remove('hidden');
+
+            const menuMap = [
+                { id: 'nav-dashboard-container', perm: perms.dashboard },
+                { id: 'nav-employees-container', perm: perms.emp_view },
+                { id: 'nav-penalties-container', perm: perms.penalties },
+                { id: 'nav-settings-container', perm: perms.settings },
+                { id: 'nav-interview-container', perm: perms.interview },
+                { id: 'nav-leaves-container', perm: perms.leaves },
+                { id: 'nav-docs-container', perm: perms.docs }
+            ];
+
+            menuMap.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (el) {
+                    el.style.display = (role === 'Admin' || item.perm === true) ? 'block' : 'none';
+                }
+            });
+
+            if (role === 'Admin' || perms.dashboard) switchView('dashboard');
+            else if (perms.emp_view) switchView('employees');
+            else switchView('settings');
+
+            if (typeof loadData === 'function') loadData();
+        } 
+        // 2. حالة الموظف (Portal)
+        else if (empCode) { 
+            const name = localStorage.getItem('empName');
+            if(document.getElementById('emp-portal-name')) document.getElementById('emp-portal-name').innerText = name;
+            if(document.getElementById('emp-portal-code')) document.getElementById('emp-portal-code').innerText = "Code: " + empCode;
+
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('employee-portal').classList.remove('hidden');
+            
+            if (typeof loadEmployeeRequests === 'function') loadEmployeeRequests();
+            if (typeof loadBalance === 'function') loadBalance();
+        }
+    }
+
+    async function switchView(view) {
+        const allViews = ['dashboard', 'employees', 'penalties', 'interview', 'leaves', 'docs', 'settings'];
+        closeSettingsModal();
+
+        allViews.forEach(v => {
+            const el = document.getElementById('view-' + v);
+            const btn = document.getElementById('btn-' + v);
+            
+            if (el) {
+                if (v === view) {
+                    el.classList.remove('hidden');
+                    el.classList.add('animate-fade-in');
+                } else {
+                    el.classList.add('hidden');
+                    el.classList.remove('animate-fade-in');
+                }
+            }
+            if (btn) {
+                if (v === view) {
+                    btn.classList.add('bg-virginia-700', 'text-white', 'shadow-md');
+                    btn.classList.remove('text-gray-300', 'hover:bg-white/10');
+                } else {
+                    btn.classList.remove('bg-virginia-700', 'text-white', 'shadow-md');
+                    btn.classList.add('text-gray-300', 'hover:bg-white/10');
+                }
+            }
+        });
+
+        // تحميل المحتوى الخارجي
+        const viewEl = document.getElementById('view-' + view);
+        if (viewEl && !viewEl.dataset.loaded) {
+          const fileName = view.charAt(0).toUpperCase() + view.slice(1) + '.html';
+          try {
+            const resp = await fetch('views/' + fileName);
+            if (resp.ok) {
+              const html = await resp.text();
+              viewEl.innerHTML = html;
+              viewEl.dataset.loaded = '1';
+            }
+          } catch (e) { console.warn('Fallback to embedded view'); }
+        }
+
+        // تشغيل دوال الصفحة
+        if (view === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
+        if (view === 'docs' && typeof loadCompanyDocs === 'function') loadCompanyDocs();
+        if (view === 'leaves' && typeof initLeavesManagement === 'function') initLeavesManagement();
+        if (view === 'settings' && typeof initSettingsPage === 'function') initSettingsPage();
+        if (view === 'penalties' && typeof loadViolationTypes === 'function') loadViolationTypes();
+        
+        closeSidebarOnMobile();
+    }
+
+    // ==========================================
+    // ⚙️ إعدادات النظام وتطبيقاته
+    // ==========================================
+    function applySystemSettings() {
+        google.script.run.withSuccessHandler(settings => {
+            if (!settings) return;
+            document.title = settings.appName || "HR System";
+            
+            const sidebarTitle = document.querySelector('aside h1');
+            if(sidebarTitle) sidebarTitle.innerText = settings.appName;
+            const loginTitle = document.querySelector('#login-screen h2');
+            if(loginTitle) loginTitle.innerText = settings.appName;
+
+            const savedColor = settings.themeColor || '#4f46e5'; 
+            
+            // ✅ تصحيح الخطأ هنا: التأكد من وجود الدالة قبل استدعائها
+            if (typeof generatePalette === 'function') {
+                generatePalette(savedColor);
+            }
+
+            const appNameField = document.getElementById('setting-app-name');
+            if (appNameField) appNameField.value = settings.appName || "";
+            const themeColorField = document.getElementById('setting-theme-color');
+            if (themeColorField) themeColorField.value = savedColor;
+            const picker = document.getElementById('color-picker');
+            if(picker) picker.value = savedColor;
+        }).getSystemSettings();
+    }
+
+    function saveSettings() {
+        const btn = document.getElementById('btn-save-settings');
+        if(btn) { btn.innerText = "جاري الحفظ..."; btn.disabled = true; }
+
+        const newSettings = {
+            appName: document.getElementById('setting-app-name').value,
+            themeColor: document.getElementById('setting-theme-color').value
+        };
+
+        google.script.run.withSuccessHandler(() => {
+            alert("✅ تم حفظ الإعدادات بنجاح!");
+            if(btn) { btn.innerText = "حفظ التغييرات"; btn.disabled = false; }
+            closeSettingsModal();
+            applySystemSettings();
+            if (typeof renderDashboard === 'function') renderDashboard();
+        }).saveSystemSettings(newSettings);
+    }
+
+    function openSettingsModal() { document.getElementById('settings-modal')?.classList.remove('hidden'); }
+    function closeSettingsModal() { 
+        document.getElementById('settings-modal')?.classList.add('hidden');
+        document.getElementById('user-modal')?.classList.add('hidden');
+    }
+
+    // ==========================================
+    // 📄 مركز النماذج (Docs)
+    // ==========================================
+    let allDocsData = [];
+    function loadCompanyDocs() {
+        const grid = document.getElementById('docs-grid');
+        if(!grid) return;
+        grid.innerHTML = `<div class="col-span-full flex justify-center py-10"><div class="animate-spin h-8 w-8 border-4 border-virginia-600 rounded-full border-t-transparent"></div></div>`;
+        google.script.run.withSuccessHandler((files) => {
+            allDocsData = files;
+            renderDocs(files);
+        }).getCompanyDocs();
+    }
+
+    function renderDocs(files) {
+        const grid = document.getElementById('docs-grid');
+        if(!grid) return;
+        grid.innerHTML = "";
+        if (files.length === 0) {
+            grid.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500">📂 المجلد فارغ</div>`;
+            return;
+        }
+        files.forEach(file => {
+            let icon = "📄", color = "bg-gray-50 text-gray-500";
+            if (file.type.includes("pdf")) { icon = "📕"; color = "bg-red-50 text-red-600"; }
+            else if (file.type.includes("sheet")) { icon = "📗"; color = "bg-green-50 text-green-600"; }
+            
+            grid.innerHTML += `
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col hover:shadow-md transition">
+                <div class="flex justify-between mb-3"><div class="w-10 h-10 rounded-lg ${color} flex items-center justify-center text-xl">${icon}</div></div>
+                <h4 class="font-bold text-gray-800 line-clamp-2 h-12">${file.name}</h4>
+                <div class="mt-auto grid grid-cols-2 gap-2">
+                    <button onclick="printDoc('${file.url}')" class="py-2 rounded bg-gray-800 text-white text-xs font-bold">🖨️ طباعة</button>
+                    <a href="${file.downloadUrl}" class="py-2 rounded bg-virginia-50 text-virginia-700 text-xs font-bold text-center">📥 تحميل</a>
+                </div>
+            </div>`;
+        });
+    }
+
+    function printDoc(url) {
+        const idMatch = url.match(/\/d\/(.+?)\//);
+        const printUrl = (idMatch && idMatch[1]) ? `https://drive.google.com/file/d/${idMatch[1]}/view` : url;
+        window.open(printUrl, '_blank');
+    }
+
+    function filterDocs() {
+        const term = document.getElementById('docs-search').value.toLowerCase();
+        renderDocs(allDocsData.filter(f => f.name.toLowerCase().includes(term)));
+    }
+
+    // ==========================================
+    // 🧠 بوابة الموظف + الشات بوت
     // ==========================================
     function handleLeaveSubmit(e) {
         e.preventDefault();
         const btn = document.getElementById('btn-leave-submit');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = "جاري الإرسال...";
-        btn.disabled = true;
-
+        const orgTxt = btn.innerText; btn.innerText = "جاري الإرسال..."; btn.disabled = true;
         const formData = {
-            empCode: sessionStorage.getItem('empCode'),
-            empName: sessionStorage.getItem('empName'),
+            empCode: localStorage.getItem('empCode'),
+            empName: localStorage.getItem('empName'),
             leaveType: document.getElementById('leave-type').value,
             reason: document.getElementById('leave-reason').value,
             startDate: document.getElementById('leave-start').value,
             endDate: document.getElementById('leave-end').value
         };
-
         google.script.run.withSuccessHandler((res) => {
-            if(res.success) {
-                alert("✅ تم إرسال الطلب بنجاح");
-                e.target.reset();
-                if(typeof loadEmployeeRequests === 'function') loadEmployeeRequests();
-                if(typeof loadBalance === 'function') loadBalance();
-            } else {
-                alert("❌ خطأ: " + res.message);
-            }
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+            alert(res.success ? "✅ تم الإرسال" : "❌ خطأ: " + res.message);
+            btn.innerText = orgTxt; btn.disabled = false;
+            if(res.success) { e.target.reset(); loadEmployeeRequests(); }
         }).submitLeaveRequest(formData);
     }
-
+    
     function loadEmployeeRequests() {
-        const code = sessionStorage.getItem('empCode');
+        const code = localStorage.getItem('empCode');
         const tbody = document.getElementById('leaves-history-body');
         if(!tbody) return;
-        
-        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center">جاري التحميل...</td></tr>`;
-
         google.script.run.withSuccessHandler((data) => {
             tbody.innerHTML = "";
-            if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-400">لا توجد طلبات سابقة</td></tr>`;
-                return;
-            }
+            if(!data || !data.length) { tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4">لا توجد طلبات</td></tr>`; return; }
             data.forEach(req => {
-                let statusBadge = `<span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold">قيد المراجعة</span>`;
-                if (req.status === 'Approved' || req.status === 'مقبول') statusBadge = `<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">مقبول ✅</span>`;
-                if (req.status === 'Rejected' || req.status === 'مرفوض') statusBadge = `<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">مرفوض ❌</span>`;
-                
-                tbody.innerHTML += `
-                    <tr class="hover:bg-gray-50 border-b border-gray-100">
-                        <td class="p-3 font-bold text-virginia-700">${req.type}</td>
-                        <td class="p-3">${req.start}</td>
-                        <td class="p-3">${req.end}</td>
-                        <td class="p-3 text-xs text-gray-500">${req.date}</td>
-                        <td class="p-3">${statusBadge}</td>
-                    </tr>`;
+                let s = req.status === 'Approved' ? '✅ مقبول' : (req.status === 'Rejected' ? '❌ مرفوض' : '⏳ قيد المراجعة');
+                tbody.innerHTML += `<tr class="border-b"><td class="p-3">${req.type}</td><td class="p-3">${req.start}</td><td class="p-3">${req.end}</td><td class="p-3">${req.date}</td><td class="p-3 font-bold">${s}</td></tr>`;
             });
         }).getEmployeeRequests(code);
     }
-
+    
     function loadBalance() {
-        const code = sessionStorage.getItem('empCode');
-        const elTotal = document.getElementById('balance-total');
-        const elUsed = document.getElementById('balance-used');
-        const elRem = document.getElementById('balance-remaining');
-        
-        if(elTotal) elTotal.innerText = "...";
-        if(elUsed) elUsed.innerText = "...";
-        if(elRem) elRem.innerText = "...";
-
+        const code = localStorage.getItem('empCode');
         google.script.run.withSuccessHandler(res => {
-            if(elTotal) elTotal.innerText = res.total;
-            if(elUsed) elUsed.innerText = res.used;
-            if(elRem) elRem.innerText = res.remaining;
+            if(document.getElementById('balance-total')) document.getElementById('balance-total').innerText = res.total;
+            if(document.getElementById('balance-used')) document.getElementById('balance-used').innerText = res.used;
+            if(document.getElementById('balance-remaining')) document.getElementById('balance-remaining').innerText = res.remaining;
         }).getEmployeeBalance(code);
     }
 
-    // ==========================================
-    // 5. وظائف الشات بوت
-    // ==========================================
-    function toggleAIChat() {
-        const win = document.getElementById('ai-window');
-        if (win.classList.contains('hidden')) {
-            win.classList.remove('hidden');
-            setTimeout(() => win.classList.remove('scale-95', 'opacity-0'), 10);
-            setTimeout(() => document.getElementById('ai-input').focus(), 100);
-        } else {
-            win.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => win.classList.add('hidden'), 300);
-        }
-    }
-
+    function toggleAIChat() { document.getElementById('ai-window').classList.toggle('hidden'); }
+    function clearChat() { document.getElementById('ai-messages').innerHTML = ''; }
     function sendAIMessage() {
         const input = document.getElementById('ai-input');
-        const btn = document.getElementById('btn-send-ai');
-        const selectedModel = document.getElementById('ai-model-select').value; 
         const msg = input.value.trim();
-        if (!msg) return;
-
-        const sugg = document.getElementById('quick-suggestions');
-        if(sugg) sugg.style.display = 'none';
-        
+        if(!msg) return;
         addMessage(msg, 'user');
         input.value = '';
-        input.disabled = true;
-        btn.disabled = true;
-        const loadingId = addLoading();
-
-        google.script.run.withSuccessHandler((response) => {
-            removeLoading(loadingId);
-            addMessage(response, 'bot');
-            input.disabled = false;
-            btn.disabled = false;
-            input.focus();
-        }).withFailureHandler((err) => {
-            removeLoading(loadingId);
-            addMessage("❌ خطأ: " + err.message, 'bot');
-            input.disabled = false;
-            btn.disabled = false;
-        }).askAI(msg, selectedModel); 
+        const loadingDiv = document.createElement('div'); loadingDiv.id = 'ai-loading'; loadingDiv.innerHTML = '...';
+        document.getElementById('ai-messages').appendChild(loadingDiv);
+        const model = document.getElementById('ai-model-select').value;
+        google.script.run.withSuccessHandler(res => {
+            loadingDiv.remove();
+            addMessage(res, 'bot');
+        }).askAI(msg, model);
     }
-
-    function usePrompt(text) {
-        document.getElementById('ai-input').value = text;
-        sendAIMessage();
+    function addMessage(txt, sender) {
+        const d = document.createElement('div');
+        d.className = sender === 'user' ? 'text-left p-2 bg-blue-100 rounded mb-2' : 'text-right p-2 bg-white rounded mb-2 border';
+        d.innerText = txt;
+        document.getElementById('ai-messages').appendChild(d);
     }
-
-    function clearChat() {
-        document.getElementById('ai-messages').innerHTML = `
-            <div class="flex items-start gap-3 animate-fade-in-up">
-                <div class="w-9 h-9 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center text-lg shadow-sm border border-white">🤖</div>
-                <div class="bg-white/80 p-4 rounded-2xl rounded-tr-none shadow-sm text-gray-700 text-sm border border-gray-100 backdrop-blur-sm">
-                    <p class="font-bold text-virginia-800 mb-1">تم مسح الذاكرة 🧹</p>
-                    <p>أنا جاهز لموضوع جديد.</p>
-                </div>
-            </div>`;
-    }
-
-    function addMessage(text, sender) {
-        const container = document.getElementById('ai-messages');
-        const div = document.createElement('div');
-        div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} gap-3 animate-fade-in-up`;
-        if (sender === 'user') {
-            div.innerHTML = `<div class="bg-gradient-to-br from-virginia-700 to-virginia-600 text-white p-4 rounded-2xl rounded-tl-none shadow-md text-sm leading-relaxed">${text}</div>`;
-        } else {
-            div.innerHTML = `<div class="bg-white/90 p-4 rounded-2xl rounded-tr-none shadow-sm text-gray-700 text-sm border border-gray-100 backdrop-blur-sm leading-relaxed ai-response-content">${text}</div>`;
-        }
-        container.appendChild(div);
-        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-    }
-
-    function addLoading() {
-        const id = 'loading-' + Date.now();
-        const container = document.getElementById('ai-messages');
-        const div = document.createElement('div');
-        div.id = id;
-        div.className = "flex justify-start gap-3 animate-fade-in-up";
-        div.innerHTML = `<div class="bg-white/90 p-4 rounded-2xl rounded-tr-none shadow-sm border border-gray-100"><div class="flex gap-1.5"><div class="w-2 h-2 bg-virginia-400 rounded-full animate-bounce"></div><div class="w-2 h-2 bg-virginia-400 rounded-full animate-bounce delay-75"></div><div class="w-2 h-2 bg-virginia-400 rounded-full animate-bounce delay-150"></div></div></div>`;
-        container.appendChild(div);
-        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-        return id;
-    }
-    
-    function removeLoading(id) { document.getElementById(id)?.remove(); }
+    function usePrompt(txt) { document.getElementById('ai-input').value = txt; sendAIMessage(); }
     function toggleAlerts() { document.getElementById('alert-dropdown').classList.toggle('hidden'); }
 
-
-// ==========================================
-    // 6. التشغيل عند التحميل (تم التعديل لحفظ الدخول)
     // ==========================================
-    window.onload = function() {
-          if(typeof loadSavedTheme === 'function') {
-          loadSavedTheme();
-      }
-        console.log("App Loaded.");
-        
-        // 1. تطبيق الإعدادات المحفوظة
+    // 🌙 الوضع الليلي والتحميل
+    // ==========================================
+    function toggleDarkMode() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        const icon = document.getElementById('dark-icon');
+        if(icon) icon.innerText = isDark ? "☀️" : "🌙";
+    }
+
+    window.addEventListener('load', function() {
+        console.log("App Initialized 🚀");
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('dark-icon').innerText = "☀️";
+        }
         applySystemSettings();
-        
-        // 2. إخفاء العناصر الافتراضية
-        const btn = document.getElementById('ai-header-btn');
-        if(btn) { btn.classList.add('hidden'); btn.style.display = 'none'; }
-        const win = document.getElementById('ai-window');
-        if(win) win.classList.add('hidden');
-
-        // 3. 🔥 فحص هل المستخدم مسجل دخول سابقاً؟
         restoreSession();
-        
-    };
-// ==========================================
-// 🔄 دالة استعادة الجلسة (النسخة النهائية المصححة)
-// ==========================================
-function restoreSession() {
-    // 1. تعريف المتغيرات
-    const role = localStorage.getItem('currentUserRole');
-    const permsStr = localStorage.getItem('userPermissions');
-    const empCode = localStorage.getItem('empCode'); 
-
-    // 2. التحقق: هل هو أدمن أو مدير؟
-    if (role && permsStr) {
-        // تحويل نص الصلاحيات إلى كائن (Object)
-        // نستخدم try-catch لتجنب الأخطاء إذا كان النص تالفاً
-        let perms = {};
-        try {
-            perms = JSON.parse(permsStr);
-        } catch (e) {
-            console.error("خطأ في قراءة الصلاحيات", e);
-            logout(); // خروج اضطراري
-            return;
-        }
-
-        const name = localStorage.getItem('currentUserName');
-const aiBtn = document.getElementById('ai-header-btn');
-    if (aiBtn) {
-        aiBtn.classList.remove('hidden');
-        aiBtn.style.display = 'block'; // لضمان ظهوره
-    }
-        // إظهار الواجهة الرئيسية
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('employee-portal').classList.add('hidden');
-        const mainApp = document.getElementById('main-app');
-        mainApp.classList.remove('hidden');
-        
-        // تأثير ظهور ناعم
-        setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
-
-        if (name && document.getElementById('userNameDisplay')) {
-            document.getElementById('userNameDisplay').innerText = name;
-        }
-
-        // --- تطبيق الصلاحيات (القوائم) ---
-        const menuMap = [
-            { id: 'nav-dashboard-container', perm: perms.dashboard },
-            { id: 'nav-employees-container', perm: perms.emp_view },
-            { id: 'nav-penalties-container', perm: perms.penalties },
-            { id: 'nav-settings-container', perm: perms.settings },
-            { id: 'nav-interview-container', perm: perms.interview },
-            // 👇 لاحظ الفاصلة هنا كانت سبب المشكلة
-            { id: 'nav-leaves-container', perm: perms.leaves }, 
-            { id: 'nav-docs-container', perm: perms.docs }
-        ];
-
-        menuMap.forEach(item => {
-            const el = document.getElementById(item.id);
-            if (el) {
-                // الأدمن يرى كل شيء، أو إذا كانت الصلاحية true
-                if (role === 'Admin' || item.perm === true) {
-                    el.style.display = 'block';
-                } else {
-                    el.style.display = 'none';
-                }
-            }
-        });
-
-        // توجيه المستخدم لأول صفحة متاحة له تلقائياً
-        if (role === 'Admin' || perms.dashboard) switchView('dashboard');
-        else if (perms.emp_view) switchView('employees');
-        else if (perms.leaves) switchView('leaves');
-        else switchView('settings'); // الملاذ الأخير
-
-        // تحميل البيانات
-        if (typeof loadData === 'function') loadData();
-
-    } 
-    // 3. التحقق: هل هو موظف عادي (Portal)؟
-    else if (empCode) { 
-        const name = localStorage.getItem('empName');
-        if(document.getElementById('emp-portal-name')) document.getElementById('emp-portal-name').innerText = name || 'Mawzaf';
-        if(document.getElementById('emp-portal-code')) document.getElementById('emp-portal-code').innerText = "Code: " + empCode;
-
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('main-app').classList.add('hidden');
-        document.getElementById('employee-portal').classList.remove('hidden');
-
-        // إخفاء زر الشات للموظف العادي
-        const aiBtn = document.getElementById('ai-header-btn');
-        if (aiBtn) aiBtn.classList.add('hidden');
-
-        // تحميل بيانات الموظف
-        if (typeof loadEmployeeRequests === 'function') loadEmployeeRequests();
-        if (typeof loadBalance === 'function') loadBalance();
-    }
-}
-
-async function switchView(view) {
-    // 1. قائمة بجميع الصفحات (IDs)
-    const allViews = ['dashboard', 'employees', 'penalties', 'interview', 'leaves', 'docs', 'settings'];
-
-    // 2. إخفاء الكل وإظهار المطلوب + تحديث الأزرار
-    allViews.forEach(v => {
-        // الـ View Container
-        const el = document.getElementById('view-' + v);
-        // زر القائمة
-        const btn = document.getElementById('btn-' + v);
-
-        if (el) {
-            if (v === view) {
-                el.classList.remove('hidden');
-                el.classList.add('animate-fade-in'); // تأثير ظهور ناعم
-            } else {
-                el.classList.add('hidden');
-                el.classList.remove('animate-fade-in');
-            }
-        }
-
-        if (btn) {
-            if (v === view) {
-                // ستايل الزر النشط
-                btn.classList.add('bg-virginia-700', 'text-white', 'shadow-md');
-                btn.classList.remove('text-gray-300', 'hover:bg-virginia-700');
-            } else {
-                // ستايل الزر غير النشط
-                btn.classList.remove('bg-virginia-700', 'text-white', 'shadow-md');
-                btn.classList.add('text-gray-300', 'hover:bg-virginia-700');
-            }
-        }
     });
 
-    // 3. تحديث عنوان الصفحة في الهيدر
-    const titles = { 
-        'dashboard': 'لوحة القيادة والتحليلات', 
-        'employees': 'سجل بيانات الموظفين', 
-        'penalties': 'إدارة الجزاءات والمخالفات', 
-        'interview': 'منصة التوظيف (S.T.A.R)', 
-        'leaves': 'إدارة الإجازات والرصيد',
-        'docs': 'مركز النماذج والمستندات',
-        'settings': 'إعدادات النظام والصلاحيات'
-    };
-    
-    const titleEl = document.getElementById('page-title');
-    if(titleEl) titleEl.innerText = titles[view] || 'Smart HR Panel';
-
-    // 4. 🔥 محاولة تحميل محتوى الـ view من مجلد `views/` (مرة واحدة) ثم تشغيل دوال الإعداد
-    const viewEl = document.getElementById('view-' + view);
-    if (viewEl && !viewEl.dataset.loaded) {
-      // تحويل اسم العرض إلى اسم ملف (مثال: dashboard -> Dashboard.html)
-      const fileName = view.charAt(0).toUpperCase() + view.slice(1) + '.html';
-      try {
-        const resp = await fetch('views/' + fileName);
-        if (resp.ok) {
-          const html = await resp.text();
-          viewEl.innerHTML = html;
-          viewEl.dataset.loaded = '1';
-        }
-      } catch (e) {
-        // لا تفشل العملية إن لم يكن الملف موجوداً؛ سنستخدم المحتوى المضمن كاحتياط
-        console.warn('Could not load external view', view, e);
-      }
-    }
-
-    // تشغيل الدوال الخاصة بكل صفحة (بعد إدراج المحتوى إن وُجد)
-    if (view === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
-    if (view === 'docs' && typeof loadCompanyDocs === 'function') loadCompanyDocs();
-    if (view === 'leaves' && typeof initLeavesManagement === 'function') initLeavesManagement();
-    if (view === 'settings' && typeof initSettingsPage === 'function') initSettingsPage();
-    if (view === 'penalties' && typeof loadViolationTypes === 'function') loadViolationTypes();
-  
-    // إغلاق القائمة الجانبية في الموبايل بعد الاختيار
-    if (window.innerWidth < 768 && typeof closeSidebarOnMobile === 'function') closeSidebarOnMobile();
-}
-window.addEventListener('load', function() {
-      if(typeof loadSavedTheme === 'function') {
-          console.log("🔄 إعادة تطبيق الثيم بعد تحميل الصفحة...");
-          loadSavedTheme(); // يعيد تلوين الشارتات والسايد بار للتأكيد
-      }
-  });
-// دالة المعاينة الحية عند تحريك مؤشر الألوان
-function previewCustomColor(color) {
-    document.getElementById('color-code-display').innerText = color;
-    document.getElementById('setting-theme-color').value = color;
-    generatePalette(color);
-}
-// 1. تطبيق الإعدادات عند التحميل
-function applySystemSettings() {
-    google.script.run.withSuccessHandler(settings => {
-        // حماية: إذا لم تأتِ بيانات، لا تكمل
-        if (!settings) return;
-
-        // 1. تطبيق الاسم على العناوين الظاهرة (هذه موجودة دائماً)
-        document.title = settings.appName || "HR System";
-        
-        const sidebarTitle = document.querySelector('aside h1');
-        if(sidebarTitle) sidebarTitle.innerText = settings.appName;
-        
-        const loginTitle = document.querySelector('#login-screen h2');
-        if(loginTitle) loginTitle.innerText = settings.appName;
-
-        // 2. تطبيق اللون (الـ Theme)
-        const savedColor = settings.themeColor || '#4f46e5'; 
-        if (typeof  === 'function') {
-            (savedColor);
-        }
-
-        // 3. تحديث حقول الإعدادات (فقط لو كانت الصفحة مفتوحة)
-        // -----------------------------------------------------------
-        
-        // أ. حقل اسم التطبيق
-        var appNameField = document.getElementById('setting-app-name');
-        if (appNameField) {
-            // تصحيح: استخدام settings بدلاً من data
-            appNameField.value = settings.appName || ""; 
-        }
-
-        // ب. حقل لون الثيم (هذا كان يسبب الخطأ لأنه كان بدون if)
-        var themeColorField = document.getElementById('setting-theme-color');
-        if (themeColorField) {
-            themeColorField.value = savedColor;
-        }
-        
-        // ج. حقل اختيار اللون (Color Picker)
-        const picker = document.getElementById('color-picker');
-        if(picker) picker.value = savedColor;
-        
-        // د. نص كود اللون
-        const codeDisp = document.getElementById('color-code-display');
-        if(codeDisp) codeDisp.innerText = savedColor;
-
-    }).getSystemSettings();
-}
-// 2. التحكم في النافذة
-function openSettingsModal() {
-    document.getElementById('settings-modal').classList.remove('hidden');
-}
-// استبدل الدالة القديمة في Index.html بهذه الدالة
-function closeSettingsModal() {
-    // محاولة العثور على المودال الخاص بالإعدادات
-    const settingsModal = document.getElementById('settings-modal');
-    
-    // محاولة العثور على مودال المستخدمين (احتياطياً)
-    const userModal = document.getElementById('user-modal');
-
-    // 1️⃣ إغلاق مودال الإعدادات إذا وجد
-    if (settingsModal) {
-        settingsModal.classList.add('hidden');
-    } 
-    
-    // 2️⃣ إغلاق مودال المستخدمين إذا وجد (لأن أحياناً يكون هو المقصود)
-    if (userModal) {
-        userModal.classList.add('hidden');
-    }
-
-    // إذا لم يجد أياً منهما، لن يظهر خطأ أحمر بعد الآن ✅
-    if (!settingsModal && !userModal) {
-        console.log("⚠️ لم يتم العثور على أي نافذة لإغلاقها، لكن تم تجاوز الخطأ.");
-    }
-}
-
-// 3. اختيار اللون (Preview)
-function selectTheme(color) {
-    // معاينة فورية
-    document.documentElement.setAttribute('data-theme', color);
-    document.getElementById('setting-theme-color').value = color;
-}
-
-// 4. حفظ الإعدادات في السيرفر
-function saveSettings() {
-    const btn = document.getElementById('btn-save-settings');
-    btn.innerHTML = "جاري الحفظ...";
-    btn.disabled = true;
-
-    // نأخذ القيمة من الحقل المخفي أو من الـ Picker مباشرة
-    const selectedColor = document.getElementById('setting-theme-color').value;
-
-    const newSettings = {
-        appName: document.getElementById('setting-app-name').value,
-        themeColor: selectedColor // سيتم حفظ كود الهيكس (مثل #ff0000)
-    };
-
-    google.script.run.withSuccessHandler(() => {
-        alert("✅ تم حفظ الإعدادات بنجاح!");
-        btn.innerHTML = "حفظ التغييرات";
-        btn.disabled = false;
-        closeSettingsModal();
-        
-        applySystemSettings(); // إعادة التطبيق للتأكد
-        
-        // إعادة رسم الشارتات بالألوان الجديدة
-        if (typeof renderDashboard === 'function') {
-            renderDashboard(); 
-        }
-    }).saveSystemSettings(newSettings);
-}
-
-// 5. إظهار الزر للأدمن فقط (تعديل دالة checkAIView أو دالة الدخول)
-function checkAdminAccess() {
-    const role = localStorage.getItem('currentUserRole'); // بدلاً من sessionStorage
-    if (role === 'Admin') {
-        const settingsBtn = document.getElementById('nav-settings-container');
-        if (settingsBtn) settingsBtn.style.display = 'block';
-    }
-}
-// ==========================================
-// 📂 دوال مركز النماذج (Docs Logic)
-// ==========================================
-
-let allDocsData = []; // لتخزين الملفات والبحث فيها
-
-function loadCompanyDocs() {
-    const grid = document.getElementById('docs-grid');
-    grid.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-10"><div class="animate-spin h-8 w-8 border-4 border-virginia-600 rounded-full border-t-transparent mb-2"></div><p class="text-gray-500">جاري الاتصال بالأرشيف...</p></div>`;
-
-    google.script.run.withSuccessHandler((files) => {
-        allDocsData = files;
-        renderDocs(files);
-    }).withFailureHandler((err) => {
-        grid.innerHTML = `<div class="col-span-full text-center text-red-500 py-10">❌ حدث خطأ: تأكد من ID المجلد في الكود.<br><span class="text-xs text-gray-400">${err.message}</span></div>`;
-    }).getCompanyDocs();
-}
-
-// ==========================================
-// 🖨️ دالة الطباعة وتحديث العرض
-// ==========================================
-
-function renderDocs(files) {
-    const grid = document.getElementById('docs-grid');
-    grid.innerHTML = "";
-
-    if (files.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-10 bg-white rounded-xl border border-dashed border-gray-300"><p class="text-gray-500 text-lg">📂 المجلد فارغ حالياً</p><p class="text-xs text-gray-400">تواصل مع الـ HR لرفع الملفات</p></div>`;
-        return;
-    }
-
-    files.forEach(file => {
-        let icon = "📄"; 
-        let color = "text-gray-500 bg-gray-50";
-        
-        if (file.type.includes("pdf")) { icon = "📕"; color = "text-red-600 bg-red-50"; }
-        else if (file.type.includes("word") || file.type.includes("document")) { icon = "📘"; color = "text-blue-600 bg-blue-50"; }
-        else if (file.type.includes("sheet") || file.type.includes("excel")) { icon = "📗"; color = "text-green-600 bg-green-50"; }
-        else if (file.type.includes("image")) { icon = "🖼️"; color = "text-purple-600 bg-purple-50"; }
-
-        grid.innerHTML += `
-        <div class="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition border border-gray-100 flex flex-col group relative overflow-hidden">
-            <div class="flex items-start justify-between mb-3">
-                <div class="w-12 h-12 rounded-lg ${color} flex items-center justify-center text-2xl shadow-inner">
-                    ${icon}
-                </div>
-                <span class="text-[10px] font-mono text-gray-400 bg-gray-50 px-2 py-1 rounded">${file.type.split('/').pop().toUpperCase().substr(0,4)}</span>
-            </div>
-            
-            <h4 class="font-bold text-gray-800 mb-1 line-clamp-2 h-12" title="${file.name}">${file.name}</h4>
-            
-            <div class="flex items-center gap-2 text-[10px] text-gray-400 mb-4">
-                <span>📅 ${file.date}</span>
-                <span>•</span>
-                <span>💾 ${file.size}</span>
-            </div>
-
-            <div class="mt-auto grid grid-cols-3 gap-2">
-                
-                <a href="${file.url}" target="_blank" class="flex items-center justify-center py-2 rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 text-xs font-bold transition shadow-md" title="معاينة">
-                    👀معاينة
-                </a>
-
-                <button onclick="printDoc('${file.url}')" class="flex items-center justify-center py-2 rounded-lg bg-gray-800 text-white hover:bg-gray-900 text-xs font-bold transition shadow-md" title="طباعة">
-                    🖨️ طباعة
-                </button>
-
-                <a href="${file.downloadUrl}" class="flex items-center justify-center py-2 rounded-lg bg-virginia-50 text-virginia-700 hover:bg-virginia-100 text-xs font-bold transition" title="تحميل">
-                    📥 تحميل
-                </a>
-            </div>
-        </div>
-        `;
-    });
-}
-
-// دالة الطباعة المصححة (تضمن ظهور زر الطباعة)
-function printDoc(url) {
-    // 1. نحاول استخراج ID الملف من الرابط لضمان بناء رابط سليم
-    // روابط جوجل درايف تكون عادة: .../d/FILE_ID/view...
-    const idMatch = url.match(/\/d\/(.+?)\//);
-    
-    let printUrl = url;
-
-    if (idMatch && idMatch[1]) {
-        const fileId = idMatch[1];
-        // 2. نستخدم رابط العرض القياسي الذي يحتوي دائماً على شريط أدوات بالأعلى
-        printUrl = `https://drive.google.com/file/d/${fileId}/view`;
-    }
-
-    // 3. فتح النافذة
-    const win = window.open(printUrl, '_blank');
-    
-    if (!win) {
-        alert("⚠️ المتصفح منع فتح النافذة. يرجى السماح بالنوافذ المنبثقة (Popups).");
-    }
-}
-
-function filterDocs() {
-    const term = document.getElementById('docs-search').value.toLowerCase();
-    const filtered = allDocsData.filter(f => f.name.toLowerCase().includes(term));
-    renderDocs(filtered);
-}
-// ==========================================
-// 🌙 إدارة الوضع الليلي
-// ==========================================
-function toggleDarkMode() {
-    const html = document.documentElement;
-    const isDark = html.classList.toggle('dark');
-    
-    // تغيير الأيقونة
-    const icon = document.getElementById('dark-icon');
-    if(icon) icon.innerText = isDark ? "☀️" : "🌙";
-
-    // حفظ التفضيل
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-}
-
-// تشغيل الوضع المحفوظ عند التحميل
-(function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const icon = document.getElementById('dark-icon');
-    
-    if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-        if(icon) icon.innerText = "☀️";
-    }
-})();
-// ==========================================
-// 🎨 دالة توليد الألوان (Updated)
-// ==========================================
-function generatePalette(hexColor) {
-    const root = document.documentElement;
-    
-    // 1. تحديد اللون الأساسي
-    root.style.setProperty('--theme-color', hexColor);
-    
-    // 2. توليد تدرجات الألوان (Shades) وحفظها كمتغيرات CSS
-    // هذا الجزء هو الذي سيصلح مشكلة الـ Scrollbar وألوان Tailwind
-    const shades = {
-        50:  adjustBrightness(hexColor, 0.95), // فاتح جداً
-        100: adjustBrightness(hexColor, 0.90),
-        200: adjustBrightness(hexColor, 0.80), // سيستخدم في الـ Scrollbar
-        300: adjustBrightness(hexColor, 0.60),
-        400: adjustBrightness(hexColor, 0.40),
-        500: hexColor,                        // اللون الأصلي
-        600: adjustBrightness(hexColor, -0.10),
-        700: adjustBrightness(hexColor, -0.20),
-        800: adjustBrightness(hexColor, -0.30),
-        900: adjustBrightness(hexColor, -0.40),
-    };
-
-    // تطبيق المتغيرات على الـ Root
-    for (const [key, value] of Object.entries(shades)) {
-        root.style.setProperty(`--color-primary-${key}`, value);
-    }
-
-    // 3. تحديث القائمة الجانبية (Sidebar)
-    const sidebar = document.getElementById('main-sidebar');
-    if (sidebar) {
-        sidebar.style.background = `linear-gradient(180deg, ${hexColor} 0%, #111827 90%)`;
-    }
-}
-
-// دالة مساعدة لتفتيح/تغميق اللون (Hex)
-function adjustBrightness(hex, percent) {
-    hex = hex.replace(/^#/, '');
-    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-    
-    const num = parseInt(hex, 16);
-    let r = (num >> 16) + Math.round(255 * percent);
-    let g = ((num >> 8) & 0x00FF) + Math.round(255 * percent);
-    let b = (num & 0x0000FF) + Math.round(255 * percent);
-
-    // التأكد من أن القيم بين 0 و 255
-    r = Math.min(255, Math.max(0, r));
-    g = Math.min(255, Math.max(0, g));
-    b = Math.min(255, Math.max(0, b));
-
-    // لو النسبة موجبة نخلط مع الأبيض (تفتيح)، لو سالبة نخلط مع الأسود (تغميق)
-    // الطريقة البسيطة بالأعلى تعمل كـ offset، هذه طريقة أدق للمزج:
-    // لكن للكود المختصر، الطريقة السابقة تفي بالغرض للتدرجات البسيطة
-    // دعنا نستخدم الـ RGB Hex String للإرجاع
-    return `#${(g | (b << 8) | (r << 16)).toString(16).padStart(6,0)}`;
-}
-
-// دالة adjustBrightness مبسطة أكثر لضمان العمل بدون تعقيد
-function adjustBrightness(col, amt) {
-    var usePound = false;
-    if (col[0] == "#") {
-        col = col.slice(1);
-        usePound = true;
-    }
-    var num = parseInt(col,16);
-    var r = (num >> 16) + Math.round(amt*255); // تعديل بسيط
-    if (r > 255) r = 255; else if  (r < 0) r = 0;
-    var b = ((num >> 8) & 0x00FF) + Math.round(amt*255);
-    if (b > 255) b = 255; else if  (b < 0) b = 0;
-    var g = (num & 0x0000FF) + Math.round(amt*255);
-    if (g > 255) g = 255; else if (g < 0) g = 0;
-    
-    // ملاحظة: دالة التفتيح هنا تقريبية، المهم أنها تولد لوناً صالحاً
-    return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16).padStart(6,0);
-}
-// دالة تسجيل الخروج
-// ضع هذه الدالة في بداية قسم <script> بملف Index.html
-function logout() {
-    console.log("إيقاف الجلسة والتحويل...");
-    
-    // 1. مسح كافة البيانات المخزنة
-    localStorage.clear();
-    sessionStorage.clear();
-
-    // 2. تحديث الواجهة برمجياً قبل إعادة التحميل (لضمان السرعة)
-    const mainApp = document.getElementById('main-app');
-    const loginScreen = document.getElementById('login-screen');
-    
-    if (mainApp) mainApp.classList.add('hidden');
-    if (loginScreen) {
-        loginScreen.classList.remove('hidden');
-        loginScreen.style.opacity = "1";
-    }
-
-    // 3. الحل النهائي لمشكلة عدم التحويل في Google Apps Script
-    // نستخدم google.script.run للوصول لرابط الخدمة وإعادة فتحه
-    google.script.run.withSuccessHandler(function(url) {
-        window.open(url, '_top'); // '_top' تضمن إعادة تحميل الصفحة بالكامل وليس الـ iframe فقط
-    }).getScriptURL();
-}
-
-  </script>
+</script>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
