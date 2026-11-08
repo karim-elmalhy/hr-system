@@ -171,8 +171,9 @@ function renderDashboard() {
   updateText('kpi-permanent', filtered.filter(d => d._isPermanent).length);
   updateText('kpi-seasonal', filtered.filter(d => d._isSeasonal).length);
   
-  const leftEmpsCount = filtered.filter(d => !d._isActive).length;
-  const rate = filtered.length ? ((leftEmpsCount / filtered.length) * 100).toFixed(1) : 0;
+  const knownStatus = filtered.filter(d => String(d.Status || "").trim() !== "");
+  const leftEmpsCount = knownStatus.filter(d => !d._isActive).length;
+  const rate = knownStatus.length ? ((leftEmpsCount / knownStatus.length) * 100).toFixed(1) : 0;
   updateText('kpi-turnover', rate + "%");
 
   // لوحة القراءة التنفيذية الجديدة؛ تعتمد على نفس نتائج الفلترة الحالية.
