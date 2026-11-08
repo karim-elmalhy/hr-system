@@ -546,74 +546,8 @@
 
 <script>
     // ==========================================
-    // 🎨 إدارة الثيم والألوان (Fixed Logic)
-    // ==========================================
-    function generatePalette(hexColor) {
-        const root = document.documentElement;
-        
-        // 1. تحديد اللون الأساسي
-        root.style.setProperty('--theme-color', hexColor);
-        
-        // 2. توليد تدرجات الألوان
-        const shades = {
-            50:  adjustBrightness(hexColor, 0.95),
-            100: adjustBrightness(hexColor, 0.90),
-            200: adjustBrightness(hexColor, 0.80), // للسكرول بار
-            300: adjustBrightness(hexColor, 0.60),
-            400: adjustBrightness(hexColor, 0.40),
-            500: hexColor,
-            600: adjustBrightness(hexColor, -0.10),
-            700: adjustBrightness(hexColor, -0.20),
-            800: adjustBrightness(hexColor, -0.30),
-            900: adjustBrightness(hexColor, -0.40),
-        };
+    // الهوية البصرية ثابتة في css/design-system.css ولا توجد أدوات لتغييرها هنا.
 
-        for (const [key, value] of Object.entries(shades)) {
-            root.style.setProperty(`--color-primary-${key}`, value);
-        }
-
-        // 3. تحديث القائمة الجانبية
-        const sidebar = document.getElementById('main-sidebar');
-        if (sidebar) {
-            sidebar.style.background = `linear-gradient(180deg, ${hexColor} 0%, #111827 90%)`;
-        }
-        
-        // 4. تحديث عناصر الإعدادات
-        const previewCircle = document.getElementById('color-preview-circle');
-        if(previewCircle) previewCircle.style.backgroundColor = hexColor;
-        
-        const codeDisp = document.getElementById('color-code-display');
-        if(codeDisp) codeDisp.innerText = hexColor;
-        
-        const themeField = document.getElementById('setting-theme-color');
-        if(themeField) themeField.value = hexColor;
-    }
-
-    // دالة تفتيح وتغميق اللون (مصححة لترتيب الألوان RGB)
-    function adjustBrightness(col, amt) {
-        var usePound = false;
-        if (col[0] == "#") {
-            col = col.slice(1);
-            usePound = true;
-        }
-        var num = parseInt(col, 16);
-        var r = (num >> 16) + Math.round(amt * 255);
-        var b = ((num >> 8) & 0x00FF) + Math.round(amt * 255);
-        var g = (num & 0x0000FF) + Math.round(amt * 255);
-
-        if (r > 255) r = 255; else if (r < 0) r = 0;
-        if (b > 255) b = 255; else if (b < 0) b = 0;
-        if (g > 255) g = 255; else if (g < 0) g = 0;
-
-        // الترتيب الصحيح: R G B
-        return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16).padStart(6, '0');
-    }
-    
-    // دوال مساعدة للألوان
-    function previewCustomColor(color) { generatePalette(color); }
-    function selectTheme(color) { generatePalette(color); }
-
-    // ==========================================
     // 📱 إدارة القائمة الجانبية
     // ==========================================
     function toggleSidebar() {
