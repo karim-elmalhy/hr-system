@@ -1,512 +1,258 @@
-/* القيم الافتراضية للمتغيرات (Fallback)
-   هذه الألوان ستظهر فوراً قبل أن يقوم الجافاسكربت بتحميل لون المستخدم.
-   اخترنا هنا "الأزرق النيلي" (Indigo) كافتراضي.
-*/
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+
 :root {
-  /* ألوان الثيم (تتغير بالجافاسكربت كما فعلنا سابقاً) */
-  --color-primary-50: #eef2ff;
-  --color-primary-100: #e0e7ff;
-  --color-primary-200: #c7d2fe;
-  --color-primary-300: #a5b4fc;
-  --color-primary-400: #818cf8;
-  --color-primary-500: #6366f1;
-  --color-primary-600: #4f46e5;
-  --color-primary-700: #4338ca;
-  --color-primary-800: #3730a3;
-  --color-primary-900: #312e81;
-  --surface: #ffffff;
-  --surface-muted: #f8fafc;
+  --brand-50: #eef2ff;
+  --brand-100: #e0e7ff;
+  --brand-200: #c7d2fe;
+  --brand-500: #6366f1;
+  --brand-600: #4f46e5;
+  --brand-700: #4338ca;
+  --brand-900: #1e1b4b;
   --ink: #172033;
-  --ink-muted: #64748b;
+  --ink-soft: #64748b;
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --canvas: #f1f5f9;
   --line: #e2e8f0;
-  --radius-card: 1rem;
-  --shadow-card: 0 10px 30px rgba(15, 23, 42, .06);
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --radius-sm: .65rem;
+  --radius-md: .9rem;
+  --radius-lg: 1.25rem;
+  --shadow-sm: 0 4px 14px rgba(15, 23, 42, .05);
+  --shadow-md: 0 16px 40px rgba(15, 23, 42, .08);
+  --sidebar-width: 280px;
 }
 
-/* خطوط وأساليب عامة */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
-  font-family: Cairo, sans-serif;
-  background: #f1f5f9;
+  margin: 0;
+  min-width: 320px;
+  background: var(--canvas);
   color: var(--ink);
+  font-family: 'IBM Plex Sans Arabic', 'Cairo', sans-serif;
   letter-spacing: -.01em;
 }
-
-/* طبقة هوية بصرية موحّدة فوق أصناف Tailwind المستخدمة في الصفحات. */
-#main-app {
-  background: #f1f5f9;
+button, input, select, textarea { font: inherit; }
+button, [role='button'] { min-height: 44px; cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid rgba(99, 102, 241, .42);
+  outline-offset: 2px;
 }
+.dir-ltr { direction: ltr; text-align: left; }
+.app-title-display { font-size: .9rem; }
 
+/* الغلاف الرئيسي */
+#main-app { background: var(--canvas); }
+#main-app main { min-width: 0; }
 #main-app main > header {
-  min-height: 4.5rem;
+  height: 76px;
+  padding-inline: 1.75rem;
+  background: rgba(255, 255, 255, .88);
   border-bottom: 1px solid var(--line);
-  box-shadow: 0 1px 0 rgba(15, 23, 42, .03), 0 8px 24px rgba(15, 23, 42, .04);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, .02);
+  backdrop-filter: blur(16px);
 }
-
-#main-app main > div.flex-1 {
+#main-app main > header #page-title {
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+#main-app main > .flex-1 {
+  padding: 1.75rem;
   background:
-    radial-gradient(circle at 100% 0%, rgba(99, 102, 241, .07), transparent 24rem),
-    #f8fafc;
+    radial-gradient(circle at 100% 0, rgba(99, 102, 241, .08), transparent 28rem),
+    var(--canvas);
 }
 
+/* القائمة الجانبية */
 #main-sidebar {
-  background: linear-gradient(180deg, #172554 0%, #111827 72%, #0f172a 100%);
+  width: var(--sidebar-width);
+  background: #111827;
   border-left: 1px solid rgba(255, 255, 255, .08);
+  box-shadow: 12px 0 40px rgba(15, 23, 42, .12);
 }
-
+#main-sidebar > div:first-child {
+  padding: 1.5rem 1.25rem;
+  background: linear-gradient(145deg, #312e81, #1e1b4b);
+  border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+#main-sidebar > div:first-child > div {
+  width: 52px;
+  height: 52px;
+  margin-bottom: .7rem;
+  background: rgba(255, 255, 255, .14);
+  border-color: rgba(255, 255, 255, .24);
+}
+#main-sidebar > div:first-child img { height: 32px; }
+#main-sidebar nav { padding: 1rem .75rem; }
+#main-sidebar nav > div { margin-bottom: .3rem; }
 #main-sidebar nav button {
-  min-height: 46px;
+  min-height: 48px;
+  padding: .7rem 1rem;
   border: 1px solid transparent;
+  border-radius: .75rem;
+  color: #cbd5e1;
+  font-weight: 600;
+  transition: background .2s ease, color .2s ease, transform .2s ease, border-color .2s ease;
 }
-
 #main-sidebar nav button:hover,
-#main-sidebar nav button.bg-virginia-700 {
-  border-color: rgba(255, 255, 255, .12);
-  background: rgba(255, 255, 255, .12);
+#main-sidebar nav button:focus-visible {
+  color: #fff;
+  background: rgba(99, 102, 241, .2);
+  border-color: rgba(165, 180, 252, .2);
+  transform: translateX(-3px);
+}
+#main-sidebar nav button.bg-virginia-700,
+#main-sidebar nav button[aria-current='page'] {
+  color: #fff;
+  background: linear-gradient(90deg, rgba(99, 102, 241, .95), rgba(79, 70, 229, .7));
+  border-color: rgba(199, 210, 254, .3);
+  box-shadow: 0 8px 18px rgba(79, 70, 229, .2);
+}
+#main-sidebar nav button > span:first-child { filter: saturate(.9); }
+#main-sidebar > div:last-child {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, .1);
 }
 
-#main-app .bg-white {
-  border-color: var(--line);
+/* أدوات الرأس */
+#main-app main > header > div:last-child > * { min-height: 44px; }
+#ai-header-btn, #main-app main > header [onclick='toggleAlerts()'], #main-app main > header [onclick='toggleDarkMode()'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  border-radius: .7rem;
+}
+#main-app main > header [onclick='toggleAlerts()']:hover,
+#main-app main > header [onclick='toggleDarkMode()']:hover { background: var(--brand-50); }
+#main-app main > header #userNameDisplay { color: var(--ink); }
+#main-app main > header button[onclick='logout()'] {
+  min-height: 40px;
+  padding-inline: .8rem;
+  border-radius: .65rem;
 }
 
-#main-app .rounded-lg,
-#main-app .rounded-xl,
-#main-app .rounded-2xl {
-  border-radius: var(--radius-card);
-}
-
-#main-app .shadow,
-#main-app .shadow-sm,
-#main-app .shadow-md,
-#main-app .shadow-lg,
-#main-app .shadow-xl,
-#main-app .shadow-2xl {
-  box-shadow: var(--shadow-card);
-}
-
-#main-app input:not([type="checkbox"]):not([type="radio"]),
-#main-app select,
-#main-app textarea {
-  min-height: 44px;
-  border-color: #cbd5e1;
-  background: #fff;
-  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
-}
-
-#main-app input:not([type="checkbox"]):not([type="radio"]):focus,
-#main-app select:focus,
-#main-app textarea:focus {
-  border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary-500) 15%, transparent);
-}
-
-#main-app table thead {
-  background: #f8fafc;
-  color: #475569;
-}
-
-#main-app table th {
-  white-space: nowrap;
-  font-size: .72rem;
-  letter-spacing: .02em;
-}
-
-#main-app table tbody tr {
-  transition: background-color .18s ease;
-}
-
-#main-app table tbody tr:hover {
-  background: #f8fafc;
-}
-
-#settings-sections-container,
-#admin-sections-container > div,
-#view-settings .bg-white {
-  scroll-margin-top: 1rem;
-}
-
-#view-settings h2 {
-  letter-spacing: -.03em;
-}
-
-#view-settings .bg-white {
-  background: rgba(255, 255, 255, .94);
-}
-
-#view-settings .border-b {
-  border-color: var(--line);
-}
-
-/* شاشة دخول جديدة: لوحة هوية + نموذج دخول واضح. */
+/* تسجيل الدخول */
 #login-screen {
-  padding: 2rem;
+  padding: 1.5rem;
   background-color: #0b1120;
   background-position: center;
 }
-
 #login-screen::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 15% 18%, rgba(129, 140, 248, .24), transparent 22rem),
-    radial-gradient(circle at 85% 82%, rgba(45, 212, 191, .15), transparent 24rem);
+  background: radial-gradient(circle at 15% 20%, rgba(99,102,241,.3), transparent 24rem), radial-gradient(circle at 90% 80%, rgba(20,184,166,.18), transparent 26rem);
 }
-
-#login-screen > div:first-child {
-  background: linear-gradient(135deg, rgba(15, 23, 42, .86), rgba(30, 41, 59, .68));
-}
-
 #login-screen > div:nth-child(2) {
   display: grid;
-  grid-template-columns: minmax(280px, .9fr) minmax(340px, 1.1fr);
+  grid-template-columns: .95fr 1.05fr;
   grid-template-rows: 1fr auto;
-  max-width: 980px;
-  min-height: 560px;
-  border: 1px solid rgba(255, 255, 255, .25);
+  width: min(960px, 100%);
+  max-width: min(960px, 100%) !important;
+  min-height: 570px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.26);
   border-radius: 1.5rem;
-  background: rgba(255, 255, 255, .96);
-  box-shadow: 0 30px 90px rgba(2, 6, 23, .42);
+  background: rgba(255,255,255,.97);
+  box-shadow: 0 32px 90px rgba(2,6,23,.45);
   position: relative;
 }
-
 #login-screen > div:nth-child(2) > div:first-child {
   grid-row: 1 / 3;
-  min-height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 3rem 2.5rem;
-  background:
-    linear-gradient(145deg, rgba(30, 27, 75, .98), rgba(49, 46, 129, .96) 58%, rgba(15, 118, 110, .9));
+  padding: 3rem;
+  text-align: right;
+  background: linear-gradient(145deg, #312e81, #1e1b4b 58%, #0f766e);
   border-radius: 1.5rem 0 0 1.5rem;
-  text-align: right;
 }
-
-#login-screen > div:nth-child(2) > div:first-child::after {
-  content: "HR • PEOPLE • GROWTH";
-  display: block;
-  margin-top: 2.5rem;
-  color: rgba(255, 255, 255, .65);
-  font-size: .7rem;
-  font-weight: 700;
-  letter-spacing: .18em;
-  direction: ltr;
-}
-
-#login-screen > div:nth-child(2) > div:first-child h2 {
-  font-size: 2rem;
-  line-height: 1.2;
-  text-align: right;
-}
-
-#login-screen > div:nth-child(2) > div:first-child p {
-  max-width: 18rem;
-  line-height: 1.9;
-  text-align: right;
-}
-
 #login-screen > div:nth-child(2) > div:first-child img {
-  margin: 0 0 1.25rem;
-  height: 4.75rem;
-  width: 4.75rem;
+  width: 5rem;
+  height: 5rem;
   object-fit: contain;
+  margin: 0 0 1.2rem;
 }
+#login-screen > div:nth-child(2) > div:first-child h2 { font-size: 2rem; line-height: 1.2; text-align: right; }
+#login-screen > div:nth-child(2) > div:first-child p { max-width: 20rem; line-height: 1.9; text-align: right; }
+#login-screen > div:nth-child(2) > div:first-child::after { content: 'HR  •  PEOPLE  •  GROWTH'; margin-top: 2.5rem; color: rgba(255,255,255,.62); direction: ltr; font-size: .7rem; font-weight: 700; letter-spacing: .16em; }
+#login-screen > div:nth-child(2) > div:nth-child(2) { grid-column: 2; align-self: center; padding: 3rem; }
+#login-screen > div:nth-child(2) > div:last-child { grid-column: 2; border-top: 1px solid var(--line); border-radius: 0; background: transparent; }
+#login-screen .flex.bg-gray-100 { padding: .3rem; border: 1px solid var(--line); background: var(--surface-soft); }
+#login-screen .flex.bg-gray-100 button { min-height: 45px; }
+#login-screen input { min-height: 50px; background: var(--surface-soft); border-color: var(--line); }
+#login-screen #btnLogin { min-height: 52px; background: linear-gradient(100deg, var(--brand-700), var(--brand-500)); box-shadow: 0 14px 24px rgba(79,70,229,.24); }
 
-#login-screen > div:nth-child(2) > div:nth-child(2) {
-  grid-column: 2;
-  padding: 3rem 3rem 2rem;
-  align-self: center;
-}
+/* مكونات المحتوى المشتركة */
+#view-dashboard, #view-employees, #view-penalties, #view-interview, #view-leaves, #view-docs, #view-settings { max-width: 1500px; margin: 0 auto; }
+#main-app .bg-white { background: rgba(255,255,255,.95); border-color: var(--line); }
+#main-app .rounded-lg, #main-app .rounded-xl, #main-app .rounded-2xl { border-radius: var(--radius-lg); }
+#main-app .shadow, #main-app .shadow-sm, #main-app .shadow-md, #main-app .shadow-lg, #main-app .shadow-xl, #main-app .shadow-2xl { box-shadow: var(--shadow-sm); }
+#main-app input:not([type='checkbox']):not([type='radio']), #main-app select, #main-app textarea { min-height: 44px; border-color: #cbd5e1; transition: border-color .2s ease, box-shadow .2s ease, background .2s ease; }
+#main-app input:not([type='checkbox']):not([type='radio']):focus, #main-app select:focus, #main-app textarea:focus { border-color: var(--brand-500); box-shadow: 0 0 0 4px rgba(99,102,241,.14); background: #fff; }
+#main-app table thead { background: #f8fafc; color: #475569; }
+#main-app table tbody tr { transition: background .18s ease; }
+#main-app table tbody tr:hover { background: #f8fafc; }
+#main-app table th { white-space: nowrap; font-size: .73rem; }
+#view-dashboard::before, #view-employees::before, #view-penalties::before, #view-leaves::before { display: block; margin: 0 0 1.25rem; color: var(--ink); font-size: 1.5rem; font-weight: 800; letter-spacing: -.04em; }
+#view-dashboard::after, #view-employees::after, #view-penalties::after, #view-leaves::after { display: block; margin: -1rem 0 1.5rem; color: var(--ink-soft); font-size: .82rem; }
+#view-dashboard::before { content: 'لوحة القيادة'; } #view-dashboard::after { content: 'نظرة سريعة على مؤشرات القوى العاملة والأداء المالي'; }
+#view-employees::before { content: 'بيانات الموظفين'; } #view-employees::after { content: 'إدارة السجل الوظيفي والبحث والتصفية والتقارير'; }
+#view-penalties::before { content: 'الجزاءات والمخالفات'; } #view-penalties::after { content: 'تسجيل المخالفات ومراجعة التقارير والإجراءات'; }
+#view-leaves::before { content: 'إدارة الإجازات'; } #view-leaves::after { content: 'متابعة الطلبات والموافقات والأرصدة في مكان واحد'; }
+#view-dashboard canvas { max-height: 330px; }
+#view-employees .overflow-x-auto, #view-leaves .overflow-x-auto, #view-penalties .overflow-auto, #view-interview .overflow-x-auto { border: 1px solid var(--line); border-radius: var(--radius-md); }
+#view-employees table, #view-leaves table, #view-penalties table, #view-interview table { min-width: 720px; }
+#view-docs .grid { gap: 1.25rem; }
+#view-docs .grid > div { min-height: 190px; border: 1px solid var(--line); transition: transform .2s ease, box-shadow .2s ease; }
+#view-docs .grid > div:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+#view-settings #admin-sections-container > div:not(:first-child) { border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+#view-settings #modal-permissions-grid label { min-height: 48px; border-color: var(--line); background: var(--surface-soft); transition: background .2s ease, border-color .2s ease; }
+#view-settings #modal-permissions-grid label:hover { background: var(--brand-50); border-color: var(--brand-200); }
 
-#login-screen > div:nth-child(2) > div:last-child {
-  grid-column: 2;
-  border-top: 1px solid #e2e8f0;
-  border-radius: 0;
-  background: transparent;
-}
+/* حالات ومكونات JS المطلوبة */
+.custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(148,163,184,.12); border-radius: 99px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 99px; }
+.glass-panel { background: rgba(255,255,255,.72) !important; backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.58); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in, .animate-fade-in-up, .animate-fade-in-down, .animate-scale-in { animation: fadeIn .35s ease both; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 1s linear infinite; }
 
-#login-screen .flex.bg-gray-100 {
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  padding: .3rem;
-}
-
-#login-screen .flex.bg-gray-100 button {
-  min-height: 44px;
-}
-
-#login-screen input {
-  min-height: 48px;
-  background: #f8fafc;
-}
-
-#login-screen #btnLogin {
-  min-height: 52px;
-  font-size: .98rem;
-  box-shadow: 0 12px 22px rgba(67, 56, 202, .22);
-}
+/* الوضع الليلي */
+.dark body, .dark #main-app { background: #0f172a; color: #e2e8f0; }
+.dark #main-app main > header { background: rgba(15,23,42,.88); border-color: #334155; }
+.dark #main-app main > header #page-title, .dark #main-app main > header #userNameDisplay { color: #f8fafc; }
+.dark #main-app main > .flex-1 { background: #0f172a; }
+.dark #main-app .bg-white { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+.dark #main-app input:not([type='checkbox']):not([type='radio']), .dark #main-app select, .dark #main-app textarea { background: #0f172a; border-color: #475569; color: #e2e8f0; }
+.dark #main-app table thead { background: #1e293b; color: #cbd5e1; }
+.dark #main-app table tbody tr:hover { background: #263449; }
+.dark #view-dashboard::before, .dark #view-employees::before, .dark #view-penalties::before, .dark #view-leaves::before { color: #f8fafc; }
+.dark #view-dashboard::after, .dark #view-employees::after, .dark #view-penalties::after, .dark #view-leaves::after { color: #94a3b8; }
 
 @media (max-width: 760px) {
-  #login-screen {
-    padding: 1rem;
-  }
-
-  #login-screen > div:nth-child(2) {
-    display: block;
-    min-height: auto;
-    max-width: 30rem;
-  }
-
-  #login-screen > div:nth-child(2) > div:first-child {
-    min-height: auto;
-    padding: 2rem 1.5rem 1.75rem;
-    border-radius: 1.5rem 1.5rem 0 0;
-    text-align: center;
-  }
-
-  #login-screen > div:nth-child(2) > div:first-child h2,
-  #login-screen > div:nth-child(2) > div:first-child p {
-    text-align: center;
-  }
-
-  #login-screen > div:nth-child(2) > div:first-child img {
-    margin: 0 auto 1rem;
-  }
-
-  #login-screen > div:nth-child(2) > div:first-child::after {
-    margin-top: 1.25rem;
-  }
-
-  #login-screen > div:nth-child(2) > div:nth-child(2) {
-    padding: 1.5rem;
-  }
-
-  #login-screen > div:nth-child(2) > div:last-child {
-    padding: .75rem 1rem;
-  }
-}
-
-/* تركيز واضح لمستخدمي لوحة المفاتيح. */
-:where(button, a, input, select, textarea):focus-visible {
-  outline: 3px solid var(--color-primary-300);
-  outline-offset: 2px;
-}
-
-button,
-[role="button"] {
-  min-height: 44px;
-}
-
-@media (max-width: 640px) {
-  body {
-    overflow-x: hidden;
-  }
-
-  #login-screen > div:nth-child(2) {
-    margin: 1rem;
-  }
-
-  #login-screen .p-8 {
-    padding: 1.25rem;
-  }
+  #main-app main > header { height: 68px; padding-inline: 1rem; }
+  #main-app main > .flex-1 { padding: 1rem; }
+  #main-sidebar { width: min(86vw, 320px); }
+  #login-screen { padding: 1rem; }
+  #login-screen > div:nth-child(2) { display: block; min-height: auto; max-width: 30rem; }
+  #login-screen > div:nth-child(2) > div:first-child { min-height: auto; padding: 2rem 1.5rem 1.75rem; border-radius: 1.5rem 1.5rem 0 0; text-align: center; }
+  #login-screen > div:nth-child(2) > div:first-child h2, #login-screen > div:nth-child(2) > div:first-child p { text-align: center; }
+  #login-screen > div:nth-child(2) > div:first-child img { margin: 0 auto 1rem; }
+  #login-screen > div:nth-child(2) > div:nth-child(2) { padding: 1.5rem; }
+  #login-screen > div:nth-child(2) > div:last-child { padding: .75rem 1rem; }
+  #view-dashboard::before, #view-employees::before, #view-penalties::before, #view-leaves::before { font-size: 1.25rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-.app-title-display {
-  font-size: 14px;
-}
-
-/* تخصيص شريط التمرير */
-/* =========================================
-   تخصيص شريط التمرير (Custom Scrollbar)
-   ========================================= */
-
-/* تطبيق السكرول بار المخصص على أي عنصر يحمل هذا الكلاس */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 8px;              /* عرض الشريط */
-    height: 8px;             /* ارتفاع الشريط (للسكرول الأفقي) */
-}
-
-/* لون الخلفية (المسار) */
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.02); 
-    border-radius: 10px;
-}
-
-/* لون المقبض (Thumb) */
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #a5b4fc, #6366f1); /* تدرج لوني */
-    /* أو استخدم متغيراتك: var(--color-primary-200), var(--color-primary-500) */
-    border-radius: 10px;
-    border: 2px solid transparent; /* مسافة حول المقبض */
-    background-clip: content-box;
-}
-
-/* شكل المقبض عند الوقوف عليه */
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #818cf8, #4f46e5);
-}
-/* تأثير الزجاج الشفاف */
-.glass-panel {
-    background: rgba(255, 255, 255, 0.7) !important; /* لون أبيض شفاف */
-    backdrop-filter: blur(12px);          /* تمويه الخلفية */
-    -webkit-backdrop-filter: blur(12px);  /* لدعم متصفح سفاري */
-    border: 1px solid rgba(255, 255, 255, 0.5); /* حدود بيضاء خفيفة */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); /* ظل ناعم جداً */
-}
-
-/* صفحات النظام الداخلية: لكل مساحة شخصية بصرية مع شبكة متناسقة. */
-#view-dashboard,
-#view-employees,
-#view-penalties,
-#view-interview,
-#view-leaves,
-#view-docs,
-#view-settings {
-  max-width: 1500px;
-  margin: 0 auto;
-}
-
-#view-dashboard::before,
-#view-employees::before,
-#view-penalties::before,
-#view-leaves::before {
-  display: block;
-  margin: 0 0 1.25rem;
-  color: #172033;
-  font-size: 1.55rem;
-  font-weight: 800;
-  letter-spacing: -.03em;
-}
-
-#view-dashboard::after,
-#view-employees::after,
-#view-penalties::after,
-#view-leaves::after {
-  display: block;
-  margin: -1rem 0 1.5rem;
-  color: #64748b;
-  font-size: .82rem;
-}
-
-#view-dashboard::before { content: "لوحة القيادة"; }
-#view-dashboard::after { content: "نظرة سريعة على مؤشرات القوى العاملة والأداء المالي"; }
-#view-employees::before { content: "بيانات الموظفين"; }
-#view-employees::after { content: "إدارة السجل الوظيفي والبحث والتصفية والتقارير"; }
-#view-penalties::before { content: "الجزاءات والمخالفات"; }
-#view-penalties::after { content: "تسجيل المخالفات ومراجعة التقارير والإجراءات"; }
-#view-leaves::before { content: "إدارة الإجازات"; }
-#view-leaves::after { content: "متابعة الطلبات والموافقات والأرصدة في مكان واحد"; }
-
-#view-dashboard > .grid:nth-of-type(2) > div,
-#view-leaves > .grid:first-child > div,
-#view-employees > #dept-stats-card {
-  min-height: 108px;
-  border: 1px solid var(--line);
-  border-right-width: 4px;
-  background: rgba(255, 255, 255, .96);
-}
-
-#view-dashboard canvas {
-  max-height: 330px;
-}
-
-#view-employees .overflow-x-auto,
-#view-leaves .overflow-x-auto,
-#view-penalties .overflow-auto,
-#view-interview .overflow-x-auto {
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-
-#view-employees table,
-#view-leaves table,
-#view-penalties table,
-#view-interview table {
-  min-width: 720px;
-}
-
-#view-penalties > div > div:first-child,
-#view-interview #registrationSection,
-#view-interview #applicantsListCard,
-#view-interview #evaluationFormCard {
-  border-top: 4px solid var(--color-primary-600);
-}
-
-#view-penalties form button[type="submit"],
-#view-interview #submitBtn {
-  min-height: 50px;
-}
-
-#view-leaves .grid:first-child > div:nth-child(1) { border-right-color: #f59e0b; }
-#view-leaves .grid:first-child > div:nth-child(2) { border-right-color: #10b981; }
-#view-leaves .grid:first-child > div:nth-child(3) { border-right-color: #ef4444; }
-#view-leaves .grid:first-child > div:nth-child(4) { border-right-color: #3b82f6; }
-
-#view-docs .grid {
-  gap: 1.25rem;
-}
-
-#view-docs .grid > div {
-  min-height: 190px;
-  border: 1px solid var(--line);
-  transition: transform .2s ease, box-shadow .2s ease;
-}
-
-#view-docs .grid > div:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 34px rgba(15, 23, 42, .1);
-}
-
-#view-settings {
-  padding-top: .5rem;
-}
-
-#view-settings #admin-sections-container > div:not(:first-child) {
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-card);
-}
-
-#view-settings #modal-permissions-grid label {
-  min-height: 48px;
-  border-color: #e2e8f0;
-  background: #f8fafc;
-  transition: background .2s ease, border-color .2s ease;
-}
-
-#view-settings #modal-permissions-grid label:hover {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-}
-
-@media (max-width: 760px) {
-  #view-dashboard::before,
-  #view-employees::before,
-  #view-penalties::before,
-  #view-leaves::before {
-    font-size: 1.25rem;
-  }
-
-  #view-dashboard::after,
-  #view-employees::after,
-  #view-penalties::after,
-  #view-leaves::after {
-    font-size: .75rem;
-  }
-
-  #view-employees .flex.gap-2,
-  #view-leaves .flex.gap-2 {
-    width: 100%;
-    flex-wrap: wrap;
-  }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
