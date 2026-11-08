@@ -1090,12 +1090,22 @@ function loginEmployeeByCode(code) {
       };
 
     const data = sheet.getDataRange().getDisplayValues();
+    if (data.length < 2) return { success: false, message: "لا توجد بيانات موظفين." };
+    const headers = data[0];
+    const codeIndex = headers.findIndex(header => getColumnKey(header) === "EmployeeCode");
+    const nameIndex = headers.findIndex(header => getColumnKey(header) === "FullName_AR");
+    const statusIndex = headers.findIndex(header => getColumnKey(header) === "Status");
+    if (codeIndex < 0 || statusIndex < 0) {
+      return { success: false, message: "تعذر التحقق من حالة الموظف. راجع أعمدة EmployeeCode وStatus." };
+    }
 
-    // البحث عن الكود في العمود الأول (Index 0)
     for (let i = 1; i < data.length; i++) {
-      if (String(data[i][0]).trim() === String(code).trim()) {
-        const employeeName = data[i][2] || "";
-        const employeeCode = data[i][0];
+      if (String(data[i][codeIndex]).trim() === String(code).trim()) {
+        const status = String(data[i][statusIndex] || "").trim().toLowerCase();
+        const isActive = ["بالعمل", "active", "نشط", "على رأس العمل"].indexOf(status) !== -1;
+        if (!isActive) return { success: false, message: "الحساب غير متاح. يرجى مراجعة الموارد البشرية." };
+        const employeeName = nameIndex >= 0 ? data[i][nameIndex] || "" : "";
+        const employeeCode = data[i][codeIndex];
         return {
           success: true,
           name: employeeName,
