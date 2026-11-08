@@ -364,3 +364,149 @@ button,
     border: 1px solid rgba(255, 255, 255, 0.5); /* حدود بيضاء خفيفة */
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); /* ظل ناعم جداً */
 }
+
+/* صفحات النظام الداخلية: لكل مساحة شخصية بصرية مع شبكة متناسقة. */
+#view-dashboard,
+#view-employees,
+#view-penalties,
+#view-interview,
+#view-leaves,
+#view-docs,
+#view-settings {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+#view-dashboard::before,
+#view-employees::before,
+#view-penalties::before,
+#view-leaves::before {
+  display: block;
+  margin: 0 0 1.25rem;
+  color: #172033;
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+
+#view-dashboard::after,
+#view-employees::after,
+#view-penalties::after,
+#view-leaves::after {
+  display: block;
+  margin: -1rem 0 1.5rem;
+  color: #64748b;
+  font-size: .82rem;
+}
+
+#view-dashboard::before { content: "لوحة القيادة"; }
+#view-dashboard::after { content: "نظرة سريعة على مؤشرات القوى العاملة والأداء المالي"; }
+#view-employees::before { content: "بيانات الموظفين"; }
+#view-employees::after { content: "إدارة السجل الوظيفي والبحث والتصفية والتقارير"; }
+#view-penalties::before { content: "الجزاءات والمخالفات"; }
+#view-penalties::after { content: "تسجيل المخالفات ومراجعة التقارير والإجراءات"; }
+#view-leaves::before { content: "إدارة الإجازات"; }
+#view-leaves::after { content: "متابعة الطلبات والموافقات والأرصدة في مكان واحد"; }
+
+#view-dashboard > .grid:nth-of-type(2) > div,
+#view-leaves > .grid:first-child > div,
+#view-employees > #dept-stats-card {
+  min-height: 108px;
+  border: 1px solid var(--line);
+  border-right-width: 4px;
+  background: rgba(255, 255, 255, .96);
+}
+
+#view-dashboard canvas {
+  max-height: 330px;
+}
+
+#view-employees .overflow-x-auto,
+#view-leaves .overflow-x-auto,
+#view-penalties .overflow-auto,
+#view-interview .overflow-x-auto {
+  border: 1px solid var(--line);
+  border-radius: .9rem;
+}
+
+#view-employees table,
+#view-leaves table,
+#view-penalties table,
+#view-interview table {
+  min-width: 720px;
+}
+
+#view-penalties > div > div:first-child,
+#view-interview #registrationSection,
+#view-interview #applicantsListCard,
+#view-interview #evaluationFormCard {
+  border-top: 4px solid var(--color-primary-600);
+}
+
+#view-penalties form button[type="submit"],
+#view-interview #submitBtn {
+  min-height: 50px;
+}
+
+#view-leaves .grid:first-child > div:nth-child(1) { border-right-color: #f59e0b; }
+#view-leaves .grid:first-child > div:nth-child(2) { border-right-color: #10b981; }
+#view-leaves .grid:first-child > div:nth-child(3) { border-right-color: #ef4444; }
+#view-leaves .grid:first-child > div:nth-child(4) { border-right-color: #3b82f6; }
+
+#view-docs .grid {
+  gap: 1.25rem;
+}
+
+#view-docs .grid > div {
+  min-height: 190px;
+  border: 1px solid var(--line);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#view-docs .grid > div:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 34px rgba(15, 23, 42, .1);
+}
+
+#view-settings {
+  padding-top: .5rem;
+}
+
+#view-settings #admin-sections-container > div:not(:first-child) {
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+}
+
+#view-settings #modal-permissions-grid label {
+  min-height: 48px;
+  border-color: #e2e8f0;
+  background: #f8fafc;
+  transition: background .2s ease, border-color .2s ease;
+}
+
+#view-settings #modal-permissions-grid label:hover {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+}
+
+@media (max-width: 760px) {
+  #view-dashboard::before,
+  #view-employees::before,
+  #view-penalties::before,
+  #view-leaves::before {
+    font-size: 1.25rem;
+  }
+
+  #view-dashboard::after,
+  #view-employees::after,
+  #view-penalties::after,
+  #view-leaves::after {
+    font-size: .75rem;
+  }
+
+  #view-employees .flex.gap-2,
+  #view-leaves .flex.gap-2 {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
