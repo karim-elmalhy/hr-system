@@ -803,6 +803,7 @@
 
         // تشغيل دوال الصفحة
         if (view === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
+        if (view === 'employees' && typeof renderTable === 'function') renderTable(allData || []);
         if (view === 'docs' && typeof loadCompanyDocs === 'function') loadCompanyDocs();
         if (view === 'leaves' && typeof initLeavesManagement === 'function') initLeavesManagement();
         if (view === 'settings' && typeof initSettingsPage === 'function') initSettingsPage();
