@@ -1929,6 +1929,23 @@ function getColumnIndex(sheet, headerName) {
   return -1; // not found
 }
 
+function calculateAgeFromNationalId_(nationalId) {
+  const digits = String(nationalId || "").replace(/\\D/g, "");
+  if (digits.length !== 14) return "";
+  const centuryCode = Number(digits.charAt(0));
+  const century = centuryCode === 2 ? 1900 : (centuryCode === 3 ? 2000 : null);
+  if (!century) return "";
+  const year = century + Number(digits.substring(1, 3));
+  const month = Number(digits.substring(3, 5));
+  const day = Number(digits.substring(5, 7));
+  const birthDate = new Date(year, month - 1, day);
+  if (birthDate.getFullYear() !== year || birthDate.getMonth() !== month - 1 || birthDate.getDate() !== day) return "";
+  const today = new Date();
+  let age = today.getFullYear() - year;
+  if (today.getMonth() < month - 1 || (today.getMonth() === month - 1 && today.getDate() < day)) age--;
+  return age >= 0 && age <= 100 ? age : "";
+}
+
 function getEmployeesData() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   // تأكد أن اسم الشيت يطابق الموجود عندك بالضبط
@@ -1964,8 +1981,10 @@ function getEmployeesData() {
       if (canonicalKey && obj[canonicalKey] === undefined) obj[canonicalKey] = value;
     }
 
-    // إضافة حقول محسوبة (اختياري)
-    // مثلاً: حساب حالة العقد أو التنبيهات هنا
+    // Derive age only when the sheet does not already provide a valid age field.
+    if (!obj.Age_Years && obj.NationalID) {
+      obj.Age_Years = calculateAgeFromNationalId_(obj.NationalID);
+    }
 
     result.push(obj);
   }
