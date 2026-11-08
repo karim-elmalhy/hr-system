@@ -262,7 +262,7 @@ body { font-family:'IBM Plex Sans Arabic','Cairo',sans-serif; }
   --app-line:#334155;
   --app-shadow:0 12px 30px rgba(0,0,0,.22);
 }
-.dark html, .dark body,
+html.dark, html.dark body,
 .dark #main-app, .dark #main-app main,
 .dark #main-app main > .flex-1 {
   background-color:var(--app-bg)!important;
@@ -322,8 +322,8 @@ body { font-family:'IBM Plex Sans Arabic','Cairo',sans-serif; }
 .dark #main-app .border-gray-200,
 .dark #main-app .border-gray-300 { border-color:#334155!important; }
 .dark #main-app .divide-gray-100 > :not([hidden]) ~ :not([hidden]) { border-color:#334155!important; }
-.dark #main-app .hover\\:bg-gray-50:hover { background-color:#243247!important; }
-.dark #main-app .hover\\:bg-gray-100:hover { background-color:#26364c!important; }
+.dark #main-app [class~="hover:bg-gray-50"]:hover { background-color:#243247!important; }
+.dark #main-app [class~="hover:bg-gray-100"]:hover { background-color:#26364c!important; }
 .dark #view-dashboard .bg-green-50,
 .dark #view-dashboard .bg-blue-50,
 .dark #view-dashboard .bg-purple-50,
