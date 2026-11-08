@@ -393,7 +393,7 @@ html.dark #employee-portal .bg-green-50{background:#17382f!important}
 .hr-intro-mark span{font-size:20px;font-weight:900;letter-spacing:-1px}
 .hr-intro-mark small{font:700 7px/1.4 Arial,sans-serif;letter-spacing:1.2px;opacity:.72}
 #view-employees>div.bg-white:first-of-type{border-radius:18px!important}
-#view-employees .flex.flex-col.md\\:flex-row.justify-between{align-items:center!important}
+#view-employees [class*="md:flex-row"].justify-between{align-items:center!important}
 #view-interview>div:first-child{padding:0!important;background:transparent!important;min-height:0!important}
 #view-interview>div:first-child>div:first-child{padding:20px 24px!important;border:1px solid var(--hr-line);border-radius:18px;background:linear-gradient(112deg,#fff,#f5f7ff);box-shadow:var(--hr-shadow)}
 #view-interview>div:first-child h1{font-size:23px!important}
