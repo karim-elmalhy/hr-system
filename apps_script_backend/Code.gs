@@ -27,12 +27,9 @@ function doPost(e) {
 
   try {
     var body = {};
-    if (
-      e &&
-      e.postData &&
-      e.postData.type &&
-      e.postData.type.indexOf("json") !== -1
-    ) {
+    if (e && e.postData && e.postData.contents) {
+      // Apps Script may receive a cross-origin JSON body as text/plain.
+      // Parse the body regardless of MIME type.
       body = JSON.parse(e.postData.contents || "{}");
     } else if (e && e.parameter && e.parameter.action) {
       // fallback to form-encoded
@@ -66,6 +63,14 @@ function doPost(e) {
       "askAI",
       "getSystemUsers",
       "getSystemSettings",
+      "checkLogin",
+      "loginEmployeeByCode",
+      "submitLeaveRequest",
+      "processLeaveRequest",
+      "changeUserPassword",
+      "saveSystemUser",
+      "deleteSystemUser",
+      "saveGeneralSettings",
     ];
 
     if (allowed.indexOf(action) === -1 || typeof this[action] !== "function") {
@@ -1538,6 +1543,8 @@ function checkLogin(username, password) {
           penalties: row[8] === "TRUE", // I
           settings: row[9] === "TRUE", // J
           interview: row[10] === "TRUE", // K
+          leaves: row[11] === "TRUE", // L
+          docs: row[12] === "TRUE", // M
         },
       };
     }
@@ -1726,22 +1733,14 @@ function getCurrentUserProfile() {
 }
 
 // تغيير كلمة المرور للمستخدم
-function changeUserPassword(oldPass, newPass) {
+function changeUserPassword(username, oldPass, newPass) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_USERS); // تأكد أن اسم الشيت SystemUsers
   const data = sheet.getDataRange().getDisplayValues();
 
-  // ملاحظة: في التطبيقات الحقيقية يجب تمرير اسم المستخدم من الـ Client
-  // هنا سنفترض أننا نغير لأول مستخدم "Admin" كمثال،
-  // **يجب عليك تعديل هذا الجزء ليعرف من هو المستخدم الحالي**
-  // الحل الأبسط: اطلب من المستخدم إدخال اسم المستخدم أيضاً في الفورم، أو خزنه في variable في الـ JS
-
-  // سأقوم بتحديث بسيط: البحث عن المستخدم ومطابقة الباسورد القديم
-  let userFound = false;
-
   for (let i = 1; i < data.length; i++) {
-    // العمود 1: Username, العمود 2: Password
-    if (data[i][1] == oldPass) {
+    // لا نغيّر إلا حساب المستخدم الذي طلب العملية.
+    if (String(data[i][0]).toLowerCase() === String(username).toLowerCase() && data[i][1] == oldPass) {
       sheet.getRange(i + 1, 2).setValue(newPass);
       return { success: true };
     }
@@ -1843,7 +1842,6 @@ function getSystemUsers() {
     if (row[0]) {
       users.push({
         username: row[0],
-        password: row[1],
         role: row[2],
         empCode: row[3],
         department: row[4],

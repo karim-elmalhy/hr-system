@@ -51,11 +51,11 @@
           })
             .then((resp) => resp.json())
             .then((data) => {
-              if (data && data.status === "success" || data.success) { 
+              if (data && (data.status === "success" || data.success === true)) {
                  // ملاحظة: تأكد أن السكربت يرجع success أو status حسب كودك
                  return success(data.result || data.data || data); 
               }
-              return failure(data || new Error("Unexpected response"));
+              return failure(new Error((data && (data.error || data.message)) || "Unexpected response"));
             })
             .catch((err) => failure(err));
 

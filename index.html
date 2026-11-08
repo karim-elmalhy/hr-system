@@ -2,6 +2,8 @@
 <html dir="rtl" lang="ar">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <base target="_top">
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
   <script src="js/config.js"></script>
@@ -699,6 +701,7 @@
         btn.innerHTML = `<span>⏳ جاري التحقق...</span>`;
         btn.disabled = true;
 
+        const loginMethod = mode === 'employee' ? 'loginEmployeeByCode' : 'checkLogin';
         google.script.run
             .withSuccessHandler((res) => {
                 btn.innerHTML = originalContent;
@@ -728,7 +731,7 @@
                 if(errorDiv) errorDiv.classList.remove('hidden');
                 console.error(err);
             })
-            .checkLogin(username, password);
+            [loginMethod](...(mode === 'employee' ? [username] : [username, password]));
     }
 
     function logout() {

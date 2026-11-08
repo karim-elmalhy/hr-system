@@ -14,11 +14,175 @@
   --color-primary-700: #4338ca;
   --color-primary-800: #3730a3;
   --color-primary-900: #312e81;
+  --surface: #ffffff;
+  --surface-muted: #f8fafc;
+  --ink: #172033;
+  --ink-muted: #64748b;
+  --line: #e2e8f0;
+  --radius-card: 1rem;
+  --shadow-card: 0 10px 30px rgba(15, 23, 42, .06);
 }
 
 /* خطوط وأساليب عامة */
 body {
   font-family: Cairo, sans-serif;
+  background: #f1f5f9;
+  color: var(--ink);
+  letter-spacing: -.01em;
+}
+
+/* طبقة هوية بصرية موحّدة فوق أصناف Tailwind المستخدمة في الصفحات. */
+#main-app {
+  background: #f1f5f9;
+}
+
+#main-app main > header {
+  min-height: 4.5rem;
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, .03), 0 8px 24px rgba(15, 23, 42, .04);
+}
+
+#main-app main > div.flex-1 {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(99, 102, 241, .07), transparent 24rem),
+    #f8fafc;
+}
+
+#main-sidebar {
+  background: linear-gradient(180deg, #172554 0%, #111827 72%, #0f172a 100%);
+  border-left: 1px solid rgba(255, 255, 255, .08);
+}
+
+#main-sidebar nav button {
+  min-height: 46px;
+  border: 1px solid transparent;
+}
+
+#main-sidebar nav button:hover,
+#main-sidebar nav button.bg-virginia-700 {
+  border-color: rgba(255, 255, 255, .12);
+  background: rgba(255, 255, 255, .12);
+}
+
+#main-app .bg-white {
+  border-color: var(--line);
+}
+
+#main-app .rounded-lg,
+#main-app .rounded-xl,
+#main-app .rounded-2xl {
+  border-radius: var(--radius-card);
+}
+
+#main-app .shadow,
+#main-app .shadow-sm,
+#main-app .shadow-md,
+#main-app .shadow-lg,
+#main-app .shadow-xl,
+#main-app .shadow-2xl {
+  box-shadow: var(--shadow-card);
+}
+
+#main-app input:not([type="checkbox"]):not([type="radio"]),
+#main-app select,
+#main-app textarea {
+  min-height: 44px;
+  border-color: #cbd5e1;
+  background: #fff;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+#main-app input:not([type="checkbox"]):not([type="radio"]):focus,
+#main-app select:focus,
+#main-app textarea:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary-500) 15%, transparent);
+}
+
+#main-app table thead {
+  background: #f8fafc;
+  color: #475569;
+}
+
+#main-app table th {
+  white-space: nowrap;
+  font-size: .72rem;
+  letter-spacing: .02em;
+}
+
+#main-app table tbody tr {
+  transition: background-color .18s ease;
+}
+
+#main-app table tbody tr:hover {
+  background: #f8fafc;
+}
+
+#settings-sections-container,
+#admin-sections-container > div,
+#view-settings .bg-white {
+  scroll-margin-top: 1rem;
+}
+
+#view-settings h2 {
+  letter-spacing: -.03em;
+}
+
+#view-settings .bg-white {
+  background: rgba(255, 255, 255, .94);
+}
+
+#view-settings .border-b {
+  border-color: var(--line);
+}
+
+/* تحسين مظهر شاشة الدخول لتكون بوابة موحّدة مع لوحة النظام. */
+#login-screen {
+  background-color: #0f172a;
+}
+
+#login-screen > div:nth-child(2) {
+  box-shadow: 0 24px 70px rgba(15, 23, 42, .28);
+}
+
+#login-screen input {
+  min-height: 46px;
+}
+
+/* تركيز واضح لمستخدمي لوحة المفاتيح. */
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid var(--color-primary-300);
+  outline-offset: 2px;
+}
+
+button,
+[role="button"] {
+  min-height: 44px;
+}
+
+@media (max-width: 640px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  #login-screen > div:nth-child(2) {
+    margin: 1rem;
+  }
+
+  #login-screen .p-8 {
+    padding: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 .app-title-display {
   font-size: 14px;
