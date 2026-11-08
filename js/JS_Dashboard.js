@@ -136,6 +136,9 @@ function renderDashboard() {
   const rate = filtered.length ? ((leftEmpsCount / filtered.length) * 100).toFixed(1) : 0;
   updateText('kpi-turnover', rate + "%");
 
+  // لوحة القراءة التنفيذية الجديدة؛ تعتمد على نفس نتائج الفلترة الحالية.
+  updateAdvancedInsights(filtered);
+
   // 3. التحليل المالي
   const activeOnly = filtered.filter(d => d._isActive); 
   let totalGross = 0, totalNet = 0, deptCost = {};
@@ -175,6 +178,35 @@ function renderDashboard() {
     if(a > 0) { if(a < 30) ages['20-30']++; else if(a < 40) ages['30-40']++; else if(a < 50) ages['40-50']++; else ages['50+']++; }
   });
   drawChart('chartAge', 'bar', ages, 'الفئات العمرية');
+}
+
+function updateAdvancedInsights(filtered) {
+  const total = filtered.length;
+  const active = filtered.filter(d => d._isActive).length;
+  const activeRate = total ? Math.round((active / total) * 100) : 0;
+  const departments = {};
+  filtered.forEach(emp => {
+    const name = emp.DepartmentName || 'غير محدد';
+    departments[name] = (departments[name] || 0) + 1;
+  });
+  const topDept = Object.entries(departments).sort((a, b) => b[1] - a[1])[0];
+  const ages = filtered.map(emp => parseFloat(emp.Age_Years)).filter(age => age > 0 && age < 100);
+  const averageAge = ages.length ? (ages.reduce((sum, age) => sum + age, 0) / ages.length).toFixed(1) : '—';
+  const complete = filtered.filter(emp => emp.FullName_AR && emp.DepartmentName && emp.BranchName && emp.Status).length;
+  const quality = total ? Math.round((complete / total) * 100) : 0;
+
+  updateText('adv-active', active.toLocaleString());
+  updateText('adv-active-rate', `${activeRate}% من الإجمالي`);
+  updateText('adv-top-dept', topDept ? topDept[0] : '—');
+  updateText('adv-top-dept-count', topDept ? `${topDept[1].toLocaleString()} موظف` : 'لا توجد بيانات');
+  updateText('adv-average-age', averageAge === '—' ? averageAge : `${averageAge} سنة`);
+  updateText('adv-data-quality', `${quality}%`);
+
+  const status = document.getElementById('advanced-data-status');
+  if (status) {
+    status.textContent = total ? `● ${total.toLocaleString()} سجل في العرض` : '● لا توجد بيانات للعرض';
+    status.className = `inline-flex items-center gap-2 text-xs font-bold rounded-full px-3 py-2 ${total ? 'text-green-700 bg-green-50 border border-green-100' : 'text-gray-600 bg-gray-100 border border-gray-200'}`;
+  }
 }
 
 // ============================================================
