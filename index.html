@@ -36,6 +36,7 @@
   </script>
   <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/9187/9187604.png" type="image/png">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/design-system.css">
 </head>
 
 <body
@@ -872,49 +873,21 @@
     function applySystemSettings() {
         google.script.run.withSuccessHandler(settings => {
             if (!settings) return;
-            document.title = settings.appName || "HR System";
-            
+            const appName = settings.appName || "Smart HR System";
+            document.title = appName;
             const sidebarTitle = document.querySelector('aside h1');
-            if(sidebarTitle) sidebarTitle.innerText = settings.appName;
+            if (sidebarTitle) sidebarTitle.innerText = appName;
             const loginTitle = document.querySelector('#login-screen h2');
-            if(loginTitle) loginTitle.innerText = settings.appName;
-
-            const savedColor = settings.themeColor || '#4f46e5'; 
-            
-            // ✅ تصحيح الخطأ هنا: التأكد من وجود الدالة قبل استدعائها
-            if (typeof generatePalette === 'function') {
-                generatePalette(savedColor);
-            }
-
+            if (loginTitle) loginTitle.innerText = appName;
             const appNameField = document.getElementById('setting-app-name');
-            if (appNameField) appNameField.value = settings.appName || "";
-            const themeColorField = document.getElementById('setting-theme-color');
-            if (themeColorField) themeColorField.value = savedColor;
-            const picker = document.getElementById('color-picker');
-            if(picker) picker.value = savedColor;
+            if (appNameField) appNameField.value = appName;
         }).getSystemSettings();
     }
 
-    function saveSettings() {
-        const btn = document.getElementById('btn-save-settings');
-        if(btn) { btn.innerText = "جاري الحفظ..."; btn.disabled = true; }
-
-        const newSettings = {
-            appName: document.getElementById('setting-app-name').value,
-            themeColor: document.getElementById('setting-theme-color').value
-        };
-
-        google.script.run.withSuccessHandler(() => {
-            alert("✅ تم حفظ الإعدادات بنجاح!");
-            if(btn) { btn.innerText = "حفظ التغييرات"; btn.disabled = false; }
-            closeSettingsModal();
-            applySystemSettings();
-            if (typeof renderDashboard === 'function') renderDashboard();
-        }).saveSystemSettings(newSettings);
+    function openSettingsModal() {
+        document.getElementById('settings-modal')?.classList.remove('hidden');
     }
-
-    function openSettingsModal() { document.getElementById('settings-modal')?.classList.remove('hidden'); }
-    function closeSettingsModal() { 
+    function closeSettingsModal() {
         document.getElementById('settings-modal')?.classList.add('hidden');
         document.getElementById('user-modal')?.classList.add('hidden');
     }
