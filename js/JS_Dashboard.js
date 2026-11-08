@@ -123,9 +123,9 @@ function processData(response) {
     });
 
     populateFilters();
-    renderDashboard();
+    if (document.getElementById('filter-branch')) renderDashboard();
 
-    if (typeof initTurnoverDates === 'function') initTurnoverDates();
+    if (typeof initTurnoverDates === 'function' && document.getElementById('date-start')) initTurnoverDates();
     if (typeof populateTurnoverFilters === 'function') populateTurnoverFilters();
     if (typeof calcTurnover === 'function') calcTurnover();
 
