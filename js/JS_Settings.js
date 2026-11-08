@@ -1,3 +1,4 @@
+function escapeSettingsHTML(value) { return String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch])); }
 // ==============================================================================
 // إعدادات ثابتة للهوية وإدارة حسابات النظام
 // لا توجد أدوات لتغيير ألوان النظام أو تدرجات القائمة من واجهة الإعدادات.
@@ -131,15 +132,15 @@ function renderUsersTable(users) {
             : '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold">Manager</span>';
 
         row.innerHTML = `
-            <td class="p-4 font-bold text-gray-800">${user.username}</td>
+            <td class="p-4 font-bold text-gray-800">${escapeSettingsHTML(user.username)}</td>
             <td class="p-4">${roleBadge}</td>
-            <td class="p-4 font-mono text-xs text-gray-500">${user.empCode || '-'}</td>
-            <td class="p-4 text-sm">${user.department || 'الكل'}</td>
+            <td class="p-4 font-mono text-xs text-gray-500">${escapeSettingsHTML(user.empCode || '-')}</td>
+            <td class="p-4 text-sm">${escapeSettingsHTML(user.department || 'الكل')}</td>
             <td class="p-4 flex gap-2 justify-end">
-                <button onclick='openUserModal(${JSON.stringify(user)})' class="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition" title="تعديل">
+                <button onclick='openUserModal(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(user))}')))' class="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition" title="تعديل">
                     ✏️
                 </button>
-                <button onclick="deleteUser('${user.username}')" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition" title="حذف">
+                <button onclick="deleteUser('${escapeSettingsHTML(user.username)}')" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition" title="حذف">
                     🗑️
                 </button>
             </td>
@@ -250,6 +251,7 @@ function saveUser() {
 }
 
 function deleteUser(username) {
+    username = decodeURIComponent(String(username));
     if (!confirm("هل أنت متأكد من حذف المستخدم: " + username + "؟")) return;
 
     google.script.run
