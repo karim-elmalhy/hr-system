@@ -92,7 +92,7 @@ function renderTable(data) {
       
       tr.innerHTML = `
           <td class="p-3 font-mono font-bold text-virginia-600">${escapeEmployeeHTML(emp.EmployeeCode || '-')}</td>
-          <td class="p-3 font-bold text-gray-800 whitespace-normal min-w-[150px]">${emp.FullName_AR || 'بدون اسم'}</td>
+          <td class="p-3 font-bold text-gray-800 whitespace-normal min-w-[150px]">${escapeEmployeeHTML(emp.FullName_AR || 'بدون اسم')}</td>
           <td class="p-3 text-center">${statusBadge}</td>
           <td class="p-3 text-gray-600">${escapeEmployeeHTML(emp.BranchName || '-')}</td>
           <td class="p-3 text-gray-600">${escapeEmployeeHTML(emp.DepartmentName || '-')}</td>
@@ -152,8 +152,8 @@ function populateEmployeesFilters(data) {
     const fill = (id, list, lbl) => {
         const el = document.getElementById(id);
         if (el && (el.options.length <= 1 || el.value === "")) {
-            el.innerHTML = `<option value="">${lbl}</option>`;
-            list.forEach(i => el.innerHTML += `<option value="${encodeURIComponent(String(i))}">${escapeEmployeeHTML(i)}</option>`);
+            el.innerHTML = `<option value="">${escapeEmployeeHTML(lbl)}</option>`;
+            list.forEach(i => el.innerHTML += `<option value="${escapeEmployeeHTML(i)}">${escapeEmployeeHTML(i)}</option>`);
         }
     };
 
