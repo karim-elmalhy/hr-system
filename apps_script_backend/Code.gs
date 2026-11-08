@@ -94,7 +94,6 @@ function doPost(e) {
       if (!session) return sendJSON({ success: false, error: "AUTH_REQUIRED" });
 
       var permissionByAction = {
-        getEmployeesDataForUser: "emp_view",
         addEmployee: "emp_edit",
         updateEmployee: "emp_edit",
         getPenaltyRules: "penalties",
@@ -119,6 +118,12 @@ function doPost(e) {
         changeUserPassword: "settings"
       };
       var requiredPermission = permissionByAction[action];
+      if (action === "getEmployeesDataForUser" && session.role !== "Admin") {
+        var dashboardPermissions = session.permissions || {};
+        if (!dashboardPermissions.emp_view && !dashboardPermissions.dashboard) {
+          return sendJSON({ success: false, error: "FORBIDDEN" });
+        }
+      }
       var employeeSelfServiceActions = ["getEmployeeRequests", "getEmployeeBalance", "submitLeaveRequest"];
       var isEmployeeSelfService = session.role === "Employee" &&
         employeeSelfServiceActions.indexOf(action) !== -1;
@@ -159,6 +164,29 @@ function doPost(e) {
       result = this[action].apply(null, params);
     } else {
       result = this[action].apply(null, [params]);
+    }
+
+    // Dashboard-only users receive aggregate-ready fields, never employee contact or identity data.
+    if (action === "getEmployeesDataForUser" && session && session.role !== "Admin" &&
+        !(session.permissions && session.permissions.emp_view) && Array.isArray(result)) {
+      result = result.map(function (emp) {
+        return {
+          BranchName: emp.BranchName || "",
+          DepartmentName: emp.DepartmentName || "",
+          Status: emp.Status || "",
+          Is_Seasonal: emp.Is_Seasonal || "",
+          EmploymentType: emp.EmploymentType || "",
+          ContractType: emp.ContractType || "",
+          GrossSalary: emp.GrossSalary || "",
+          NetSalary: emp.NetSalary || "",
+          Gender: emp.Gender || "",
+          Age_Years: emp.Age_Years || "",
+          HireDate: emp.HireDate || "",
+          ExitDate: emp.ExitDate || "",
+          HealthCertificateExpiryDate: emp.HealthCertificateExpiryDate || "",
+          FullName_AR: "موظف"
+        };
+      });
     }
 
     return sendJSON({ success: true, action: action, result: result });
