@@ -140,7 +140,7 @@ function renderUsersTable(users) {
                 <button onclick='openUserModal(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(user))}')))' class="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition" title="تعديل">
                     ✏️
                 </button>
-                <button onclick="deleteUser('${escapeSettingsHTML(user.username)}')" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition" title="حذف">
+                <button onclick="deleteUser('${encodeURIComponent(String(user.username))}')" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 p-2 rounded-lg transition" title="حذف">
                     🗑️
                 </button>
             </td>
