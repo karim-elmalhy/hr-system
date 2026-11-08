@@ -46,7 +46,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* Universal module surfaces */
 #view-container .bg-white{background:var(--hr-surface)!important}
-#view-container .rounded,.#view-container .rounded-lg{border-radius:var(--hr-radius-sm)!important}
+#view-container .rounded,#view-container .rounded-lg{border-radius:var(--hr-radius-sm)!important}
 #view-container .rounded-xl,#view-container .rounded-2xl{border-radius:var(--hr-radius)!important}
 #view-container .shadow,#view-container .shadow-sm{box-shadow:var(--hr-shadow)!important}
 #view-container .shadow-lg,#view-container .shadow-xl{box-shadow:var(--hr-shadow-lg)!important}
