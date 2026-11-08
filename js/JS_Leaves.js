@@ -124,6 +124,7 @@ function filterLeavesTable() {
 }
 
 function openLeaveModal(id, action) {
+    id = decodeURIComponent(String(id));
     document.getElementById('modal-req-id').value = id;
     document.getElementById('modal-action').value = action;
     document.getElementById('modal-note').value = ""; 
