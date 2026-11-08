@@ -94,6 +94,7 @@ function doPost(e) {
       if (!session) return sendJSON({ success: false, error: "AUTH_REQUIRED" });
 
       var permissionByAction = {
+        askAI: "dashboard",
         addEmployee: "emp_edit",
         updateEmployee: "emp_edit",
         getPenaltyRules: "penalties",
