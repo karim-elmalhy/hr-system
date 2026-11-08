@@ -236,7 +236,6 @@ body { font-family:'IBM Plex Sans Arabic','Cairo',sans-serif; }
 #view-dashboard .advanced-insights { min-width:0; }
 #view-dashboard canvas { display:block; }
 @media(max-width:520px) {
-  #view-employees .flex.flex-col.md\\:flex-row { align-items:stretch; }
   #view-employees #table-count { align-self:flex-start; }
   #main-app main > header { padding-inline:12px; }
 }
