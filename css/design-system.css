@@ -239,3 +239,13 @@ body { font-family:'IBM Plex Sans Arabic','Cairo',sans-serif; }
   #view-employees #table-count { align-self:flex-start; }
   #main-app main > header { padding-inline:12px; }
 }
+
+/* Keep the existing dark-mode switch readable with the new fixed brand tokens. */
+.dark #main-app .text-gray-800,
+.dark #main-app .text-gray-900 { color:#e2e8f0!important; }
+.dark #main-app .text-gray-500,
+.dark #main-app .text-gray-600 { color:#94a3b8!important; }
+.dark #main-app .border-gray-100,
+.dark #main-app .border-gray-200 { border-color:#334155!important; }
+.dark #main-app .bg-gray-50,
+.dark #main-app .bg-gray-100 { background-color:#172338!important; }
