@@ -1875,6 +1875,9 @@ function getCurrentUserProfile() {
 
 // تغيير كلمة المرور للمستخدم
 function changeUserPassword(username, oldPass, newPass) {
+  if (String(newPass || "").length < 8) {
+    return { success: false, message: "كلمة المرور الجديدة يجب ألا تقل عن 8 أحرف." };
+  }
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_USERS); // تأكد أن اسم الشيت SystemUsers
   const data = sheet.getDataRange().getDisplayValues();
@@ -2031,6 +2034,15 @@ function getSystemUsers() {
 }
 
 function saveSystemUser(userData) {
+  if (!userData || !String(userData.username || "").trim()) {
+    return { success: false, message: "اسم المستخدم مطلوب." };
+  }
+  if (String(userData.password || "").trim() && String(userData.password).length < 8) {
+    return { success: false, message: "كلمة المرور يجب ألا تقل عن 8 أحرف." };
+  }
+  if (!userData.permissions || typeof userData.permissions !== "object") {
+    return { success: false, message: "بيانات الصلاحيات غير مكتملة." };
+  }
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName("SystemUsers");
 
