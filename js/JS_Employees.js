@@ -268,20 +268,30 @@ function handleFormSubmit(e) {
   btn.innerText = "جاري الحفظ...";
   btn.disabled = true;
 
+  const mode = document.getElementById('form-mode')?.value || 'add';
+  if (mode === 'edit') {
+    dataObj.OriginalEmployeeCode = document.getElementById('original-code')?.value || dataObj.EmployeeCode;
+  }
+  const action = mode === 'edit' ? 'updateEmployee' : 'addEmployee';
+
   google.script.run
     .withSuccessHandler((res) => {
        btn.innerText = originalText;
        btn.disabled = false;
-       if(res.success) {
+       if(res && res.success) {
            alert("✅ تم الحفظ بنجاح!");
            closeModal();
-           // إعادة تحميل البيانات من السيرفر لتحديث الجدول والكاش
-           if(typeof loadData === 'function') loadData(); 
+           if(typeof loadData === 'function') loadData();
        } else {
-           alert("❌ خطأ: " + res.message);
+           alert("❌ خطأ: " + (res?.message || "تعذر حفظ بيانات الموظف"));
        }
     })
-    .saveEmployeeData(dataObj); // تأكد من وجود دالة saveEmployeeData في الباكيند
+    .withFailureHandler((err) => {
+       btn.innerText = originalText;
+       btn.disabled = false;
+       alert("❌ تعذر الاتصال بالخادم: " + (err?.message || err));
+    })
+    [action](dataObj);
 }
 
 // ==========================================
