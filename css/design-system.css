@@ -4,6 +4,17 @@
    ============================================================================= */
 :root {
   color-scheme: light;
+  /* Tailwind virginia-* utilities now resolve to the fixed indigo brand. */
+  --color-primary-50:#eef2ff;
+  --color-primary-100:#e0e7ff;
+  --color-primary-200:#c7d2fe;
+  --color-primary-300:#a5b4fc;
+  --color-primary-400:#818cf8;
+  --color-primary-500:#6366f1;
+  --color-primary-600:#4f46e5;
+  --color-primary-700:#4338ca;
+  --color-primary-800:#3730a3;
+  --color-primary-900:#312e81;
   --app-bg: #f4f6fb;
   --app-surface: #ffffff;
   --app-surface-muted: #f8fafc;
@@ -102,4 +113,107 @@ body { font-family:'IBM Plex Sans Arabic','Cairo',sans-serif; }
 }
 @media(prefers-reduced-motion:reduce) {
   *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important; }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Module-level refinements — Dashboard, people, attendance, leave, hiring, docs
+   --------------------------------------------------------------------------- */
+#view-dashboard, #view-employees, #view-penalties, #view-leaves,
+#view-interview, #view-docs, #view-settings { color:var(--app-ink); }
+#view-dashboard .grid > .bg-white,
+#view-dashboard .bg-white.rounded-lg,
+#view-employees .bg-white,
+#view-penalties .bg-white,
+#view-leaves .bg-white,
+#view-interview .bg-white,
+#view-docs .bg-white {
+  border:1px solid var(--app-line); border-radius:16px; box-shadow:var(--app-shadow);
+}
+#view-dashboard .grid > .bg-white {
+  position:relative; overflow:hidden; min-height:112px;
+}
+#view-dashboard .grid > .bg-white h3,
+#view-dashboard .grid > .bg-white .text-3xl { letter-spacing:-.035em; }
+#view-dashboard canvas { max-width:100%; }
+#view-dashboard select, #view-dashboard input,
+#view-employees select, #view-employees input,
+#view-leaves input, #view-interview input, #view-interview select,
+#view-penalties input, #view-penalties select {
+  min-height:42px; border-radius:10px; border-color:#dce3ed;
+}
+#view-employees #search-input { min-width:220px; }
+#view-employees #employeesTableBody tr,
+#view-leaves #leaves-table-body tr,
+#view-penalties #reportTableBody tr,
+#view-interview #applicantsTableBody tr { transition:background .15s ease; }
+#view-employees #employeesTableBody tr:hover,
+#view-leaves #leaves-table-body tr:hover,
+#view-penalties #reportTableBody tr:hover,
+#view-interview #applicantsTableBody tr:hover { background:#f8faff; }
+#view-employees table, #view-leaves table, #view-penalties table,
+#view-interview table { border-collapse:separate; border-spacing:0; }
+#view-employees thead th, #view-leaves thead th,
+#view-penalties thead th, #view-interview thead th {
+  padding-top:14px; padding-bottom:14px; color:#475569;
+  background:#f8fafc; font-weight:800; white-space:nowrap;
+}
+#view-employees tbody td, #view-leaves tbody td,
+#view-penalties tbody td, #view-interview tbody td {
+  padding-top:12px; padding-bottom:12px; vertical-align:middle;
+}
+#view-penalties form label, #view-interview form label,
+#view-employees form label { color:#475569; font-weight:700; }
+#view-penalties #penaltyForm {
+  background:linear-gradient(180deg,#fff 0%,#fff 78%,#fff8f8 100%);
+  border-top:3px solid #ef4444;
+}
+#view-leaves [id^="stat-"] { font-variant-numeric:tabular-nums; }
+#view-leaves #leave-search { min-width:220px; }
+#view-interview > div:first-child {
+  min-height:0; padding:0; background:transparent;
+}
+#view-interview h1 { font-size:clamp(1.35rem,2vw,1.8rem); letter-spacing:-.035em; }
+#view-interview h2 { font-weight:800; letter-spacing:-.025em; }
+#view-interview #registrationSection,
+#view-interview #applicantsListCard,
+#view-interview #evaluationFormCard {
+  border:1px solid var(--app-line); border-radius:18px; box-shadow:var(--app-shadow);
+}
+#view-interview #applicantForm,
+#view-interview #starEvalForm { gap:18px; }
+#view-docs #docs-grid > * {
+  border:1px solid var(--app-line); border-radius:16px; background:#fff;
+  box-shadow:var(--app-shadow); transition:transform .18s ease,box-shadow .18s ease;
+}
+#view-docs #docs-grid > *:hover {
+  transform:translateY(-3px); box-shadow:0 16px 36px rgba(15,23,42,.09);
+}
+#view-settings #admin-sections-container > div,
+#view-settings #admin-sections-container > section {
+  border-radius:16px;
+}
+#view-settings #users-table-body tr:hover { background:#f8faff; }
+#view-settings button, #view-docs button,
+#view-interview button, #view-penalties button,
+#view-leaves button, #view-employees button { font-weight:700; }
+#main-app .overflow-x-auto { scrollbar-width:thin; scrollbar-color:#cbd5e1 transparent; }
+#main-app .overflow-x-auto::-webkit-scrollbar { height:8px;width:8px; }
+#main-app .overflow-x-auto::-webkit-scrollbar-thumb { background:#cbd5e1;border-radius:20px; }
+#main-app .overflow-x-auto::-webkit-scrollbar-track { background:transparent; }
+#main-app .bg-red-600, #main-app .bg-red-700,
+#main-app .bg-red-500 { color:#fff; }
+#main-app .text-gray-500 { color:#64748b; }
+#main-app .text-gray-800, #main-app .text-gray-900 { color:#172033; }
+#main-app .border-gray-100, #main-app .border-gray-200 { border-color:var(--app-line); }
+@media(max-width:767px) {
+  #view-dashboard .grid, #view-leaves .grid { gap:12px; }
+  #view-employees .overflow-x-auto,
+  #view-leaves .overflow-x-auto,
+  #view-penalties .overflow-x-auto,
+  #view-interview .overflow-x-auto { border-radius:12px; }
+  #view-interview .mb-8 { align-items:stretch; }
+  #view-interview .mb-8 > div:last-child { flex-wrap:wrap; }
+  #view-interview .mb-8 button { flex:1 1 100%; }
+  #view-docs #docs-grid { grid-template-columns:1fr; }
 }

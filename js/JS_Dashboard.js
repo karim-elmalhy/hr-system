@@ -34,7 +34,7 @@ function processData(response) {
   console.log("📥 البيانات الخام الواصلة:", response);
 
   // --- 🛡️ شبكة الأمان: تجاهل بيانات الإعدادات إذا وصلت بالخطأ ---
-  if (response && (response.appName || response.themeColor)) {
+  if (response && response.appName) {
       console.warn("⚠️ تم استلام بيانات الإعدادات في معالج الموظفين. تم التجاهل بنجاح.");
       return; // توقف هنا ولا تكمل حتى لا يحدث Crash
   }
@@ -238,7 +238,7 @@ function drawChart(id, type, data, lbl, isCurrency = false) {
     
     if (chartInstances[id]) chartInstances[id].destroy();
     
-    const baseColor = localStorage.getItem('themeColor') || '#4f46e5';
+    const baseColor = '#4f46e5'; // Fixed Modern SaaS brand color
 
     const hexToRgba = (hex, alpha) => {
         let r = parseInt(hex.slice(1, 3), 16),
@@ -477,41 +477,4 @@ function calcTurnover() {
   updateText('to-kpi-rate', rate.toFixed(1) + '%');
 }
 // ============================================================
-// 🛠️ دوال التفاعل مع واجهة الإعدادات (UI Handlers)
-// ============================================================
-
-/**
- * دالة المعاينة الحية عند تغيير اللون من الـ Picker
- * يتم استدعاؤها عبر oninput="previewColor(this.value)"
- */
-function previewColor(color) {
-    // 1. تحديث نص كود اللون
-    const codeDisplay = document.getElementById('color-code-display');
-    if (codeDisplay) codeDisplay.innerText = color;
-
-    // 2. تحديث دائرة المعاينة
-    const previewCircle = document.getElementById('color-preview-circle');
-    if (previewCircle) previewCircle.style.backgroundColor = color;
-
-    // 3. تطبيق الثيم فورياً لرؤية النتيجة
-    const isGradient = document.getElementById('setting-sidebar-gradient').checked;
-    applyTheme(color, isGradient);
-}
-
-/**
- * دالة تفعيل/تعطيل التدرج اللوني في القائمة الجانبية
- * يتم استدعاؤها عبر onchange="toggleSidebarGradient()"
- */
-function toggleSidebarGradient() {
-    // 1. جلب القيم الحالية
-    const checkbox = document.getElementById('setting-sidebar-gradient');
-    const colorInput = document.getElementById('setting-theme-color');
-    
-    if (!checkbox || !colorInput) return;
-
-    const isGradient = checkbox.checked;
-    const currentColor = colorInput.value;
-
-    // 2. إعادة تطبيق الثيم بالإعداد الجديد
-    applyTheme(currentColor, isGradient);
-}
+// Theme controls removed: appearance is fixed by css/design-system.css.
