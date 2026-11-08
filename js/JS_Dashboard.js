@@ -107,7 +107,11 @@ function processData(response) {
       };
 
       const statusTxt = String(emp.Status || "").toLowerCase().trim();
-      const isActive = ["بالعمل", "على رأس العمل", "نشط", "نشطة", "active"].some(value => statusTxt.includes(value));
+      const isInactive = ["غير نشط", "غير نشطة", "inactive", "منتهي", "منتهية", "مستقيل", "مستقيلة", "مفصول", "terminated", "left", "resigned"]
+        .some(value => statusTxt.includes(value));
+      const isActive = !isInactive &&
+        ["بالعمل", "على رأس العمل", "نشط", "نشطة", "active", "working"]
+          .some(value => statusTxt.includes(value));
       const seasonalRaw = String(emp.Is_Seasonal || "").toLowerCase().trim();
       const employmentRaw = String(emp.EmploymentType || emp.ContractType || "").toLowerCase().trim();
       const isSeasonal = ["yes", "نعم", "true", "1"].includes(seasonalRaw) ||
