@@ -1930,7 +1930,7 @@ function getColumnIndex(sheet, headerName) {
 }
 
 function calculateAgeFromNationalId_(nationalId) {
-  const digits = String(nationalId || "").replace(/\\D/g, "");
+  const digits = String(nationalId || "").replace(/\D/g, "");
   if (digits.length !== 14) return "";
   const centuryCode = Number(digits.charAt(0));
   const century = centuryCode === 2 ? 1900 : (centuryCode === 3 ? 2000 : null);
