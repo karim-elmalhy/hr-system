@@ -1,3 +1,8 @@
+function escapeLeavesHTML(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({
+        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+    })[ch]);
+}
 // متغير لتخزين البيانات محلياً للبحث
 let allLeavesData = [];
 
@@ -17,7 +22,7 @@ function loadLeaveRequests() {
     google.script.run
         .withSuccessHandler(renderLeavesTable)
         .withFailureHandler(err => {
-            tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-red-500 font-bold">خطأ: ${err.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-red-500 font-bold">خطأ: ${escapeLeavesHTML(err && err.message ? err.message : "تعذر تحميل الطلبات")}</td></tr>`;
         })
         .getAllLeaveRequests(currentUser);
 }
@@ -54,8 +59,8 @@ function renderLeavesTable(data) {
         let statusHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">⏳ قيد المراجعة</span>`;
         let actionButtons = `
             <div class="flex justify-center gap-2">
-                <button onclick="openLeaveModal('${req.id}', 'approve')" class="bg-green-50 text-green-600 hover:bg-green-100 p-2 rounded-lg transition" title="قبول">✅</button>
-                <button onclick="openLeaveModal('${req.id}', 'reject')" class="bg-red-50 text-red-600 hover:bg-red-100 p-2 rounded-lg transition" title="رفض">❌</button>
+                <button onclick="openLeaveModal('${encodeURIComponent(String(req.id))}', 'approve')" class="bg-green-50 text-green-600 hover:bg-green-100 p-2 rounded-lg transition" title="قبول">✅</button>
+                <button onclick="openLeaveModal('${encodeURIComponent(String(req.id))}', 'reject')" class="bg-red-50 text-red-600 hover:bg-red-100 p-2 rounded-lg transition" title="رفض">❌</button>
             </div>
         `;
 
@@ -70,21 +75,21 @@ function renderLeavesTable(data) {
         const row = `
             <tr class="hover:bg-gray-50 transition border-b border-gray-50 group">
                 <td class="p-4">
-                    <div class="font-bold text-gray-800">${req.empName}</div>
-                    <div class="text-xs text-gray-500 font-mono">${req.empCode}</div>
+                    <div class="font-bold text-gray-800">${escapeLeavesHTML(req.empName)}</div>
+                    <div class="text-xs text-gray-500 font-mono">${escapeLeavesHTML(req.empCode)}</div>
                 </td>
                 <td class="p-4">
-                    <span class="text-virginia-700 font-bold text-xs bg-virginia-50 px-2 py-1 rounded">${req.type}</span>
+                    <span class="text-virginia-700 font-bold text-xs bg-virginia-50 px-2 py-1 rounded">${escapeLeavesHTML(req.type)}</span>
                 </td>
                 <td class="p-4 text-xs text-gray-600">
-                    <div class="flex items-center gap-1"><span class="text-gray-400">من:</span> ${req.start}</div>
-                    <div class="flex items-center gap-1"><span class="text-gray-400">إلى:</span> ${req.end}</div>
+                    <div class="flex items-center gap-1"><span class="text-gray-400">من:</span> ${escapeLeavesHTML(req.start)}</div>
+                    <div class="flex items-center gap-1"><span class="text-gray-400">إلى:</span> ${escapeLeavesHTML(req.end)}</div>
                 </td>
                 <td class="p-4">
                     <span class="font-bold text-gray-700">${diffDays}</span> <span class="text-xs text-gray-500">يوم</span>
                 </td>
-                <td class="p-4 text-xs text-gray-500 max-w-xs truncate" title="${req.reason || ''}">
-                    ${req.reason || '-'}
+                <td class="p-4 text-xs text-gray-500 max-w-xs truncate" title="${escapeLeavesHTML(req.reason || "")}">
+                    ${escapeLeavesHTML(req.reason || "-")}
                 </td>
                 <td class="p-4">${statusHtml}</td>
                 <td class="p-4 text-center">${actionButtons}</td>
