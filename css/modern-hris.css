@@ -333,7 +333,7 @@ html.dark #employee-portal .bg-red-50{background:#422332!important}
 html.dark #employee-portal .bg-green-50{background:#17382f!important}
 
 /* Responsive layouts */
-@media(max-width:900px){
+@media(max-width:767px){
   :root{--hr-sidebar:250px}
   #main-sidebar{position:fixed!important;right:0!important;top:0!important;bottom:0!important;height:100dvh!important;transform:translateX(105%)!important;transition:transform .25s ease!important}
   #main-sidebar:not(.translate-x-full){transform:translateX(0)!important}
