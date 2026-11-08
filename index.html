@@ -684,8 +684,10 @@
         localStorage.clear();
         sessionStorage.clear();
         const mainApp = document.getElementById('main-app');
+        const employeePortal = document.getElementById('employee-portal');
         const loginScreen = document.getElementById('login-screen');
         if (mainApp) mainApp.classList.add('hidden');
+        if (employeePortal) employeePortal.classList.add('hidden');
         if (loginScreen) {
             loginScreen.classList.remove('hidden');
             loginScreen.style.opacity = "1";
