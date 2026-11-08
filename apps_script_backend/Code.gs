@@ -103,6 +103,9 @@ function doPost(e) {
         getPenaltyReportsData: "penalties",
         getEmployeeEmail: "penalties",
         getAllLeaveRequests: "leaves",
+        getEmployeeRequests: "leaves",
+        getEmployeeBalance: "leaves",
+        submitLeaveRequest: "leaves",
         processLeaveRequest: "leaves",
         saveApplicantData: "interview",
         getApplicantsList: "interview",
@@ -116,7 +119,7 @@ function doPost(e) {
         changeUserPassword: "settings"
       };
       var requiredPermission = permissionByAction[action];
-      if (session.role !== "Admin" && requiredPermission &&
+      if (session.role !== "Admin" && session.role !== "Employee" && requiredPermission &&
           !(session.permissions && session.permissions[requiredPermission])) {
         return sendJSON({ success: false, error: "FORBIDDEN" });
       }
@@ -167,11 +170,14 @@ function getColumnKey(headerName) {
   const normalizedPrefix = header.split("/")[0].trim();
   const directKeys = [
     "EmployeeCode", "FingerprintID", "FullName_AR", "NationalID", "Gender",
-    "MaritalStatus", "Mobile1", "Mobile2", "Email", "Address", "City", "Gov",
-    "BranchName", "DepartmentName", "Age_Years", "Age_Group", "Service_Group",
-    "Status", "EmploymentType", "Is_Seasonal", "WorkType", "ContractType",
-    "HireDate", "ExitDate", "FromTime", "ToTime", "GrossSalary", "NetSalary",
-    "HealthCertificateExpiryDate"
+    "MaritalStatus", "EducationLevel", "MilitaryStatus", "Mobile1", "Mobile2",
+    "Email", "Address", "City", "Gov", "BranchName", "DepartmentName",
+    "JobTitle_AR", "Age_Years", "Age_Group", "Service_Group", "Status",
+    "EmploymentType", "Is_Seasonal", "WorkType", "ContractType", "HireDate",
+    "ExitDate", "FromTime", "ToTime", "GrossSalary", "NetSalary",
+    "HealthCertificateExpiryDate", "Doc_Birth", "Doc_Edu", "Doc_ID",
+    "Doc_Military", "Doc_WorkPermit", "Doc_Union", "Doc_License",
+    "Doc_Criminal", "Doc_Form111", "Doc_Photos"
   ];
   if (directKeys.indexOf(normalizedPrefix) !== -1) return normalizedPrefix;
   switch (headerName) {
@@ -711,10 +717,7 @@ function saveApplicantData(formObject, fileData) {
         fileData.name
       );
       const file = DriveApp.createFile(blob);
-      file.setSharing(
-        DriveApp.Access.ANYONE_WITH_LINK,
-        DriveApp.Permission.VIEW
-      );
+      // Keep applicant CVs private in Drive; do not create public anyone-with-link access.
       cvUrl = file.getUrl();
     }
 
