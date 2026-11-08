@@ -216,10 +216,16 @@ function renderDashboard() {
   drawChart('chartBranch', 'bar', countBy(filtered, 'BranchName'), 'عدد الموظفين');
   drawChart('chartGender', 'doughnut', countBy(filtered, 'Gender'), 'النوع');
 
-  let ages = {'20-30':0, '30-40':0, '40-50':0, '50+':0};
+  let ages = {'أقل من 20':0, '20-30':0, '30-40':0, '40-50':0, '50+':0};
   filtered.forEach(d => {
-    let a = parseInt(d.Age_Years);
-    if(a > 0) { if(a < 30) ages['20-30']++; else if(a < 40) ages['30-40']++; else if(a < 50) ages['40-50']++; else ages['50+']++; }
+    const age = parseInt(d.Age_Years, 10);
+    if (age > 0 && age < 100) {
+      if (age < 20) ages['أقل من 20']++;
+      else if (age < 30) ages['20-30']++;
+      else if (age < 40) ages['30-40']++;
+      else if (age < 50) ages['40-50']++;
+      else ages['50+']++;
+    }
   });
   drawChart('chartAge', 'bar', ages, 'الفئات العمرية');
 }
