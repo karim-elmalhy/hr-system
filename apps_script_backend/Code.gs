@@ -71,6 +71,12 @@ function doPost(e) {
       "saveSystemUser",
       "deleteSystemUser",
       "saveGeneralSettings",
+      "getCompanyDocs",
+      "getScriptURL",
+      "saveApplicantData",
+      "getApplicantsList",
+      "updateApplicantStatus",
+      "saveEvaluationResult",
     ];
 
     if (allowed.indexOf(action) === -1 || typeof this[action] !== "function") {
@@ -78,6 +84,62 @@ function doPost(e) {
         success: false,
         error: "Action not allowed: " + action,
       });
+    }
+
+    // Require a short-lived server-side session for all private API actions.
+    var publicActions = ["checkLogin", "loginEmployeeByCode", "getSystemSettings", "getScriptURL"];
+    var session = null;
+    if (publicActions.indexOf(action) === -1) {
+      session = getApiSession_(body.token);
+      if (!session) return sendJSON({ success: false, error: "AUTH_REQUIRED" });
+
+      var permissionByAction = {
+        getEmployeesDataForUser: "emp_view",
+        addEmployee: "emp_edit",
+        updateEmployee: "emp_edit",
+        getPenaltyRules: "penalties",
+        checkPenaltyStatus: "penalties",
+        submitPenalty: "penalties",
+        getPenaltyReportsData: "penalties",
+        getEmployeeEmail: "penalties",
+        getAllLeaveRequests: "leaves",
+        processLeaveRequest: "leaves",
+        saveApplicantData: "interview",
+        getApplicantsList: "interview",
+        updateApplicantStatus: "interview",
+        saveEvaluationResult: "interview",
+        getCompanyDocs: "docs",
+        getSystemUsers: "settings",
+        saveSystemUser: "settings",
+        deleteSystemUser: "settings",
+        saveGeneralSettings: "settings",
+        changeUserPassword: "settings"
+      };
+      var requiredPermission = permissionByAction[action];
+      if (session.role !== "Admin" && requiredPermission &&
+          !(session.permissions && session.permissions[requiredPermission])) {
+        return sendJSON({ success: false, error: "FORBIDDEN" });
+      }
+      if ((action === "getEmployeesData" || action === "updateEmployeeSheetBalance") &&
+          session.role !== "Admin") {
+        return sendJSON({ success: false, error: "FORBIDDEN" });
+      }
+
+      if (session.role === "Employee") {
+        if (action === "getEmployeeRequests" || action === "getEmployeeBalance") {
+          params = [session.empCode];
+        } else if (action === "submitLeaveRequest" && Array.isArray(params) && params[0]) {
+          params[0].empCode = session.empCode;
+          params[0].empName = session.name || params[0].empName || "";
+        }
+      }
+      if (action === "getEmployeesDataForUser" && session.role !== "Admin") {
+        if (!session.department) return sendJSON({ success: false, error: "NO_DEPARTMENT_ASSIGNED" });
+        params = [session.department];
+      }
+      if (action === "changeUserPassword" && Array.isArray(params)) {
+        params[0] = session.username;
+      }
     }
 
     // Call the function. If params is an array, spread it; otherwise pass as single arg.
@@ -101,6 +163,17 @@ const SHEET_NAME = "Employees_DB";
 
 // === 1. دالة getColumnKey (خريطة الأسماء) ===
 function getColumnKey(headerName) {
+  const header = String(headerName || "").trim();
+  const normalizedPrefix = header.split("/")[0].trim();
+  const directKeys = [
+    "EmployeeCode", "FingerprintID", "FullName_AR", "NationalID", "Gender",
+    "MaritalStatus", "Mobile1", "Mobile2", "Email", "Address", "City", "Gov",
+    "BranchName", "DepartmentName", "Age_Years", "Age_Group", "Service_Group",
+    "Status", "EmploymentType", "Is_Seasonal", "WorkType", "ContractType",
+    "HireDate", "ExitDate", "FromTime", "ToTime", "GrossSalary", "NetSalary",
+    "HealthCertificateExpiryDate"
+  ];
+  if (directKeys.indexOf(normalizedPrefix) !== -1) return normalizedPrefix;
   switch (headerName) {
     case "Section / القسم":
       return "Section";
@@ -261,7 +334,7 @@ function addEmployee(formObject) {
       .getValues()[0];
 
     // البحث عن عمود الحالة باستخدام الاسم الصريح
-    let statusIndex = headers.indexOf("Status / حالة الموظف (بالعمل/منتهي)");
+    let statusIndex = headers.findIndex((header) => getColumnKey(header) === "Status");
     if (statusIndex === -1)
       return { success: false, message: "لم يتم العثور على عمود الحالة" };
 
@@ -312,7 +385,7 @@ function updateEmployee(formObject) {
     const headers = data[0];
 
     // البحث عن عمود الكود بالاسم الصريح
-    let codeIndex = headers.indexOf("EmployeeCode / كود الموظف");
+    let codeIndex = headers.findIndex((header) => getColumnKey(header) === "EmployeeCode");
     if (codeIndex === -1)
       return { success: false, message: "لم يتم العثور على عمود كود الموظف" };
 
@@ -1018,10 +1091,21 @@ function loginEmployeeByCode(code) {
     // البحث عن الكود في العمود الأول (Index 0)
     for (let i = 1; i < data.length; i++) {
       if (String(data[i][0]).trim() === String(code).trim()) {
+        const employeeName = data[i][2] || "";
+        const employeeCode = data[i][0];
         return {
           success: true,
-          name: data[i][2], // الاسم (عادة في العمود الثالث، تأكد من ملفك)
-          code: data[i][0],
+          name: employeeName,
+          code: employeeCode,
+          empCode: employeeCode,
+          token: createApiSession_({
+            username: "employee:" + employeeCode,
+            name: employeeName,
+            role: "Employee",
+            empCode: employeeCode,
+            department: "",
+            permissions: {}
+          })
         };
       }
     }
@@ -1513,6 +1597,20 @@ function getCompanyDocs() {
 // ==========================================
 // 🔐 نظام تسجيل الدخول (Code.gs)
 // ==========================================
+// Short-lived API sessions. Tokens are stored server-side, not trusted from UI role fields.
+function createApiSession_(sessionData) {
+  const token = Utilities.getUuid() + Utilities.getUuid();
+  CacheService.getScriptCache().put("HR_API_SESSION_" + token, JSON.stringify(sessionData), 21600);
+  return token;
+}
+
+function getApiSession_(token) {
+  if (!token || typeof token !== "string") return null;
+  const cached = CacheService.getScriptCache().get("HR_API_SESSION_" + token);
+  if (!cached) return null;
+  try { return JSON.parse(cached); } catch (e) { return null; }
+}
+
 function checkLogin(username, password) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName("SystemUsers");
@@ -1527,22 +1625,28 @@ function checkLogin(username, password) {
       String(row[0]).toLowerCase() === String(username).toLowerCase() &&
       String(row[1]) === String(password)
     ) {
+      const permissions = {
+        dashboard: row[5] === "TRUE",
+        emp_view: row[6] === "TRUE",
+        emp_edit: row[7] === "TRUE",
+        penalties: row[8] === "TRUE",
+        settings: row[9] === "TRUE",
+        interview: row[10] === "TRUE",
+        leaves: row[11] === "TRUE",
+        docs: row[12] === "TRUE",
+      };
+      const session = {
+        username: row[0], role: row[2], empCode: row[3],
+        department: row[4], name: row[0], permissions: permissions
+      };
       return {
         success: true,
         username: row[0],
-        role: row[2], // Admin, Manager
+        role: row[2],
         empCode: row[3],
-        department: row[4], // العمود E: القسم المسؤول عنه
-        permissions: {
-          dashboard: row[5] === "TRUE", // F
-          emp_view: row[6] === "TRUE", // G
-          emp_edit: row[7] === "TRUE", // H
-          penalties: row[8] === "TRUE", // I
-          settings: row[9] === "TRUE", // J
-          interview: row[10] === "TRUE", // K
-          leaves: row[11] === "TRUE", // L
-          docs: row[12] === "TRUE", // M
-        },
+        department: row[4],
+        permissions: permissions,
+        token: createApiSession_(session)
       };
     }
   }
@@ -1788,8 +1892,10 @@ function getEmployeesData() {
       const rawHeader = String(headers[j]).trim();
       const value = row[j];
 
-      // set the exact header name as the key (callers must use the sheet header directly)
+      // Keep the source header and expose a stable canonical key for every module.
       obj[rawHeader] = value;
+      const canonicalKey = getColumnKey(rawHeader);
+      if (canonicalKey && obj[canonicalKey] === undefined) obj[canonicalKey] = value;
     }
 
     // إضافة حقول محسوبة (اختياري)
@@ -1813,11 +1919,16 @@ function getEmployeesDataForUser(userDept) {
   }
 
   // فلترة حسب القسم
-  return allData.filter(
-    (emp) =>
-      String(emp["DepartmentName / الإدارة"] || "").trim() ===
-      String(userDept).trim()
-  );
+  return allData.filter((emp) => {
+    const department =
+      emp.DepartmentName ||
+      emp["DepartmentName / الإدارة"] ||
+      emp["DepartmentName / الادارة"] ||
+      emp.Department ||
+      emp.Section ||
+      "";
+    return String(department).trim() === String(userDept).trim();
+  });
 }
 // ==========================================
 // 👥 إدارة مستخدمي النظام (Backend Logic)
