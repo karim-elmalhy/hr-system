@@ -645,13 +645,22 @@
                 btn.disabled = false;
 
                 if (res.success) {
-                    localStorage.setItem('currentUser', res.username);
-                    localStorage.setItem('currentUserName', res.name || res.username);
-                    localStorage.setItem('currentUserRole', res.role);
-                    localStorage.setItem('currentUserDept', res.department || ""); 
-                    localStorage.setItem('userPermissions', JSON.stringify(res.permissions));
-                    localStorage.setItem('empCode', res.empCode || ""); 
-                    localStorage.setItem('empName', res.name || res.username);
+                    // Start a clean session so an old admin session cannot leak into employee login.
+                    localStorage.clear();
+                    if (res.token) localStorage.setItem('authToken', res.token);
+
+                    if (mode === 'employee') {
+                        localStorage.setItem('empCode', res.empCode || res.code || username);
+                        localStorage.setItem('empName', res.name || 'Employee');
+                    } else {
+                        localStorage.setItem('currentUser', res.username);
+                        localStorage.setItem('currentUserName', res.name || res.username);
+                        localStorage.setItem('currentUserRole', res.role);
+                        localStorage.setItem('currentUserDept', res.department || "");
+                        localStorage.setItem('userPermissions', JSON.stringify(res.permissions || {}));
+                        localStorage.setItem('empCode', res.empCode || "");
+                        localStorage.setItem('empName', res.name || res.username);
+                    }
 
                     if(typeof restoreSession === 'function') restoreSession();
                     else location.reload();
@@ -681,9 +690,10 @@
             loginScreen.classList.remove('hidden');
             loginScreen.style.opacity = "1";
         }
-        google.script.run.withSuccessHandler(function(url) {
-            window.open(url, '_top');
-        }).getScriptURL();
+        const loginUser = document.getElementById('login-user');
+        const loginPass = document.getElementById('login-pass');
+        if (loginUser) loginUser.value = "";
+        if (loginPass) loginPass.value = "";
     }
 
     // ==========================================
