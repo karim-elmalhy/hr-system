@@ -206,7 +206,7 @@ function drawChart(id, type, data, lbl, isCurrency = false) {
     
     if (chartInstances[id]) chartInstances[id].destroy();
     
-    const baseColor = localStorage.getItem('themeColor') || '#4f46e5';
+    const baseColor = '#4f46e5'; // Fixed Modern SaaS brand color
 
     const hexToRgba = (hex, alpha) => {
         let r = parseInt(hex.slice(1, 3), 16),
