@@ -156,7 +156,14 @@ function processData(response) {
 // ============================================================
 // 3️⃣ دوال الداشبورد (Rendering Dashboard)
 // ============================================================
+function applyDashboardDataVisibility() {
+    const payrollSection = document.getElementById('payroll-section');
+    const role = String(window.currentUserRole || localStorage.getItem('currentUserRole') || '');
+    if (payrollSection && role !== 'Admin') payrollSection.classList.add('hidden');
+}
+
 function renderDashboard() {
+    applyDashboardDataVisibility();
   const fBranch = document.getElementById('filter-branch').value;
   const fDept = document.getElementById('filter-dept').value;
   const fSeasonal = document.getElementById('filter-seasonal').value;
