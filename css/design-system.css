@@ -249,3 +249,86 @@ body { font-family:'IBM Plex Sans Arabic','Cairo',sans-serif; }
 .dark #main-app .border-gray-200 { border-color:#334155!important; }
 .dark #main-app .bg-gray-50,
 .dark #main-app .bg-gray-100 { background-color:#172338!important; }
+
+
+/* Complete dark theme for the HR workspace */
+.dark {
+  color-scheme: dark;
+  --app-bg:#0b1220;
+  --app-surface:#172338;
+  --app-surface-muted:#1e293b;
+  --app-ink:#e2e8f0;
+  --app-muted:#94a3b8;
+  --app-line:#334155;
+  --app-shadow:0 12px 30px rgba(0,0,0,.22);
+}
+.dark html, .dark body,
+.dark #main-app, .dark #main-app main,
+.dark #main-app main > .flex-1 {
+  background-color:var(--app-bg)!important;
+  color:var(--app-ink)!important;
+}
+.dark #main-app main > header {
+  background:rgba(15,23,42,.96)!important;
+  border-color:var(--app-line)!important;
+}
+.dark #main-app main > header #page-title,
+.dark #main-app #userNameDisplay { color:#f1f5f9!important; }
+.dark #main-app .bg-white,
+.dark #main-app .settings-panel,
+.dark #main-app #alert-dropdown,
+.dark #main-app #user-modal > div,
+.dark #employee-portal .bg-white {
+  background-color:var(--app-surface)!important;
+  color:var(--app-ink)!important;
+  border-color:var(--app-line)!important;
+}
+.dark #main-app .bg-gray-50,
+.dark #main-app .bg-gray-100,
+.dark #employee-portal .bg-gray-50 { background-color:#172338!important; }
+.dark #main-app .text-gray-900,
+.dark #main-app .text-gray-800,
+.dark #main-app .text-gray-700,
+.dark #main-app .text-gray-600,
+.dark #main-app .text-slate-900,
+.dark #main-app .text-slate-800,
+.dark #main-app .text-slate-700 { color:#e2e8f0!important; }
+.dark #main-app .text-gray-500,
+.dark #main-app .text-gray-400,
+.dark #main-app .text-slate-500,
+.dark #main-app .text-slate-400 { color:#94a3b8!important; }
+.dark #main-app input:not([type=checkbox]):not([type=radio]),
+.dark #main-app select,
+.dark #main-app textarea {
+  background:#0f1b2d!important;
+  color:#e2e8f0!important;
+  border-color:#475569!important;
+}
+.dark #main-app input::placeholder,
+.dark #main-app textarea::placeholder { color:#94a3b8!important; }
+.dark #main-app table thead,
+.dark #main-app table th { background:#1e293b!important;color:#cbd5e1!important; }
+.dark #main-app table td,
+.dark #main-app table tr { border-color:#334155!important; }
+.dark #main-app table tbody tr:hover { background:#243247!important; }
+.dark #main-app #alert-dropdown > div:first-child {
+  background:#1e293b!important;color:#f1f5f9!important;border-color:#334155!important;
+}
+.dark #main-app #loader { background:rgba(11,18,32,.96)!important; }
+.dark #main-app .shadow,
+.dark #main-app .shadow-lg,
+.dark #main-app .shadow-xl { box-shadow:var(--app-shadow)!important; }
+.dark #main-app .border-gray-100,
+.dark #main-app .border-gray-200,
+.dark #main-app .border-gray-300 { border-color:#334155!important; }
+.dark #main-app .divide-gray-100 > :not([hidden]) ~ :not([hidden]) { border-color:#334155!important; }
+.dark #main-app .hover\\:bg-gray-50:hover { background-color:#243247!important; }
+.dark #main-app .hover\\:bg-gray-100:hover { background-color:#26364c!important; }
+.dark #view-dashboard .bg-green-50,
+.dark #view-dashboard .bg-blue-50,
+.dark #view-dashboard .bg-purple-50,
+.dark #view-dashboard .bg-red-50,
+.dark #view-dashboard .bg-yellow-50 { filter:brightness(.78) saturate(.9); }
+.dark #employee-portal { background:var(--app-bg)!important;color:var(--app-ink)!important; }
+.dark #main-app .text-gray-800,
+.dark #main-app .text-gray-900 { color:#e2e8f0!important; }
