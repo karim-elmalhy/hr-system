@@ -65,48 +65,77 @@ function processData(response) {
   }
 
   try {
-    // 3. معالجة البيانات (إضافة الحقول المحسوبة)
-    allData = actualArray.map(emp => {
-      const statusTxt = (emp.Status || "").toString().toLowerCase().trim();
-      // الموظف نشط إذا كانت حالته "بالعمل" أو "active"
-      const isActive = statusTxt.includes("بالعمل") || statusTxt.includes("active");
-      
-      const seasonalRaw = (emp.Is_Seasonal || "").toString().toLowerCase().trim();
-      const isSeasonal = seasonalRaw === "yes" || seasonalRaw === "نعم" || seasonalRaw === "true";
-      
-      return { 
-        ...emp, 
-        _isActive: isActive, 
-        _isSeasonal: isSeasonal, 
-        _isPermanent: !isSeasonal, 
-        _derivedType: isSeasonal ? "Seasonal" : "Permanent" 
+    // Normalize bilingual and legacy column names without dropping source fields.
+    const pick = (emp, keys) => {
+      for (const key of keys) {
+        const value = emp[key];
+        if (value !== undefined && value !== null && String(value).trim() !== "") return value;
+      }
+      return "";
+    };
+
+    allData = actualArray.map((source) => {
+      const emp = {
+        ...source,
+        EmployeeCode: pick(source, ["EmployeeCode", "EmployeeCode / كود الموظف"]),
+        FingerprintID: pick(source, ["FingerprintID", "FingerprintID / رقم البصمة"]),
+        FullName_AR: pick(source, ["FullName_AR", "FullName_AR / الاسم بالعربية", "FullName / الاسم"]),
+        NationalID: pick(source, ["NationalID", "NationalID / الرقم القومي"]),
+        Gender: pick(source, ["Gender", "Gender / النوع", "النوع"]),
+        BranchName: pick(source, ["BranchName", "BranchName / الفرع", "Branch / الفرع"]),
+        DepartmentName: pick(source, ["DepartmentName", "DepartmentName / الإدارة", "DepartmentName / الادارة", "Department / الإدارة", "Section", "Section / القسم"]),
+        Status: pick(source, ["Status", "Status / حالة الموظف (بالعمل/منتهي)"]),
+        Is_Seasonal: pick(source, ["Is_Seasonal", "Is_Seasonal / عمالة موسمية؟"]),
+        EmploymentType: pick(source, ["EmploymentType", "EmploymentType / نوع التوظيف (دائم/موسمي)"]),
+        ContractType: pick(source, ["ContractType", "ContractType / نوع العقد"]),
+        GrossSalary: pick(source, ["GrossSalary", "GrossSalary / إجمالي"]),
+        NetSalary: pick(source, ["NetSalary", "NetSalary / صافي"]),
+        Age_Years: pick(source, ["Age_Years", "Age_Years / العمر"]),
+        HireDate: pick(source, ["HireDate", "HireDate / تاريخ التعيين"]),
+        ExitDate: pick(source, ["ExitDate", "ExitDate / تاريخ ترك العمل"]),
+        HealthCertificateExpiryDate: pick(source, ["HealthCertificateExpiryDate", "HealthCertificateExpiryDate / تاريخ انتهاء الشهادة الصحية"])
+      };
+
+      const statusTxt = String(emp.Status || "").toLowerCase().trim();
+      const isActive = ["بالعمل", "على رأس العمل", "نشط", "نشطة", "active"].some(value => statusTxt.includes(value));
+      const seasonalRaw = String(emp.Is_Seasonal || "").toLowerCase().trim();
+      const employmentRaw = String(emp.EmploymentType || emp.ContractType || "").toLowerCase().trim();
+      const isSeasonal = ["yes", "نعم", "true", "1"].includes(seasonalRaw) ||
+        employmentRaw.includes("seasonal") || employmentRaw.includes("موسمي");
+
+      return {
+        ...emp,
+        _isActive: isActive,
+        _isSeasonal: isSeasonal,
+        _isPermanent: !isSeasonal,
+        _derivedType: isSeasonal ? "Seasonal" : "Permanent"
       };
     });
 
-    // 4. تشغيل واجهة الداشبورد
-    populateFilters();     // ملء الفلاتر
-    renderDashboard();     // رسم الشارتات والبطاقات
-    
-    // 5. تشغيل حاسبة معدل الدوران (Turnover)
+    populateFilters();
+    renderDashboard();
+
     if (typeof initTurnoverDates === 'function') initTurnoverDates();
     if (typeof populateTurnoverFilters === 'function') populateTurnoverFilters();
-    setTimeout(() => { 
-        if(typeof calcTurnover === 'function') calcTurnover(); 
-    }, 300);
-    
-    // 6. تشغيل التنبيهات والجدول
-    if (typeof checkAlerts === 'function') checkAlerts();
-    if (typeof renderTable === 'function') {
-        renderTable(allData); // رسم الجدول إذا كنا في صفحة الموظفين
-    }
-    
-    // إخفاء مؤشر التحميل أخيراً
-    if (loader) loader.classList.add('hidden');
+    if (typeof calcTurnover === 'function') calcTurnover();
 
+    if (typeof checkAlerts === 'function') checkAlerts();
+    if (typeof renderTable === 'function') renderTable(allData);
+
+    const status = document.getElementById('advanced-data-status');
+    if (status) {
+      status.textContent = `● تم تحميل ${allData.length.toLocaleString()} سجل موظف`;
+      status.className = "inline-flex items-center gap-2 text-xs font-bold rounded-full px-3 py-2 text-green-700 bg-green-50 border border-green-100";
+    }
+    if (loader) loader.classList.add('hidden');
   } catch (e) {
     console.error("❌ خطأ أثناء معالجة البيانات:", e);
     if (loader) loader.classList.add('hidden');
-    // alert("حدث خطأ غير متوقع أثناء المعالجة: " + e.message); // اختياري
+    const status = document.getElementById('advanced-data-status');
+    if (status) {
+      status.textContent = "تعذر تجهيز بيانات لوحة القيادة";
+      status.className = "inline-flex items-center gap-2 text-xs font-bold rounded-full px-3 py-2 text-red-700 bg-red-50 border border-red-100";
+    }
   }
 }
 
