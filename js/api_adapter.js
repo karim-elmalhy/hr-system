@@ -39,7 +39,11 @@
             return proxy;
           }
 
-          const payload = { action: prop, params: args };
+          const payload = {
+            action: prop,
+            params: args,
+            token: localStorage.getItem("authToken") || ""
+          };
 
           // === التغيير هنا ===
           // تم استخدام fetch بدون headers خاصة لتجنب Preflight CORS
