@@ -149,10 +149,6 @@ function openLeaveModal(id, action) {
     document.getElementById('leave-action-modal').classList.remove('hidden');
 }
 
-function closeLeaveModal() {
-    document.getElementById('leave-action-modal').classList.add('hidden');
-}
-
 function confirmLeaveAction() {
     const reqId = document.getElementById('modal-req-id').value;
     const action = document.getElementById('modal-action').value; // يجب أن تكون 'approve' أو 'reject'
@@ -166,7 +162,7 @@ function confirmLeaveAction() {
 
     // تحديد الدالة التي سنستدعيها بناءً على الإجراء
     // لاحظ: نستخدم الدوال الفرعية التي أنشأناها
-    const serverFunction = action === 'approve' ? 'approveLeaveRequest' : 'rejectLeaveRequest';
+    const serverFunction = 'processLeaveRequest';
 
     google.script.run
         .withSuccessHandler((res) => {
@@ -191,7 +187,7 @@ function confirmLeaveAction() {
             closeActionModal();
             alert("❌ خطأ في الاتصال: " + err.message);
         })
-        [serverFunction](reqId, note); // استدعاء الدالة ديناميكياً
+        [serverFunction](reqId, action, note); // استدعاء الدالة ديناميكياً
 }
 // ==========================================
 // 🚪 دوال فتح وإغلاق المودال (النوافذ المنبثقة)

@@ -30,28 +30,28 @@
     </div>
 
     <div class="md:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+      <h3 id="password-title" class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
         <span>🔒</span> تغيير كلمة المرور
       </h3>
-      <form onsubmit="changeMyPassword(event)" class="space-y-4">
+      <form onsubmit="changeMyPassword(event)" class="space-y-4" aria-labelledby="password-title">
         <div>
-          <label class="block text-sm font-bold text-gray-700 mb-1">كلمة المرور الحالية</label>
+            <label for="old-pass" class="block text-sm font-bold text-gray-700 mb-1">كلمة المرور الحالية</label>
           <div class="relative">
-             <input type="password" id="old-pass" required class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-virginia-500 outline-none transition">
-             <button type="button" onclick="togglePassVisibility('old-pass')" class="absolute left-3 top-3 text-gray-400 hover:text-gray-600">👁️</button>
+             <input type="password" id="old-pass" autocomplete="current-password" required class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-virginia-500 outline-none transition">
+             <button type="button" aria-label="إظهار أو إخفاء كلمة المرور الحالية" onclick="togglePassVisibility('old-pass')" class="absolute left-3 top-3 text-gray-400 hover:text-gray-600">👁️</button>
           </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">كلمة المرور الجديدة</label>
+            <label for="new-pass" class="block text-sm font-bold text-gray-700 mb-1">كلمة المرور الجديدة</label>
             <div class="relative">
-              <input type="password" id="new-pass" required minlength="4" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-virginia-500 outline-none transition">
-              <button type="button" onclick="togglePassVisibility('new-pass')" class="absolute left-3 top-3 text-gray-400 hover:text-gray-600">👁️</button>
+              <input type="password" id="new-pass" autocomplete="new-password" required minlength="4" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-virginia-500 outline-none transition">
+              <button type="button" aria-label="إظهار أو إخفاء كلمة المرور الجديدة" onclick="togglePassVisibility('new-pass')" class="absolute left-3 top-3 text-gray-400 hover:text-gray-600">👁️</button>
             </div>
           </div>
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1">تأكيد الجديدة</label>
-            <input type="password" id="confirm-pass" required minlength="4" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-virginia-500 outline-none transition">
+            <label for="confirm-pass" class="block text-sm font-bold text-gray-700 mb-1">تأكيد الجديدة</label>
+            <input type="password" id="confirm-pass" autocomplete="new-password" required minlength="4" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-virginia-500 outline-none transition">
           </div>
         </div>
         <div class="flex justify-end pt-2">
@@ -144,12 +144,12 @@
 
   </div> </div>
 
-  <div id="user-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm">
+  <div id="user-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center backdrop-blur-sm">
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6 m-4 max-h-[90vh] overflow-y-auto">
     
     <div class="flex justify-between items-center mb-6 border-b pb-4">
       <h3 class="text-xl font-bold text-gray-800" id="modal-title">إضافة مستخدم جديد</h3>
-      <button type="button" onclick="closeUserModal()" class="text-gray-400 hover:text-red-500 transition text-2xl">×</button>
+      <button type="button" aria-label="إغلاق نافذة المستخدم" onclick="closeUserModal()" class="text-gray-400 hover:text-red-500 transition text-2xl">×</button>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -159,7 +159,7 @@
       </div>
       <div>
         <label class="block text-sm font-bold text-gray-700 mb-1">كلمة المرور</label>
-        <input type="text" id="u_password" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-virginia-500 outline-none">
+        <input type="password" id="u_password" autocomplete="new-password" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-virginia-500 outline-none">
       </div>
       <div>
         <label class="block text-sm font-bold text-gray-700 mb-1">الدور (Role)</label>

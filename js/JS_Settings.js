@@ -237,7 +237,7 @@ function changeMyPassword(e) {
                 alert("❌ خطأ: " + res.message);
             }
         })
-        .changeUserPassword(oldPass, newPass);
+        .changeUserPassword(localStorage.getItem('currentUser'), oldPass, newPass);
 }
 
 // ==============================================================================
