@@ -288,7 +288,10 @@ function drawChart(id, type, data, lbl, isCurrency = false) {
     
     if (chartInstances[id]) chartInstances[id].destroy();
     
+    const isDark = document.documentElement.classList.contains('dark');
     const baseColor = '#4f46e5'; // Fixed Modern SaaS brand color
+    const axisColor = isDark ? '#cbd5e1' : '#475569';
+    const gridColor = isDark ? 'rgba(148,163,184,.18)' : '#f3f4f6';
 
     const hexToRgba = (hex, alpha) => {
         let r = parseInt(hex.slice(1, 3), 16),
@@ -327,7 +330,7 @@ function drawChart(id, type, data, lbl, isCurrency = false) {
                 legend: { 
                     display: type !== 'bar',
                     position: 'bottom',
-                    labels: { font: { family: 'Cairo' }, usePointStyle: true }
+                    labels: { color: axisColor, font: { family: 'Cairo' }, usePointStyle: true }
                 },
                 tooltip: {
                     titleFont: { family: 'Cairo' },
@@ -348,16 +351,23 @@ function drawChart(id, type, data, lbl, isCurrency = false) {
             scales: type === 'bar' ? { 
                 y: { 
                     beginAtZero: true,
-                    ticks: { callback: v => isCurrency ? v.toLocaleString() : v, font: { family: 'Arial' } },
-                    grid: { color: '#f3f4f6' }
+                    ticks: { color: axisColor, callback: v => isCurrency ? v.toLocaleString() : v, font: { family: 'Arial' } },
+                    grid: { color: gridColor }
                 },
                 x: { 
                     grid: { display: false },
-                    ticks: { font: { family: 'Cairo' } }
+                    ticks: { color: axisColor, font: { family: 'Cairo' } }
                 }
             } : { x: { display: false }, y: { display: false } }
         }
     });
+}
+
+function adjustColor(hex, amount) {
+    const value = String(hex || '#4f46e5').replace('#', '');
+    if (!/^[0-9a-f]{6}$/i.test(value)) return '#4f46e5';
+    const channels = [0, 2, 4].map(i => Math.max(0, Math.min(255, parseInt(value.slice(i, i + 2), 16) + amount)));
+    return '#' + channels.map(channel => channel.toString(16).padStart(2, '0')).join('');
 }
 
 function generateGradedPalette(baseColor, count) {
@@ -408,6 +418,10 @@ function checkAlerts() {
   }
 }
 
+function escapeAlertText(value) {
+  return String(value == null ? '' : value).replace(/[&<>\"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[char]));
+}
+
 function addAlert(title, desc, isCritical) {
   const list = document.getElementById('alert-list');
   const colorClass = isCritical ? 'bg-red-50 text-red-700 border-red-100' : 'bg-yellow-50 text-yellow-700 border-yellow-100';
@@ -417,8 +431,8 @@ function addAlert(title, desc, isCritical) {
     <div class="p-3 mb-2 rounded-lg border ${colorClass} flex items-start gap-2">
         <span class="text-lg">${icon}</span>
         <div>
-            <div class="font-bold text-xs">${title}</div>
-            <div class="text-[10px] opacity-80">${desc}</div>
+            <div class="font-bold text-xs">${escapeAlertText(title)}</div>
+            <div class="text-[10px] opacity-80">${escapeAlertText(desc)}</div>
         </div>
     </div>`;
 }
