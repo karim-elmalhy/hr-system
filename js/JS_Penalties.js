@@ -1,3 +1,4 @@
+function escapePenaltyHTML(value) { return String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch])); }
 // ==========================================
 // ⚖️ إدارة الجزاءات (Logic)
 // ==========================================
@@ -173,10 +174,10 @@ function loadPenaltyReport() {
             tr.className = "hover:bg-red-50 transition border-b border-gray-100";
             tr.innerHTML = `
                 <td class="p-3 text-gray-600">${d}</td>
-                <td class="p-3 font-bold text-gray-800">${row.name}</td>
-                <td class="p-3 text-red-600">${row.violation}</td>
-                <td class="p-3 text-center"><span class="bg-gray-200 text-xs px-2 py-1 rounded">${row.count}</span></td>
-                <td class="p-3 font-bold text-gray-800">${row.penalty}</td>
+                <td class="p-3 font-bold text-gray-800">${escapePenaltyHTML(row.name)}</td>
+                <td class="p-3 text-red-600">${escapePenaltyHTML(row.violation)}</td>
+                <td class="p-3 text-center"><span class="bg-gray-200 text-xs px-2 py-1 rounded">${escapePenaltyHTML(row.count)}</span></td>
+                <td class="p-3 font-bold text-gray-800">${escapePenaltyHTML(row.penalty)}</td>
             `;
             tbody.appendChild(tr);
         });
