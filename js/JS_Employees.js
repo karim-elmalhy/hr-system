@@ -1,3 +1,4 @@
+function escapeEmployeeHTML(value) { return String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch])); }
 // ============================================================
 // 🌍 متغيرات عامة (Global Variables)
 // ============================================================
@@ -79,8 +80,8 @@ function renderTable(data) {
           actionsHtml = `
             <td class="p-3 text-center border-l bg-gray-50">
                 <div class="flex justify-center gap-2">
-                    <button onclick="openProfile('${emp.EmployeeCode}')" class="text-gray-500 hover:text-blue-600 transition" title="عرض الملف">👤</button>
-                    <button onclick="openEditModal('${emp.EmployeeCode}')" class="text-gray-500 hover:text-virginia-600 transition" title="تعديل">✏️</button>
+                    <button onclick="openProfile('${encodeURIComponent(String(emp.EmployeeCode))}')" class="text-gray-500 hover:text-blue-600 transition" title="عرض الملف">👤</button>
+                    <button onclick="openEditModal('${encodeURIComponent(String(emp.EmployeeCode))}')" class="text-gray-500 hover:text-virginia-600 transition" title="تعديل">✏️</button>
                 </div>
             </td>
           `;
@@ -90,16 +91,16 @@ function renderTable(data) {
       tr.className = "hover:bg-gray-50 transition group border-b border-gray-100";
       
       tr.innerHTML = `
-          <td class="p-3 font-mono font-bold text-virginia-600">${emp.EmployeeCode || '-'}</td>
+          <td class="p-3 font-mono font-bold text-virginia-600">${escapeEmployeeHTML(emp.EmployeeCode || '-')}</td>
           <td class="p-3 font-bold text-gray-800 whitespace-normal min-w-[150px]">${emp.FullName_AR || 'بدون اسم'}</td>
           <td class="p-3 text-center">${statusBadge}</td>
-          <td class="p-3 text-gray-600">${emp.BranchName || '-'}</td>
-          <td class="p-3 text-gray-600">${emp.DepartmentName || '-'}</td>
-          <td class="p-3 font-medium text-gray-700">${emp.JobTitle_AR || '-'}</td>
-          <td class="p-3 text-xs">${emp.EmploymentType || '-'}</td>
+          <td class="p-3 text-gray-600">${escapeEmployeeHTML(emp.BranchName || '-')}</td>
+          <td class="p-3 text-gray-600">${escapeEmployeeHTML(emp.DepartmentName || '-')}</td>
+          <td class="p-3 font-medium text-gray-700">${escapeEmployeeHTML(emp.JobTitle_AR || '-')}</td>
+          <td class="p-3 text-xs">${escapeEmployeeHTML(emp.EmploymentType || '-')}</td>
           <td class="p-3 text-center">${seasonalIcon}</td>
-          <td class="p-3 font-mono text-xs text-gray-500">${emp.Mobile1 || '-'}</td>
-          <td class="p-3 font-mono text-xs text-gray-500">${emp.NationalID || '-'}</td>
+          <td class="p-3 font-mono text-xs text-gray-500">${escapeEmployeeHTML(emp.Mobile1 || '-')}</td>
+          <td class="p-3 font-mono text-xs text-gray-500">${escapeEmployeeHTML(emp.NationalID || '-')}</td>
           ${actionsHtml} `;
       tbody.appendChild(tr);
   });
@@ -152,7 +153,7 @@ function populateEmployeesFilters(data) {
         const el = document.getElementById(id);
         if (el && (el.options.length <= 1 || el.value === "")) {
             el.innerHTML = `<option value="">${lbl}</option>`;
-            list.forEach(i => el.innerHTML += `<option value="${i}">${i}</option>`);
+            list.forEach(i => el.innerHTML += `<option value="${encodeURIComponent(String(i))}">${escapeEmployeeHTML(i)}</option>`);
         }
     };
 
@@ -210,6 +211,7 @@ function openAddModal() {
 }
 
 function openEditModal(code) {
+    code = decodeURIComponent(String(code));
     const searchCode = String(code).trim();
     // البحث في البيانات الأصلية لضمان وجود البيانات حتى لو كانت في صفحة أخرى
     const emp = allData.find(e => String(e.EmployeeCode).trim() === searchCode);
@@ -301,6 +303,7 @@ function handleFormSubmit(e) {
 // 👤 5. البروفايل (Profile)
 // ==========================================
 function openProfile(code) {
+    code = decodeURIComponent(String(code));
     const emp = allData.find(e => String(e.EmployeeCode) === String(code));
     if (!emp) return;
 
