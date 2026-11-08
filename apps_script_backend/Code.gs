@@ -1622,6 +1622,31 @@ function getApiSession_(token) {
   try { return JSON.parse(cached); } catch (e) { return null; }
 }
 
+function hashPassword_(password, salt) {
+  const passwordSalt = salt || Utilities.getUuid();
+  const digest = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    passwordSalt + "|" + String(password),
+    Utilities.Charset.UTF_8
+  );
+  return "sha256$" + passwordSalt + "$" + Utilities.base64Encode(digest);
+}
+
+function passwordMatchesAndUpgrade_(sheet, rowNumber, storedValue, enteredPassword) {
+  const stored = String(storedValue || "");
+  if (stored.indexOf("sha256$") === 0) {
+    const parts = stored.split("$");
+    if (parts.length !== 3) return false;
+    return hashPassword_(enteredPassword, parts[1]) === stored;
+  }
+  // Backward-compatible migration: hash legacy plain-text passwords after successful login.
+  if (stored === String(enteredPassword)) {
+    sheet.getRange(rowNumber, 2).setValue(hashPassword_(enteredPassword));
+    return true;
+  }
+  return false;
+}
+
 function checkLogin(username, password) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName("SystemUsers");
@@ -1634,7 +1659,7 @@ function checkLogin(username, password) {
     // المطابقة: A=User, B=Pass
     if (
       String(row[0]).toLowerCase() === String(username).toLowerCase() &&
-      String(row[1]) === String(password)
+      passwordMatchesAndUpgrade_(sheet, i + 1, row[1], password)
     ) {
       const permissions = {
         dashboard: row[5] === "TRUE",
@@ -1852,8 +1877,9 @@ function changeUserPassword(username, oldPass, newPass) {
 
   for (let i = 1; i < data.length; i++) {
     // لا نغيّر إلا حساب المستخدم الذي طلب العملية.
-    if (String(data[i][0]).toLowerCase() === String(username).toLowerCase() && data[i][1] == oldPass) {
-      sheet.getRange(i + 1, 2).setValue(newPass);
+    if (String(data[i][0]).toLowerCase() === String(username).toLowerCase() &&
+        passwordMatchesAndUpgrade_(sheet, i + 1, data[i][1], oldPass)) {
+      sheet.getRange(i + 1, 2).setValue(hashPassword_(newPass));
       return { success: true };
     }
   }
@@ -2020,9 +2046,17 @@ function saveSystemUser(userData) {
     }
   }
 
+  if (rowIndex === -1 && !String(userData.password || "")) {
+    return { success: false, message: "كلمة المرور مطلوبة للمستخدم الجديد" };
+  }
+  const existingPassword = rowIndex > 0 ? data[rowIndex - 1][1] : "";
+  const savedPassword = String(userData.password || "").trim()
+    ? hashPassword_(userData.password)
+    : existingPassword;
+
   const newRow = [
     userData.username,
-    userData.password,
+    savedPassword,
     userData.role,
     userData.empCode,
     userData.department,
