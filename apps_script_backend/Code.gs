@@ -840,7 +840,7 @@ function askAI(userQuestion, selectedModel) {
 
     // ب. إعدادات النظام الحالية
     const settings = getSystemSettings();
-    const settingsStr = `اسم التطبيق: ${settings.appName}, لون الثيم: ${settings.themeColor}`;
+    const settingsStr = `اسم التطبيق: ${settings.appName}`;
 
     // ج. قائمة المديرين
     const sysUsers = getSystemUsers()
