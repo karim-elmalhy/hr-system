@@ -119,8 +119,12 @@ function doPost(e) {
         changeUserPassword: "settings"
       };
       var requiredPermission = permissionByAction[action];
-      if (session.role !== "Admin" && session.role !== "Employee" && requiredPermission &&
-          !(session.permissions && session.permissions[requiredPermission])) {
+      var employeeSelfServiceActions = ["getEmployeeRequests", "getEmployeeBalance", "submitLeaveRequest"];
+      var isEmployeeSelfService = session.role === "Employee" &&
+        employeeSelfServiceActions.indexOf(action) !== -1;
+      if (session.role !== "Admin" && requiredPermission &&
+          !(session.permissions && session.permissions[requiredPermission]) &&
+          !isEmployeeSelfService) {
         return sendJSON({ success: false, error: "FORBIDDEN" });
       }
       if ((action === "getEmployeesData" || action === "updateEmployeeSheetBalance") &&
