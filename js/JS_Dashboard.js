@@ -419,7 +419,8 @@ function checkAlerts() {
 }
 
 function escapeAlertText(value) {
-  return String(value == null ? '' : value).replace(/[&<>\"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[char]));
+  const entities = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+  return String(value == null ? "" : value).replace(/[&<>"']/g, char => entities[char]);
 }
 
 function addAlert(title, desc, isCritical) {
