@@ -802,7 +802,19 @@
         }
 
         // تشغيل دوال الصفحة
-        if (view === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
+        if (view === 'dashboard') {
+            if (typeof populateFilters === 'function') populateFilters();
+            if (typeof initTurnoverDates === 'function') initTurnoverDates();
+            if (typeof populateTurnoverFilters === 'function') populateTurnoverFilters();
+            if (typeof renderDashboard === 'function') renderDashboard();
+            if (!allData || allData.length === 0) {
+                const dataStatus = document.getElementById('advanced-data-status');
+                if (dataStatus) {
+                    dataStatus.textContent = "في انتظار بيانات الموظفين أو لا توجد سجلات متاحة";
+                    dataStatus.className = "inline-flex items-center gap-2 text-xs font-bold rounded-full px-3 py-2 text-amber-800 bg-amber-50 border border-amber-200";
+                }
+            }
+        }
         if (view === 'employees' && typeof renderTable === 'function') renderTable(allData || []);
         if (view === 'docs' && typeof loadCompanyDocs === 'function') loadCompanyDocs();
         if (view === 'leaves' && typeof initLeavesManagement === 'function') initLeavesManagement();
