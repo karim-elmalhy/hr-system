@@ -66,7 +66,7 @@ function renderTable(data) {
   paginatedItems.forEach(emp => {
       // التحقق من الحالة والموسمية باستخدام الحقول المحسوبة من الباكيند (_isActive, _isSeasonal)
       // أو استخدام النصوص التقليدية للدعم
-      const isActive = emp._isActive || (emp.Status || "").toString().includes("بالعمل") || (emp.Status || "").toString().toLowerCase().includes("active");
+      const isActive = emp._isActive === true;
       const statusBadge = isActive ? 
           `<span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold inline-block">نشط</span>` : 
           `<span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-bold inline-block">منتهي</span>`;
