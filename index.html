@@ -969,7 +969,14 @@
         document.getElementById('ai-messages').appendChild(d);
     }
     function usePrompt(txt) { document.getElementById('ai-input').value = txt; sendAIMessage(); }
-    function toggleAlerts() { document.getElementById('alert-dropdown').classList.toggle('hidden'); }
+    function toggleAlerts() {
+        const dropdown = document.getElementById('alert-dropdown');
+        if (!dropdown) return;
+        const willOpen = dropdown.classList.contains('hidden');
+        dropdown.classList.toggle('hidden', !willOpen);
+        const trigger = dropdown.parentElement;
+        if (trigger) trigger.setAttribute('aria-expanded', String(willOpen));
+    }
 
     // ==========================================
     // 🌙 الوضع الليلي والتحميل
@@ -979,16 +986,38 @@
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         const icon = document.getElementById('dark-icon');
         if(icon) icon.innerText = isDark ? "☀️" : "🌙";
+        // Rebuild charts so their labels and grid lines match the active theme.
+        if (typeof renderDashboard === 'function' && typeof allData !== 'undefined' && allData.length) {
+            renderDashboard();
+        }
     }
 
     window.addEventListener('load', function() {
         console.log("App Initialized 🚀");
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.classList.add('dark');
-            document.getElementById('dark-icon').innerText = "☀️";
+            const darkIcon = document.getElementById('dark-icon');
+            if (darkIcon) darkIcon.innerText = "☀️";
         }
         applySystemSettings();
         restoreSession();
+        // Close the alerts panel when clicking elsewhere or pressing Escape.
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('alert-dropdown');
+            const trigger = dropdown && dropdown.parentElement;
+            if (dropdown && trigger && !trigger.contains(event.target)) {
+                dropdown.classList.add('hidden');
+                trigger.setAttribute('aria-expanded', 'false');
+            }
+        });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const dropdown = document.getElementById('alert-dropdown');
+                const trigger = dropdown && dropdown.parentElement;
+                if (dropdown) dropdown.classList.add('hidden');
+                if (trigger) trigger.setAttribute('aria-expanded', 'false');
+            }
+        });
     });
 
 </script>
