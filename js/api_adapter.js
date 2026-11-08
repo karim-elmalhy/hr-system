@@ -56,10 +56,16 @@
             .then((resp) => resp.json())
             .then((data) => {
               if (data && (data.status === "success" || data.success === true)) {
-                 // ملاحظة: تأكد أن السكربت يرجع success أو status حسب كودك
-                 return success(data.result || data.data || data); 
+                 return success(data.result || data.data || data);
               }
-              return failure(new Error((data && (data.error || data.message)) || "Unexpected response"));
+              const apiError = (data && (data.error || data.message)) || "Unexpected response";
+              if (apiError === "AUTH_REQUIRED") {
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("currentUserRole");
+                localStorage.removeItem("userPermissions");
+                return failure(new Error("انتهت صلاحية الجلسة. سجّل الدخول مرة أخرى."));
+              }
+              return failure(new Error(apiError));
             })
             .catch((err) => failure(err));
 
