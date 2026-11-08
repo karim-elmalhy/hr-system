@@ -1467,10 +1467,7 @@ function updateEmployeeSheetBalance(empCode) {
 // حفظ الإعدادات (الاسم واللون)
 function saveSystemSettings(settings) {
   const scriptProps = PropertiesService.getScriptProperties();
-  scriptProps.setProperties({
-    SYSTEM_NAME: settings.appName,
-    THEME_COLOR: settings.themeColor, // سنحفظ اسم اللون (indigo, emerald, blue, etc.)
-  });
+  scriptProps.setProperty("SYSTEM_NAME", settings.appName || "Smart HR System");
   return { success: true };
 }
 
@@ -2018,7 +2015,9 @@ function saveGeneralSettings(newSettings) {
     const sheet = getSettingsSheet();
     const data = sheet.getDataRange().getValues();
 
+    // الاسم فقط قابل للتعديل من الإعدادات؛ إعدادات الألوان ثابتة في الواجهة.
     for (var key in newSettings) {
+      if (key !== "appName") continue;
       let val = newSettings[key];
       // تحويل البوليان
       if (val === true) val = "true";
@@ -2058,9 +2057,10 @@ function getSystemSettings() {
   let settings = {};
 
   for (let i = 1; i < data.length; i++) {
-    let key = data[i][0];
-    let val = data[i][1];
-    settings[key] = val;
+    if (String(data[i][0]) === "appName") {
+      settings.appName = data[i][1];
+      break;
+    }
   }
   return settings;
 }
@@ -2075,8 +2075,6 @@ function getSettingsSheet() {
     sheet.getRange("A1:B1").setFontWeight("bold").setBackground("#ddd");
     // قيم افتراضية أولية
     sheet.appendRow(["appName", "Smart HR System"]);
-    sheet.appendRow(["themeColor", "#4f46e5"]);
-    sheet.appendRow(["sidebarGradient", "true"]);
   }
   return sheet;
 }
