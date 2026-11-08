@@ -256,3 +256,46 @@ button:disabled { cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* بطاقات القراءة التنفيذية في لوحة القيادة */
+.advanced-insights { position: relative; }
+.insight-card {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  min-height: 120px;
+  padding: 1.1rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.insight-card::after {
+  content: '';
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  left: -28px;
+  bottom: -56px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .06;
+}
+.insight-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.insight-card p { margin: 0 0 .35rem; color: var(--ink-soft); font-size: .75rem; font-weight: 700; }
+.insight-card strong { display: block; max-width: 11rem; overflow: hidden; color: var(--ink); font-size: 1.25rem; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+.insight-card small { display: block; margin-top: .35rem; color: var(--ink-soft); font-size: .7rem; }
+.insight-icon { display: grid; flex: 0 0 42px; width: 42px; height: 42px; place-items: center; border-radius: 13px; color: currentColor; background: currentColor; background: color-mix(in srgb, currentColor 12%, white); font-size: 1.25rem; font-weight: 800; }
+.insight-card-indigo { color: #4f46e5; }
+.insight-card-teal { color: #0f766e; }
+.insight-card-amber { color: #b45309; }
+.insight-card-rose { color: #be123c; }
+.dark .insight-card { background: #1e293b; border-color: #334155; }
+.dark .insight-card strong { color: #f8fafc; }
+
+@media (max-width: 640px) {
+  .insight-card { min-height: 100px; }
+}

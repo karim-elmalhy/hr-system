@@ -52,6 +52,35 @@
   </div>
 </div>
 
+<section class="advanced-insights mb-8" aria-labelledby="advanced-insights-title">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-4">
+    <div>
+      <p class="text-xs font-bold text-virginia-600 uppercase tracking-widest">Executive snapshot</p>
+      <h3 id="advanced-insights-title" class="text-xl font-extrabold text-gray-800 mt-1">القراءة التنفيذية السريعة</h3>
+      <p class="text-sm text-gray-500 mt-1">مؤشرات إضافية تساعدك على فهم توزيع القوى العاملة خلال ثوانٍ.</p>
+    </div>
+    <span id="advanced-data-status" class="inline-flex items-center gap-2 text-xs font-bold text-green-700 bg-green-50 border border-green-100 rounded-full px-3 py-2">● بيانات محدثة</span>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <article class="insight-card insight-card-indigo">
+      <div class="insight-icon">◉</div>
+      <div><p>الموظفون على رأس العمل</p><strong id="adv-active">0</strong><small id="adv-active-rate">0% من الإجمالي</small></div>
+    </article>
+    <article class="insight-card insight-card-teal">
+      <div class="insight-icon">⌁</div>
+      <div><p>أكبر إدارة</p><strong id="adv-top-dept">—</strong><small id="adv-top-dept-count">0 موظف</small></div>
+    </article>
+    <article class="insight-card insight-card-amber">
+      <div class="insight-icon">⌘</div>
+      <div><p>متوسط العمر</p><strong id="adv-average-age">—</strong><small>سنة للبيانات المتاحة</small></div>
+    </article>
+    <article class="insight-card insight-card-rose">
+      <div class="insight-icon">◌</div>
+      <div><p>تغطية البيانات</p><strong id="adv-data-quality">0%</strong><small>سجلات مكتملة أساسيًا</small></div>
+    </article>
+  </div>
+</section>
+
 <div class="bg-white rounded-lg shadow mb-8 p-6 border-t-4 border-green-600">
   <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
     <span>💰</span> التحليل المالي (الرواتب)
