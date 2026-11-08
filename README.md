@@ -18,7 +18,8 @@ Arabic RTL HR management workspace built with HTML, Tailwind utility classes, va
 - `js/` — module logic and API adapter
 - `css/style.css` — legacy base styles
 - `css/design-system.css` — base design tokens and components
-- `css/hris-overhaul.css` — current unified Modern SaaS redesign, responsive RTL and dark mode
+- `css/hris-overhaul.css` — previous unified styling layer
+- `css/modern-hris.css` — complete v3 visual system: rebuilt login experience, application shell, shared module surfaces, responsive RTL and comprehensive dark mode
 - `apps_script_backend/Code.gs` — Apps Script API and business logic
 
 ## Deployment
