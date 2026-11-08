@@ -59,6 +59,8 @@ function processData(response) {
   const loader = document.getElementById('loader');
   
   if (!Array.isArray(actualArray) || actualArray.length === 0) {
+    allData = [];
+    if (typeof renderTable === 'function') renderTable([]);
     if (loader) loader.classList.add('hidden');
     ["kpi-total", "kpi-permanent", "kpi-seasonal", "pay-total", "pay-avg", "pay-net",
      "adv-active", "adv-active-rate", "adv-top-dept", "adv-top-dept-count", "adv-average-age", "adv-data-quality"]
@@ -414,13 +416,27 @@ function addAlert(title, desc, isCritical) {
 // 6️⃣ قسم معدل الدوران
 // ============================================================
 function parseSmartDate(dateStr) {
-  if (!dateStr || dateStr === "" || dateStr === "-") return null;
-  if (typeof dateStr === 'number') return new Date((dateStr - 25569) * 86400 * 1000); 
+  if (!dateStr || dateStr === "-" || dateStr === "—") return null;
+  if (dateStr instanceof Date) return isNaN(dateStr.getTime()) ? null : dateStr;
+  if (typeof dateStr === 'number') {
+    const serialDate = new Date((dateStr - 25569) * 86400 * 1000);
+    return isNaN(serialDate.getTime()) ? null : serialDate;
+  }
 
-  const str = dateStr.toString().trim();
+  const str = String(dateStr).trim();
+  // Google Sheets display dates in Egypt commonly use DD/MM/YYYY.
+  const localMatch = str.match(/^(\\d{1,2})[\\/.-](\\d{1,2})[\\/.-](\\d{4})$/);
+  if (localMatch) {
+    const day = Number(localMatch[1]);
+    const month = Number(localMatch[2]) - 1;
+    const year = Number(localMatch[3]);
+    const parsed = new Date(year, month, day);
+    if (parsed.getFullYear() === year && parsed.getMonth() === month && parsed.getDate() === day) return parsed;
+    return null;
+  }
+
   const dStandard = new Date(str);
-  if (!isNaN(dStandard.getTime())) return dStandard;
-  return null;
+  return isNaN(dStandard.getTime()) ? null : dStandard;
 }
 
 function initTurnoverDates() {
@@ -486,7 +502,7 @@ function calcTurnover() {
     let hireDate = parseSmartDate(emp.HireDate);
     let exitDate = parseSmartDate(emp.ExitDate);
 
-    if (!hireDate && emp._isActive) hireDate = new Date(2000, 0, 1);
+    // Missing hire dates stay unknown; never fabricate a start date for turnover calculations.
 
     if (hireDate && hireDate >= startDate && hireDate <= endDate) joinersCount++;
 
