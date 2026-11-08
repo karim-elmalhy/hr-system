@@ -140,9 +140,13 @@ function doPost(e) {
           params[0].empName = session.name || params[0].empName || "";
         }
       }
-      if (action === "getEmployeesDataForUser" && session.role !== "Admin") {
-        if (!session.department) return sendJSON({ success: false, error: "NO_DEPARTMENT_ASSIGNED" });
-        params = [session.department];
+      if (action === "getEmployeesDataForUser") {
+        if (session.role === "Admin") {
+          params = [""];
+        } else {
+          if (!session.department) return sendJSON({ success: false, error: "NO_DEPARTMENT_ASSIGNED" });
+          params = [session.department];
+        }
       }
       if (action === "changeUserPassword" && Array.isArray(params)) {
         params[0] = session.username;
