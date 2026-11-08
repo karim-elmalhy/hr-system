@@ -1888,6 +1888,8 @@ function getEmployeesData() {
   // تحويل الصفوف إلى كائنات JSON (Array of Objects)
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
+    if (row.every((value) => String(value || "").trim() === "")) continue;
+    const row = data[i];
     let obj = {};
 
     // populate object using exact header names ONLY (no short keys for simplicity)
