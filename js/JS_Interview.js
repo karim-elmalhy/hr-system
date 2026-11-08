@@ -132,7 +132,7 @@ function renderApplicants(data) {
       `;
     } else {
       actionButtons = `
-        <button onclick="startEvaluation('${app.id}', '${escapeInterviewHTML(app.name)}')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 shadow">
+        <button onclick="startEvaluation('${encodeURIComponent(String(app.id))}', '${encodeURIComponent(String(app.name))}')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 shadow">
           بدء المقابلة
         </button>
       `;
