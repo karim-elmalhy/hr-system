@@ -229,11 +229,14 @@ function openEditModal(code) {
                 el.checked = (emp[el.name] === true || emp[el.name] === "TRUE" || emp[el.name] === "Yes");
             } else if (el.type === 'date') {
                  let d = emp[el.name];
-                 // محاولة تحويل التاريخ إذا كان نصاً أو رقماً
+                 // Support Google Sheets display dates in DD/MM/YYYY as well as ISO values.
                  if (d) {
-                     let dateObj = new Date(d);
-                     if (!isNaN(dateObj)) {
-                         el.value = dateObj.toISOString().split('T')[0];
+                     let dateObj = (typeof parseSmartDate === 'function') ? parseSmartDate(d) : new Date(d);
+                     if (dateObj && !isNaN(dateObj.getTime())) {
+                         const year = dateObj.getFullYear();
+                         const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                         const day = String(dateObj.getDate()).padStart(2, '0');
+                         el.value = `${year}-${month}-${day}`;
                      }
                  }
             } else {
