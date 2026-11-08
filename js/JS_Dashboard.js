@@ -60,7 +60,15 @@ function processData(response) {
   
   if (!Array.isArray(actualArray) || actualArray.length === 0) {
     if (loader) loader.classList.add('hidden');
-    console.warn("⚠️ المصفوفة فارغة أو غير صالحة (لا توجد بيانات موظفين).");
+    ["kpi-total", "kpi-permanent", "kpi-seasonal", "pay-total", "pay-avg", "pay-net",
+     "adv-active", "adv-active-rate", "adv-top-dept", "adv-top-dept-count", "adv-average-age", "adv-data-quality"]
+      .forEach(id => updateText(id, "—"));
+    const status = document.getElementById('advanced-data-status');
+    if (status) {
+      status.textContent = "لا توجد سجلات موظفين؛ تحقق من اتصال قاعدة البيانات أو صلاحية الحساب";
+      status.className = "inline-flex items-center gap-2 text-xs font-bold rounded-full px-3 py-2 text-amber-800 bg-amber-50 border border-amber-200";
+    }
+    console.warn("⚠️ لم تصل سجلات موظفين صالحة إلى لوحة القيادة.");
     return;
   }
 
