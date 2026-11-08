@@ -32,7 +32,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 #main-sidebar nav{padding:18px 12px!important;display:flex;flex-direction:column;gap:5px!important}
 #main-sidebar nav button{min-height:47px;border:1px solid transparent;border-radius:12px!important;padding:10px 14px!important;color:#cbd5e1!important;font-weight:600}
 #main-sidebar nav button:hover{background:rgba(255,255,255,.09)!important;color:#fff!important;transform:translateX(-2px)}
-#main-sidebar nav button[id^=btn-].active,#main-sidebar nav button[aria-current=page]{background:linear-gradient(100deg,rgba(99,102,241,.28),rgba(20,184,166,.12))!important;border-color:rgba(165,180,252,.22)!important;color:#fff!important;box-shadow:inset -3px 0 #818cf8}
+#main-sidebar nav button[id^=btn-].active,#main-sidebar nav button[aria-current=page],#main-sidebar nav button.bg-virginia-700{background:linear-gradient(100deg,rgba(99,102,241,.28),rgba(20,184,166,.12))!important;border-color:rgba(165,180,252,.22)!important;color:#fff!important;box-shadow:inset -3px 0 #818cf8}
 #main-sidebar nav button span:first-child{width:27px;text-align:center;margin-left:10px!important;filter:saturate(.82)}
 #main-sidebar>div:last-child{border-color:rgba(255,255,255,.1)!important}
 #main-content{background:var(--hr-bg)!important;min-width:0}
