@@ -116,8 +116,7 @@ function doPost(e) {
         saveSystemUser: "settings",
         deleteSystemUser: "settings",
         saveGeneralSettings: "settings",
-        changeUserPassword: "settings"
-      };
+        };
       var requiredPermission = permissionByAction[action];
       if (action === "getEmployeesDataForUser" && session.role !== "Admin") {
         var dashboardPermissions = session.permissions || {};
@@ -159,9 +158,16 @@ function doPost(e) {
       }
     }
 
-    // Call the function. If params is an array, spread it; otherwise pass as single arg.
+    if (["getSystemUsers", "saveSystemUser", "deleteSystemUser", "saveGeneralSettings"].indexOf(action) !== -1 &&
+        session && session.role !== "Admin") {
+      return sendJSON({ success: false, error: "FORBIDDEN" });
+    }
     var result;
-    if (Array.isArray(params)) {
+    if (action === "askAI") {
+      var aiArgs = Array.isArray(params) ? params.slice() : [params];
+      aiArgs.push(session);
+      result = this[action].apply(null, aiArgs);
+    } else if (Array.isArray(params)) {
       result = this[action].apply(null, params);
     } else {
       result = this[action].apply(null, [params]);
@@ -408,7 +414,7 @@ function addEmployee(formObject) {
 
       // 3. نجلب القيمة من الفورم باستخدام هذا المفتاح
       // ملاحظة: formObject يحتوي على القيم بأسماء المفاتيح (مثل formObject.Mobile1)
-      return formObject[key] || "";
+      return formObject[key] !== undefined && formObject[key] !== null ? formObject[key] : "";
     });
 
     sheet.getRange(writeRow, 1, 1, newRow.length).setValues([newRow]);
@@ -424,7 +430,7 @@ function updateEmployee(formObject) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName(SHEET_NAME);
-    const data = sheet.getDataRange().getDisplayValues();
+    const data = sheet.getDataRange().getValues();
     const headers = data[0];
 
     // البحث عن عمود الكود بالاسم الصريح
@@ -927,107 +933,64 @@ function saveEvaluationResult(data) {
 // 🧠 دالة الذكاء الاصطناعي (المدير الخارق: بيانات + أكواد)
 // ==========================================================
 
-function askAI(userQuestion, selectedModel) {
+function askAI(userQuestion, selectedModel, session) {
   try {
-    // 1. جلب مفتاح OpenRouter من إعدادات المشروع الآمنة
-    const scriptProperties = PropertiesService.getScriptProperties();
-    const API_KEY = scriptProperties.getProperty("OPENROUTER_API_KEY");
+    if (!session || !session.username || !session.role) return "انتهت صلاحية الجلسة. سجّل الدخول مرة أخرى.";
+    const question = String(userQuestion || "").trim();
+    if (!question || question.length > 4000) return "اكتب سؤالاً واضحاً لا يتجاوز 4000 حرف.";
+    const apiKey = PropertiesService.getScriptProperties().getProperty("OPENROUTER_API_KEY");
+    if (!apiKey) return "خدمة المساعد غير مهيأة حالياً. تواصل مع مسؤول النظام.";
 
-    if (!API_KEY) {
-      return "⚠️ خطأ: مفتاح API غير موجود. تأكد من إضافته في Script Properties باسم OPENROUTER_API_KEY.";
-    }
-
-    // 2. 🕵️ جمع بيانات النظام (Context Gathering)
-
-    // أ. بيانات الموظفين (ملخص لتقليل استهلاك التوكنز)
-    const employeesData = getEmployeesData();
-    const employeesStr =
-      employeesData.length > 0
-        ? employeesData
-            .map(
-              (e) =>
-                `- [${e["EmployeeCode / كود الموظف"]}] ${e["FullName_AR / الاسم بالعربية"]} | ${e["JobTitle_AR / المسمى الوظيفي بالعربية"]} (${e["DepartmentName / الإدارة"]}) | راتب:${e["BasicSalary / الراتب الأساسي"]} | حالة:${e["Status / حالة الموظف (بالعمل/منتهي)"]}`
-            )
-            .join("\n")
-        : "لا يوجد موظفين مسجلين.";
-
-    // ب. إعدادات النظام الحالية
-    const settings = getSystemSettings();
-    const settingsStr = `اسم التطبيق: ${settings.appName}`;
-
-    // ج. قائمة المديرين
-    const sysUsers = getSystemUsers()
-      .map((u) => `${u.username} (${u.role})`)
-      .join(", ");
-
-    // د. 🔥 قراءة الكود المصدري للمشروع (للمساعدة التقنية)
-    const sourceCode = getProjectSourceCode();
-
-    // 3. 📝 بناء التوجيه للنظام (System Prompt)
-    const systemMessage = `
-      أنت المساعد الذكي والمدير التقني لنظام (Smart HR System).
-      مهمتك هي مساعدة الأدمن في إدارة الموظفين وأيضاً في التطوير البرمجي.
-
-      📂 **لديك صلاحية الوصول للبيانات الحية:**
-      1. **إعدادات النظام:** ${settingsStr}
-      2. **المستخدمين (Admins):** ${sysUsers}
-      3. **سجل الموظفين:**
-      ${employeesStr}
-
-      💻 **الكود المصدري للنظام (للقراءة والتحليل):**
-      ${sourceCode}
-
-      ⚠️ **قواعد الإجابة:**
-      1. تحدث باللغة العربية بأسلوب محترف.
-      2. إذا كان السؤال عن بيانات (رواتب، غياب)، استخرج الإجابة من سجل الموظفين بدقة.
-      3. إذا كان السؤال تقنياً (تعديل كود، شرح دالة)، اعتمد على "الكود المصدري" المرفق.
-      4. إذا طلب منك كوداً، اكتبه له وقل له "انسخ هذا الكود وضعه في الملف الفلاني".
-      5. لا تذكر أنك نموذج ذكاء اصطناعي، تصرف كأنك جزء من النظام.
-    `;
-
-    // 4. إعداد الاتصال بـ OpenRouter
-    const url = "https://openrouter.ai/api/v1/chat/completions";
-
-    const payload = {
-      model: selectedModel || "mistralai/devstral-2512:free", // الموديل الافتراضي
-      messages: [
-        { role: "system", content: systemMessage },
-        { role: "user", content: userQuestion },
-      ],
-      temperature: 0.5, // متوازن بين الدقة والإبداع
-      // "max_tokens": 4000 // اختياري
-    };
-
-    const options = {
+    // Send aggregate-only context to the external AI provider. Never send employee-level PII.
+    const employees = session.role === "Admin"
+      ? getEmployeesData()
+      : (session.permissions && session.permissions.emp_view && session.department
+          ? getEmployeesDataForUser(session.department) : []);
+    const summary = { total: employees.length, active: 0, inactive: 0, departments: {} };
+    employees.forEach(function (emp) {
+      const status = String(emp.Status || emp["Status / حالة الموظف (بالعمل/منتهي)"] || "").toLowerCase();
+      if (status.indexOf("active") !== -1 || status.indexOf("بالعمل") !== -1) summary.active++;
+      else if (status) summary.inactive++;
+      const dept = String(emp.DepartmentName || emp["DepartmentName / الإدارة"] || "غير محدد");
+      summary.departments[dept] = (summary.departments[dept] || 0) + 1;
+    });
+    const systemMessage = [
+      "أنت مساعد موارد بشرية داخل Smart HR System.",
+      "أجب بالعربية المهنية، ولا تخترع بيانات أو سياسات.",
+      "المتاح لك ملخصات مجهولة الهوية فقط. لا تدّعِ معرفة أسماء أو رواتب أو بيانات فردية.",
+      "إذا لم تتوفر بيانات كافية، وضّح ذلك واطلب مراجعة مسؤول النظام.",
+      "ملخص القوى العاملة المصرح به: " + JSON.stringify(summary)
+    ].join("\n");
+    const response = UrlFetchApp.fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "post",
       headers: {
-        Authorization: "Bearer " + API_KEY,
+        Authorization: "Bearer " + apiKey,
         "Content-Type": "application/json",
         "HTTP-Referer": "https://script.google.com",
-        "X-Title": "Smart HR System",
+        "X-Title": "Smart HR System"
       },
-      payload: JSON.stringify(payload),
-      muteHttpExceptions: true,
-    };
-
-    // 5. تنفيذ الطلب
-    const response = UrlFetchApp.fetch(url, options);
-    const responseCode = response.getResponseCode();
-    const responseText = response.getContentText();
-    const json = JSON.parse(responseText);
-
-    // 6. معالجة الرد
-    if (responseCode === 200 && json.choices && json.choices.length > 0) {
-      return json.choices[0].message.content;
-    } else {
-      console.error("OpenRouter Error:", json);
-      // محاولة استخراج رسالة الخطأ
-      const errorMsg = json.error ? json.error.message : responseText;
-      return `❌ حدث خطأ في الاتصال (كود ${responseCode}): ${errorMsg}`;
+      payload: JSON.stringify({
+        model: selectedModel || "mistralai/devstral-2512:free",
+        messages: [{ role: "system", content: systemMessage }, { role: "user", content: question }],
+        temperature: 0.3,
+        max_tokens: 1800
+      }),
+      muteHttpExceptions: true
+    });
+    const status = response.getResponseCode();
+    const raw = response.getContentText();
+    let json = {};
+    try { json = JSON.parse(raw); } catch (parseError) {
+      return "تعذر قراءة رد خدمة الذكاء الاصطناعي. حاول مرة أخرى.";
     }
+    if (status === 200 && json.choices && json.choices.length) {
+      return String(json.choices[0].message.content || "لم يصل رد نصي من المساعد.");
+    }
+    console.error("OpenRouter Error " + status + ": " + raw.slice(0, 500));
+    return "تعذر الاتصال بالمساعد حالياً (HTTP " + status + "). حاول لاحقاً.";
   } catch (e) {
     console.error("askAI Exception:", e);
-    return "❌ خطأ داخلي في النظام: " + e.message;
+    return "حدث خطأ داخلي أثناء معالجة السؤال. حاول مرة أخرى.";
   }
 }
 
@@ -1273,7 +1236,9 @@ function getAllLeaveRequests() {
 // ==========================================
 function processLeaveRequest(reqId, action, adminNote) {
   const lock = LockService.getScriptLock();
-  lock.tryLock(10000);
+  if (!lock.tryLock(10000)) {
+    return { success: false, message: "هناك عملية إجازات أخرى قيد التنفيذ. حاول مرة أخرى بعد قليل." };
+  }
 
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -1406,7 +1371,7 @@ function processLeaveRequest(reqId, action, adminNote) {
   } catch (e) {
     return { success: false, message: e.message };
   } finally {
-    lock.releaseLock();
+    if (lock.hasLock()) lock.releaseLock();
   }
 }
 // دالة مساعدة: جلب إيميل الموظف باستخدام الكود
