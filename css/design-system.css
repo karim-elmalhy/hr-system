@@ -332,3 +332,159 @@ html.dark, html.dark body,
 .dark #employee-portal { background:var(--app-bg)!important;color:var(--app-ink)!important; }
 .dark #main-app .text-gray-800,
 .dark #main-app .text-gray-900 { color:#e2e8f0!important; }
+
+
+/* =========================================================
+   Refined application-wide dark mode
+   ========================================================= */
+html.dark {
+  color-scheme: dark;
+  --app-bg:#0b1220;
+  --app-surface:#111c2e;
+  --app-surface-raised:#18263b;
+  --app-surface-soft:#202f45;
+  --app-ink:#e7edf7;
+  --app-muted:#9aaac0;
+  --app-line:#33445d;
+  --app-accent:#818cf8;
+}
+html.dark body { background:var(--app-bg)!important; color:var(--app-ink)!important; }
+html.dark #main-app,
+html.dark #main-content,
+html.dark #main-content > .flex-1 { background:var(--app-bg)!important; color:var(--app-ink)!important; }
+html.dark #main-app header,
+html.dark #main-app main > header { background:#101a2b!important; color:var(--app-ink)!important; border-color:var(--app-line)!important; }
+html.dark #main-app #main-sidebar { background:#0f1a2b!important; border-color:var(--app-line)!important; }
+html.dark #main-app .bg-white,
+html.dark #main-app .bg-gray-50,
+html.dark #main-app .bg-gray-100,
+html.dark #main-app .bg-slate-50,
+html.dark #main-app .bg-slate-100 {
+  background-color:var(--app-surface)!important; color:var(--app-ink)!important; border-color:var(--app-line)!important;
+}
+html.dark #main-app .text-gray-900,
+html.dark #main-app .text-gray-800,
+html.dark #main-app .text-gray-700,
+html.dark #main-app .text-gray-600,
+html.dark #main-app .text-slate-900,
+html.dark #main-app .text-slate-800,
+html.dark #main-app .text-slate-700 { color:var(--app-ink)!important; }
+html.dark #main-app .text-gray-500,
+html.dark #main-app .text-gray-400,
+html.dark #main-app .text-slate-500,
+html.dark #main-app .text-slate-400 { color:var(--app-muted)!important; }
+html.dark #main-app input:not([type=checkbox]):not([type=radio]),
+html.dark #main-app select,
+html.dark #main-app textarea {
+  background:#0c1728!important; color:var(--app-ink)!important; border-color:#40516b!important;
+}
+html.dark #main-app input::placeholder,
+html.dark #main-app textarea::placeholder { color:#8293ab!important; }
+html.dark #main-app table th { background:#1b2a40!important; color:#dbe5f3!important; border-color:var(--app-line)!important; }
+html.dark #main-app table td,
+html.dark #main-app table tr { border-color:var(--app-line)!important; }
+html.dark #main-app table tbody tr:hover { background:#22334b!important; }
+html.dark #main-app .border-gray-100,
+html.dark #main-app .border-gray-200,
+html.dark #main-app .border-gray-300 { border-color:var(--app-line)!important; }
+html.dark #main-app .divide-gray-100 > :not([hidden]) ~ :not([hidden]) { border-color:var(--app-line)!important; }
+html.dark #main-app .shadow,
+html.dark #main-app .shadow-lg,
+html.dark #main-app .shadow-xl { box-shadow:0 14px 36px rgba(0,0,0,.25)!important; }
+html.dark #main-app .bg-red-600,
+html.dark #main-app .bg-red-700,
+html.dark #main-app .bg-red-500,
+html.dark #main-app .bg-virginia-600,
+html.dark #main-app .bg-virginia-700,
+html.dark #main-app .bg-green-600 { color:#fff!important; }
+html.dark #main-app .bg-red-50,
+html.dark #main-app .bg-yellow-50,
+html.dark #main-app .bg-green-50,
+html.dark #main-app .bg-blue-50,
+html.dark #main-app .bg-purple-50,
+html.dark #main-app .bg-amber-50 { filter:brightness(.76) saturate(.86); }
+html.dark #main-app #loader { background:rgba(11,18,32,.97)!important; color:var(--app-ink)!important; }
+html.dark #main-app #alert-dropdown {
+  background:#111c2e!important; color:var(--app-ink)!important; border:1px solid #40516b!important;
+  box-shadow:0 22px 55px rgba(0,0,0,.48)!important;
+}
+html.dark #main-app #alert-dropdown > div:first-child { background:#1a2940!important;color:#f1f5fb!important;border-color:var(--app-line)!important; }
+html.dark #main-app #alert-list > div { border-color:var(--app-line)!important; }
+html.dark #main-app [class~="hover:bg-gray-50"]:hover,
+html.dark #main-app [class~="hover:bg-gray-100"]:hover { background:#263750!important; }
+html.dark #employee-portal { background:var(--app-bg)!important;color:var(--app-ink)!important; }
+html.dark #employee-portal .bg-white { background:var(--app-surface)!important;color:var(--app-ink)!important; }
+
+/* Notifications popover */
+#alert-dropdown {
+  width:min(22rem,calc(100vw - 1.5rem));
+  max-height:min(28rem,calc(100vh - 6rem));
+  border-radius:16px;
+  overflow:auto;
+  transform-origin:top left;
+  box-shadow:0 18px 45px rgba(15,23,42,.16);
+}
+#alert-list > div { margin:0!important; border:0!important; border-bottom:1px solid #e8edf4!important; border-radius:0!important; padding:14px 16px!important; }
+#alert-list > div:last-child { border-bottom:0!important; }
+#alert-list > div:hover { background:rgba(99,102,241,.045); }
+#alert-badge { min-width:19px; text-align:center; line-height:1.2; }
+
+/* AI assistant: responsive, focused, readable in both themes */
+#ai-window {
+  width:min(420px,calc(100vw - 24px));
+  height:min(680px,calc(100dvh - 100px));
+  max-height:calc(100dvh - 100px);
+  border:1px solid rgba(148,163,184,.28);
+  border-radius:24px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:0 24px 70px rgba(15,23,42,.24);
+}
+#ai-window #ai-messages { background:#f6f8fc; overscroll-behavior:contain; }
+#ai-window #ai-input { min-height:46px; padding-left:54px; }
+#ai-window #ai-model-select { min-height:38px; }
+#ai-window #ai-model-select option { background:#fff;color:#172033; }
+#ai-window #quick-suggestions button { min-height:54px; line-height:1.5; }
+#ai-window .ai-message { max-width:88%; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.75; }
+#ai-window .ai-message-user { margin-right:auto; background:#e7edff; color:#24356b; border:1px solid #d5dfff; border-radius:16px 16px 4px 16px; padding:11px 14px; }
+#ai-window .ai-message-bot { margin-left:auto; background:#fff; color:#263449; border:1px solid #e5eaf2; border-radius:16px 16px 16px 4px; padding:12px 14px; box-shadow:0 2px 8px rgba(15,23,42,.04); }
+#ai-window .ai-message-error { margin-left:auto; background:#fff1f2; color:#9f1239; border:1px solid #fecdd3; border-radius:14px; padding:11px 14px; }
+#ai-window #ai-loading { color:#64748b; font-size:12px; padding:8px 12px; }
+#ai-window button:focus-visible,
+#ai-window input:focus-visible,
+#ai-window select:focus-visible { outline:3px solid rgba(129,140,248,.55);outline-offset:2px; }
+html.dark #ai-window {
+  background:#111c2e!important; color:#e7edf7!important;
+  border-color:#40516b!important; box-shadow:0 28px 80px rgba(0,0,0,.58)!important;
+}
+html.dark #ai-window > .absolute {
+  background:rgba(17,28,46,.98)!important; border-color:#40516b!important;
+}
+html.dark #ai-window #ai-messages,
+html.dark #ai-window .p-4.bg-white\/80 {
+  background:#0d1728!important; color:#e7edf7!important;
+}
+html.dark #ai-window #ai-messages .bg-white\/80,
+html.dark #ai-window #ai-messages .bg-white {
+  background:#1a2940!important; color:#e7edf7!important; border-color:#344761!important;
+}
+html.dark #ai-window #ai-messages .text-gray-700,
+html.dark #ai-window #ai-messages .text-gray-800 { color:#dce6f4!important; }
+html.dark #ai-window #ai-input {
+  background:#1b2a40!important; color:#f1f5fb!important; border-color:#465a76!important;
+}
+html.dark #ai-window #ai-input::placeholder { color:#9aaac0!important; }
+html.dark #ai-window #ai-model-select { background:#243750!important;color:#fff!important;border-color:#536783!important; }
+html.dark #ai-window #ai-model-select option { background:#172338;color:#e7edf7; }
+html.dark #ai-window #quick-suggestions button {
+  background:#1c2d46!important;color:#dce6f4!important;border-color:#3b506d!important;
+}
+html.dark #ai-window #quick-suggestions button:hover { background:#293e5d!important; }
+html.dark #ai-window .ai-message-user { background:#263b68;color:#eef2ff;border-color:#3e568b; }
+html.dark #ai-window .ai-message-bot { background:#1a2940;color:#e7edf7;border-color:#344761; }
+html.dark #ai-window .ai-message-error { background:#4a1f32;color:#ffe4e6;border-color:#87334f; }
+html.dark #ai-window .border-gray-200\/60 { border-color:#344761!important; }
+@media(max-width:640px) {
+  #ai-window { left:12px!important; right:12px!important; top:72px!important; width:auto!important; height:calc(100dvh - 84px)!important; max-height:none!important; }
+  #alert-dropdown { left:auto!important; right:-8px!important; }
+}
