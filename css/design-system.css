@@ -488,3 +488,21 @@ html.dark #ai-window .border-gray-200\/60 { border-color:#344761!important; }
   #ai-window { left:12px!important; right:12px!important; top:72px!important; width:auto!important; height:calc(100dvh - 84px)!important; max-height:none!important; }
   #alert-dropdown { left:auto!important; right:-8px!important; }
 }
+
+
+/* Fine-tune semantic surfaces: keep warning/success colors calm in dark mode. */
+html.dark #main-app #alert-list .bg-red-50 {
+  background:#482334!important;color:#fecdd3!important;border-color:#78364d!important;filter:none!important;
+}
+html.dark #main-app #alert-list .bg-yellow-50 {
+  background:#46391d!important;color:#fde68a!important;border-color:#78602b!important;filter:none!important;
+}
+html.dark #ai-window #quick-suggestions button { filter:none!important; }
+html.dark #ai-window #ai-messages .bg-indigo-100,
+html.dark #ai-window #ai-messages .from-indigo-100 { color:#e0e7ff!important; }
+html.dark #main-app #alert-dropdown #alert-list > div:hover { background:#1c2d46!important; }
+#ai-window #ai-messages { scrollbar-width:thin; scrollbar-color:#aab7c9 transparent; }
+#ai-window #ai-messages::-webkit-scrollbar { width:7px; }
+#ai-window #ai-messages::-webkit-scrollbar-thumb { background:#aab7c9;border-radius:20px; }
+html.dark #ai-window #ai-messages { scrollbar-color:#526781 transparent; }
+html.dark #ai-window #ai-messages::-webkit-scrollbar-thumb { background:#526781; }
