@@ -217,3 +217,26 @@ body { font-family:'IBM Plex Sans Arabic','Cairo',sans-serif; }
   #view-interview .mb-8 button { flex:1 1 100%; }
   #view-docs #docs-grid { grid-template-columns:1fr; }
 }
+
+/* Accessibility and interaction states */
+#main-app button:focus-visible,
+#main-app a:focus-visible,
+#main-app [role="button"]:focus-visible,
+#login-screen button:focus-visible {
+  outline:3px solid rgba(99,102,241,.65);
+  outline-offset:3px;
+}
+#main-app button:disabled,
+#main-app input:disabled,
+#main-app select:disabled {
+  opacity:.58;
+  cursor:not-allowed;
+}
+#view-employees #table-count { white-space:nowrap; }
+#view-dashboard .advanced-insights { min-width:0; }
+#view-dashboard canvas { display:block; }
+@media(max-width:520px) {
+  #view-employees .flex.flex-col.md\\:flex-row { align-items:stretch; }
+  #view-employees #table-count { align-self:flex-start; }
+  #main-app main > header { padding-inline:12px; }
+}
