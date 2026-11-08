@@ -425,7 +425,7 @@ function parseSmartDate(dateStr) {
 
   const str = String(dateStr).trim();
   // Google Sheets display dates in Egypt commonly use DD/MM/YYYY.
-  const localMatch = str.match(/^(\\d{1,2})[\\/.-](\\d{1,2})[\\/.-](\\d{4})$/);
+  const localMatch = str.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/);
   if (localMatch) {
     const day = Number(localMatch[1]);
     const month = Number(localMatch[2]) - 1;
