@@ -1,3 +1,4 @@
+function escapeInterviewHTML(value) { return String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch])); }
 // ================= NAVIGATION =================
 function showSection(sectionId) {
   document.getElementById('registrationSection').classList.add('hidden');
@@ -98,7 +99,7 @@ function renderApplicants(data) {
   }
 
   data.forEach(app => {
-    let statusBadge = `<span class="px-2 py-1 rounded text-xs font-bold bg-gray-100 text-gray-600">${app.status}</span>`;
+    let statusBadge = `<span class="px-2 py-1 rounded text-xs font-bold bg-gray-100 text-gray-600">${escapeInterviewHTML(app.status)}</span>`;
     
     if(app.status === 'Interviewed') statusBadge = `<span class="px-2 py-1 rounded text-xs font-bold bg-purple-100 text-purple-700">تمت المقابلة</span>`;
     else if(app.status === 'Hired') statusBadge = `<span class="px-2 py-1 rounded text-xs font-bold bg-green-100 text-green-700">🎉 تم التعيين</span>`;
@@ -108,12 +109,12 @@ function renderApplicants(data) {
     let actionButtons = '';
 
     if (app.status === 'Hired') {
-       scoreDisplay = `<span class="font-bold text-gray-800">${app.score}</span>`;
+       scoreDisplay = `<span class="font-bold text-gray-800">${escapeInterviewHTML(app.score)}</span>`;
        recBadge = `<span class="text-gray-500 text-xs">تم التنفيذ</span>`;
        actionButtons = `<span class="text-green-600 font-bold text-sm">✓ موظف حالي</span>`;
 
     } else if(app.score !== "-" && app.score !== "") {
-      scoreDisplay = `<span class="font-bold text-gray-800">${app.score}</span>`;
+      scoreDisplay = `<span class="font-bold text-gray-800">${escapeInterviewHTML(app.score)}</span>`;
       
       if(app.recommendation === 'Hire') recBadge = `<span class="text-green-600 font-bold">✅ تعيين</span>`;
       else if(app.recommendation === 'Hold') recBadge = `<span class="text-yellow-600 font-bold">⏳ انتظار</span>`;
@@ -121,17 +122,17 @@ function renderApplicants(data) {
 
       actionButtons = `
         <div class="flex justify-center items-center gap-2">
-          <button onclick="changeStatus('${app.id}', 'Hired')" title="تعيين رسمي" class="p-1 bg-green-100 text-green-700 rounded hover:bg-green-200 transition border border-green-200">
+          <button onclick="changeStatus('${encodeURIComponent(String(app.id))}', 'Hired')" title="تعيين رسمي" class="p-1 bg-green-100 text-green-700 rounded hover:bg-green-200 transition border border-green-200">
             ✅ تعيين
           </button>
-          <button onclick="changeStatus('${app.id}', 'Rejected')" title="رفض نهائي" class="p-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition border border-red-200">
+          <button onclick="changeStatus('${encodeURIComponent(String(app.id))}', 'Rejected')" title="رفض نهائي" class="p-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition border border-red-200">
             ❌ رفض
           </button>
         </div>
       `;
     } else {
       actionButtons = `
-        <button onclick="startEvaluation('${app.id}', '${app.name}')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 shadow">
+        <button onclick="startEvaluation('${app.id}', '${escapeInterviewHTML(app.name)}')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 shadow">
           بدء المقابلة
         </button>
       `;
@@ -140,8 +141,8 @@ function renderApplicants(data) {
     const row = `
       <tr class="border-b hover:bg-gray-50 transition group">
         <td class="px-4 py-3">
-          <div class="font-bold text-gray-800">${app.name}</div>
-          <div class="text-xs text-gray-500">${app.position}</div>
+          <div class="font-bold text-gray-800">${escapeInterviewHTML(app.name)}</div>
+          <div class="text-xs text-gray-500">${escapeInterviewHTML(app.position)}</div>
         </td>
         <td class="px-4 py-3 text-center">${statusBadge}</td>
         <td class="px-4 py-3 text-center text-lg">${scoreDisplay}</td>
@@ -156,6 +157,7 @@ function renderApplicants(data) {
 }
 
 function changeStatus(id, newStatus) {
+  id = decodeURIComponent(String(id));
   let confirmMsg = newStatus === 'Hired' 
     ? "هل أنت متأكد من تعيين هذا الموظف؟" 
     : "هل أنت متأكد من رفض هذا المتقدم؟";
@@ -185,6 +187,8 @@ function filterApplicants() {
 
 // ================= EVALUATION LOGIC =================
 function startEvaluation(id, name) {
+  id = decodeURIComponent(String(id));
+  name = decodeURIComponent(String(name));
   document.getElementById('applicantsListCard').classList.add('hidden');
   document.getElementById('evaluationFormCard').classList.remove('hidden');
   
