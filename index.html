@@ -196,22 +196,22 @@
         <h2 id="page-title" class="text-lg font-bold text-gray-700">لوحة القيادة والتحليلات</h2>
 
         <div class="flex items-center gap-4">
-          <div id="ai-header-btn" class="relative cursor-pointer transition transform hover:scale-110 hidden"
-            onclick="toggleAIChat()">
+          <div id="ai-header-btn" role="button" tabindex="0" aria-label="فتح المساعد الذكي" aria-controls="ai-window" aria-expanded="false" class="relative cursor-pointer transition transform hover:scale-110 hidden"
+            onclick="toggleAIChat()" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleAIChat(); }">
             <div class="p-2 rounded-full hover:bg-gray-100 text-purple-600 hover:text-purple-700 transition">
               <span class="text-2xl">🤖</span>
             </div>
             <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></span>
           </div>
 
-          <div class="relative cursor-pointer" role="button" tabindex="0" aria-label="عرض التنبيهات" onclick="toggleAlerts()" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleAlerts(); }">
+          <div class="relative cursor-pointer" role="button" tabindex="0" aria-label="عرض التنبيهات" aria-controls="alert-dropdown" aria-expanded="false" onclick="toggleAlerts()" onkeydown="if(event.key==='Enter'||event.key===' ') { event.preventDefault(); toggleAlerts(); }">
             <div class="relative">
               <span class="text-2xl text-gray-600 hover:text-virginia-600 transition">🔔</span>
               <span id="alert-badge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
             </div>
-            <div id="alert-dropdown"
+            <div id="alert-dropdown" role="region" aria-label="قائمة التنبيهات"
               class="absolute left-0 mt-3 w-80 bg-white border border-gray-200 shadow-xl rounded-lg hidden z-50 max-h-96 overflow-y-auto">
-              <div class="p-3 border-b bg-gray-50 font-bold text-sm text-gray-700">التنبيهات الهامة</div>
+              <div class="sticky top-0 p-3 border-b bg-gray-50 font-bold text-sm text-gray-700 flex items-center justify-between"><span>التنبيهات</span><span class="text-xs font-normal text-gray-500">آخر تحديث مع تحميل البيانات</span></div>
               <div id="alert-list" class="divide-y divide-gray-100"></div>
             </div>
           </div>
@@ -500,48 +500,7 @@
       animation: fadeInUp 0.4s ease-out forwards;
     }
 
-    /* ==========================================
-   🌙 ستايلات الوضع الليلي (Global Dark Mode)
-   ========================================== */
-    html.dark body {
-      background-color: #111827 !important;
-      /* خلفية الصفحة */
-      color: #f3f4f6 !important;
-      /* لون النص */
-    }
-
-    /* تحويل الكروت والقوائم للون غامق */
-    html.dark .bg-white,
-    html.dark .bg-gray-50 {
-      background-color: #1f2937 !important;
-      /* رمادي غامق */
-      color: #e5e7eb !important;
-      border-color: #374151 !important;
-    }
-
-    /* تحويل النصوص الغامقة لفاتحة */
-    html.dark .text-gray-800,
-    html.dark .text-gray-700,
-    html.dark .text-gray-600 {
-      color: #d1d5db !important;
-    }
-
-    /* تحويل الحقول (Inputs) */
-    html.dark input,
-    html.dark select,
-    html.dark textarea {
-      background-color: #374151 !important;
-      color: #fff !important;
-      border-color: #4b5563 !important;
-    }
-
-    /* استثناءات (عشان الأزرار الملونة متخربش) */
-    html.dark .bg-red-600,
-    html.dark .bg-virginia-600,
-    html.dark .bg-green-500 {
-      color: white !important;
-      /* الحفاظ على لون النص أبيض */
-    }
+    /* Dark theme is centralized in css/design-system.css. */
   </style>
 
 <script>
@@ -946,29 +905,84 @@
         }).getEmployeeBalance(code);
     }
 
-    function toggleAIChat() { document.getElementById('ai-window').classList.toggle('hidden'); }
-    function clearChat() { document.getElementById('ai-messages').innerHTML = ''; }
+    function toggleAIChat() {
+        const panel = document.getElementById('ai-window');
+        const trigger = document.getElementById('ai-header-btn');
+        if (!panel) return;
+        const opening = panel.classList.contains('hidden');
+        panel.classList.toggle('hidden', !opening);
+        panel.classList.toggle('scale-95', !opening);
+        panel.classList.toggle('opacity-0', !opening);
+        panel.classList.toggle('scale-100', opening);
+        panel.classList.toggle('opacity-100', opening);
+        if (trigger) trigger.setAttribute('aria-expanded', String(opening));
+        if (opening) {
+            const input = document.getElementById('ai-input');
+            if (input) setTimeout(() => input.focus(), 80);
+        }
+    }
+    function clearChat() {
+        const messages = document.getElementById('ai-messages');
+        if (!messages) return;
+        messages.innerHTML = '';
+        addMessage('تم مسح المحادثة. اكتب سؤالك الجديد للبدء.', 'bot');
+    }
     function sendAIMessage() {
         const input = document.getElementById('ai-input');
+        const sendButton = document.getElementById('btn-send-ai');
+        const messages = document.getElementById('ai-messages');
+        const modelSelect = document.getElementById('ai-model-select');
+        if (!input || !messages || !modelSelect || window.aiRequestPending) return;
         const msg = input.value.trim();
-        if(!msg) return;
+        if (!msg) return;
+        if (!window.google || !google.script || !google.script.run) {
+            addMessage('خدمة المساعد غير متاحة في هذه الصفحة. افتح النظام من رابط Google Apps Script المنشور.', 'error');
+            return;
+        }
         addMessage(msg, 'user');
         input.value = '';
-        const loadingDiv = document.createElement('div'); loadingDiv.id = 'ai-loading'; loadingDiv.innerHTML = '...';
-        document.getElementById('ai-messages').appendChild(loadingDiv);
-        const model = document.getElementById('ai-model-select').value;
-        google.script.run.withSuccessHandler(res => {
-            loadingDiv.remove();
-            addMessage(res, 'bot');
-        }).askAI(msg, model);
+        window.aiRequestPending = true;
+        if (sendButton) sendButton.disabled = true;
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'ai-loading';
+        loadingDiv.setAttribute('role', 'status');
+        loadingDiv.textContent = 'المساعد يجهز الإجابة…';
+        messages.appendChild(loadingDiv);
+        messages.scrollTop = messages.scrollHeight;
+        const model = modelSelect.value;
+        const finish = () => {
+            window.aiRequestPending = false;
+            if (sendButton) sendButton.disabled = false;
+            if (loadingDiv.isConnected) loadingDiv.remove();
+        };
+        google.script.run
+            .withSuccessHandler(res => {
+                finish();
+                addMessage(res == null ? 'لم يصل رد من المساعد. حاول مرة أخرى.' : String(res), 'bot');
+            })
+            .withFailureHandler(err => {
+                finish();
+                const reason = err && err.message ? err.message : 'تعذر الاتصال بالخدمة.';
+                addMessage('تعذر الحصول على إجابة: ' + reason, 'error');
+            })
+            .askAI(msg, model);
     }
     function addMessage(txt, sender) {
+        const messages = document.getElementById('ai-messages');
+        if (!messages) return;
         const d = document.createElement('div');
-        d.className = sender === 'user' ? 'text-left p-2 bg-blue-100 rounded mb-2' : 'text-right p-2 bg-white rounded mb-2 border';
-        d.innerText = txt;
-        document.getElementById('ai-messages').appendChild(d);
+        d.className = 'ai-message ' + (sender === 'user' ? 'ai-message-user' : sender === 'error' ? 'ai-message-error' : 'ai-message-bot');
+        d.setAttribute('dir', 'auto');
+        d.textContent = String(txt == null ? '' : txt);
+        messages.appendChild(d);
+        messages.scrollTop = messages.scrollHeight;
     }
-    function usePrompt(txt) { document.getElementById('ai-input').value = txt; sendAIMessage(); }
+    function usePrompt(txt) {
+        const input = document.getElementById('ai-input');
+        if (!input) return;
+        input.value = txt;
+        sendAIMessage();
+    }
     function toggleAlerts() {
         const dropdown = document.getElementById('alert-dropdown');
         if (!dropdown) return;
@@ -1016,6 +1030,10 @@
                 const trigger = dropdown && dropdown.parentElement;
                 if (dropdown) dropdown.classList.add('hidden');
                 if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                const aiPanel = document.getElementById('ai-window');
+                const aiTrigger = document.getElementById('ai-header-btn');
+                if (aiPanel) aiPanel.classList.add('hidden');
+                if (aiTrigger) aiTrigger.setAttribute('aria-expanded', 'false');
             }
         });
     });
